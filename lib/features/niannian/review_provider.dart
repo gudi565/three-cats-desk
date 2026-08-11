@@ -7,6 +7,7 @@ import 'package:three_cats_desk/core/cloud_sync.dart';
 import 'package:three_cats_desk/core/db/database.dart';
 import 'package:three_cats_desk/core/providers.dart';
 import 'package:three_cats_desk/core/fsrs.dart';
+import '../cat/cat_provider.dart';
 import 'deck_provider.dart';
 
 /// 翻卡复习会话状态。
@@ -113,9 +114,12 @@ final reviewControllerProvider = StateNotifierProvider.autoDispose
     ref.watch(appDatabaseProvider),
     ref.watch(cloudSyncProvider),
     deckId,
-    // 评分后自增修订号 → deckListProvider/dueCountProvider 重算到期数。
     onGraded: () {
+      // 评分后自增修订号 → deckListProvider/dueCountProvider 重算到期数。
       ref.read(deckRevisionProvider.notifier).state++;
+      // 猫养成：复习一张卡 → intimacy +1（只增路径，正反馈）。
+      // fire-and-forget：猫进度失败不影响 FSRS 闭环。
+      ref.read(catProvider.notifier).onCardReviewed();
     },
   );
 });

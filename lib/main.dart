@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import 'core/providers.dart';
 import 'core/supabase_client.dart';
+import 'features/cat/cat_provider.dart';
+import 'features/cat/pixel_cat.dart';
 import 'features/niannian/login_screen.dart';
 import 'features/niannian/review_screen.dart';
 
@@ -96,7 +98,8 @@ class SanmaoApp extends ConsumerWidget {
 }
 
 /// 主页：1 App 五模块骨架。Phase0 只「念念」可用，其余留占位（后面阶段填）。
-class HomeScreen extends StatelessWidget {
+/// 顶部猫横条（Phase 1a）：首屏就看见猫，强化「为猫打开」hook。
+class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
   static const _modules = [
@@ -108,7 +111,8 @@ class HomeScreen extends StatelessWidget {
   ];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final cat = ref.watch(catProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('三猫书桌 · 考研'),
@@ -124,6 +128,8 @@ class HomeScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          _CatGreeting(mood: cat.mood, intimacy: cat.intimacy, today: cat.todayReviewed),
+          const SizedBox(height: 12),
           for (final m in _modules)
             Card(
               child: ListTile(
@@ -146,8 +152,57 @@ class HomeScreen extends StatelessWidget {
             ),
           const SizedBox(height: 16),
           const Center(
-            child: Text('Phase0 · 念念翻卡最小闭环',
+            child: Text('Phase1 · 念念翻卡 + 猫养成',
                 style: TextStyle(color: Colors.grey, fontSize: 12)),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// 首屏猫问候横条：像素猫 + 心情 + 今日复习数。
+/// 「今天还没复习」时引导用户进念念——这是次日留存的关键推力。
+class _CatGreeting extends StatelessWidget {
+  final CatMood mood;
+  final int intimacy;
+  final int today;
+  const _CatGreeting({required this.mood, required this.intimacy, required this.today});
+
+  @override
+  Widget build(BuildContext context) {
+    final hasReviewedToday = today > 0;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Color(0xFFEAF4F7), Color(0xFFFDEEF1)],
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+        ),
+        borderRadius: BorderRadius.circular(18),
+      ),
+      child: Row(
+        children: [
+          PixelCat(mood: mood, size: 48),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  hasReviewedToday
+                      ? '今天复习了 $today 张，猫咪很满足～'
+                      : '猫咪在等你今天来复习哦！',
+                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  '亲密度 ❤ $intimacy · ${mood.label}',
+                  style: TextStyle(fontSize: 12, color: Colors.grey.shade700),
+                ),
+              ],
+            ),
           ),
         ],
       ),
