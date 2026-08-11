@@ -13,10 +13,16 @@ from pathlib import Path
 
 BOOTSTRAP = Path(__file__).resolve().parent.parent / "build" / "web" / "flutter_bootstrap.js"
 NEEDLE = "_flutter.loader.load({"
+# canvaskit 路径用相对（不带前导 /），相对 index.html 解析。
+# 这样无论部署在根路径还是 GitHub Pages 子路径（/repo/），都能正确找到 canvaskit/。
 INJECT = (
     "_flutter.loader.load({\n"
-    "  config: { canvasKitBaseUrl: \"/canvaskit/\" },"
+    "  config: { canvasKitBaseUrl: \"canvaskit/\" },"
 )
+
+# GitHub Pages 部署在 <user>.github.io/<repo>/ 子路径时，必须让 Flutter build 用对应 base-href，
+# 否则 main.dart.js / canvaskit / 字体全部按根路径 / 解析 → 线上 404 白屏。
+DEFAULT_BASE_HREF = "/three-cats-desk/"
 
 
 def main() -> int:
