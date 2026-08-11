@@ -97,4 +97,67 @@ class CloudSync {
       return 0;
     }
   }
+
+  /// 云端活动埋点（雷2 修复）：这是「次日留存」唯一可算的云端信号。
+  ///
+  /// 冷启动时（登录态恢复后）往 user_daily_activity upsert 一行，标记「该用户今天打开了 App」。
+  /// 此前云端唯一带时间戳的事件是 cards.updated_at（=复习了卡，而非打开了 App）——发用户前
+  /// 必须补，否则发了也没法度量次留（元根因：发了没法验证）。
+  ///
+  /// 顺带上云一个 intimacy 整数快照：猫进度是本 App 唯一的用户资产、且是唯一无云备份状态
+  /// （审计 P1）。把它挂在已发的 activity 行上（不建猫专表、零额外网络调用），既防资产归零，
+  /// 又给「谁因猫回来」的归因留了数据。
+  ///
+  /// 幂等：同一天多次调用只更新 last_opened_at / open_count / intimacy。
+  /// 依赖 Supabase 表 user_daily_activity（见 02_Flutter工程/phase1a-supabase-activity.sql）。
+  /// local-first：表不存在/未登录/无网时静默降级。
+  Future<void> markActivity({int? intimacy}) async {
+    if (!_canSync) return; // 未初始化/未登录（匿名）：无云端脚印，本地不破
+    final client = SupabaseConfig.client;
+    final userId = SupabaseConfig.currentUser!.id;
+    final day = _todayKey();
+    final nowIso = DateTime.now().toUtc().toIso8601String();
+
+    // 读今天的现有行（open_count 递增；first_opened_at 只在首行写入）。
+    var openCount = 1;
+    DateTime? firstOpened;
+    try {
+      final existing = await client
+          .from('user_daily_activity')
+          .select('open_count, first_opened_at')
+          .eq('user_id', userId)
+          .eq('day', day)
+          .maybeSingle();
+      if (existing != null) {
+        openCount = ((existing['open_count'] as num?)?.toInt() ?? 0) + 1;
+        final fo = existing['first_opened_at'] as String?;
+        if (fo != null) firstOpened = DateTime.tryParse(fo);
+      }
+    } catch (_) {
+      // 读失败不阻塞：仍按 open_count=1 上行（最多低估当日打开次数，不丢"打开了"这个事实）。
+    }
+
+    final row = <String, dynamic>{
+      'user_id': userId,
+      'day': day,
+      'first_opened_at': (firstOpened ?? DateTime.now()).toUtc().toIso8601String(),
+      'last_opened_at': nowIso,
+      'open_count': openCount,
+    };
+    if (intimacy != null) row['intimacy'] = intimacy;
+
+    try {
+      await client.from('user_daily_activity').upsert(row, onConflict: 'user_id,day');
+    } catch (_) {
+      // 静默降级：local-first，写云失败不影响本地使用。
+    }
+  }
+
+  /// 当日 0 点对齐的日期 key（YYYY-MM-DD），对齐 Supabase `day` 列（date 类型）。
+  String _todayKey() {
+    final n = DateTime.now();
+    return '${n.year.toString().padLeft(4, '0')}-'
+        '${n.month.toString().padLeft(2, '0')}-'
+        '${n.day.toString().padLeft(2, '0')}';
+  }
 }

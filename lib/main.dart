@@ -47,6 +47,13 @@ class _BootstrapAppState extends ConsumerState<BootstrapApp> {
     if (SupabaseConfig.isLoggedIn) {
       await ref.read(cloudSyncProvider).pushAllUnsynced();
     }
+    // 雷2 埋点：登录态确立后，猫 key 重绑到该 userId（防同设备多账号串猫），
+    // 并标今日打开（留存度量唯一云端信号）+ 顺手带上 intimacy 快照（防资产归零+归因）。
+    if (SupabaseConfig.isLoggedIn) {
+      final cat = ref.read(catProvider.notifier);
+      await cat.bindUser(SupabaseConfig.currentUser!.id);
+      await ref.read(cloudSyncProvider).markActivity(intimacy: ref.read(catProvider).intimacy);
+    }
   }
 
   @override

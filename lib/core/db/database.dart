@@ -44,8 +44,14 @@ class AppDatabase extends _$AppDatabase {
       (select(localCards)..where((c) => c.id.equals(id))).getSingleOrNull();
 
   /// 今日到期卡（按 due 升序）。按天对齐：due 那一天开始就算到期。
+  ///
+  /// 修复（雷1）：原实现拿 `now`（含时分秒）做 `due <= now` 比较，导致「今天评 good →
+  /// due 明天同一时刻」的卡，在明天同一时刻之前打开时整天不出现——次日打开队列空。
+  /// 对齐 FsrsCard.isDue（fsrs.dart）：把 `now` 收敛到「今天的最后一刻」23:59:59.999，
+  /// 凡是 due 在今天（含）以前的卡都到期；明天及以后的不算。
   Future<List<LocalCard>> getDueCards(String deckId, {DateTime? now}) {
-    final end = now ?? DateTime.now();
+    final n = now ?? DateTime.now();
+    final end = DateTime(n.year, n.month, n.day, 23, 59, 59, 999);
     return (select(localCards)
           ..where((c) => c.deckId.equals(deckId) & c.due.isSmallerOrEqualValue(end))
           ..orderBy([(c) => OrderingTerm.asc(c.due)]))

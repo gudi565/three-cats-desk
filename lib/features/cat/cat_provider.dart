@@ -10,27 +10,45 @@ import 'package:shared_preferences/shared_preferences.dart';
 ///
 /// 持久化用 SharedPreferences（已有依赖），1a 不做跨设备同步——验证 hook 不需要云同步猫进度。
 /// 进度归因（决策 2026-08-12）：复习一张卡 → +1，不区分评分档位（again 也 +1）。
+///
+/// 修复（审计 P1）：cat key 按 userId 命名空间隔离——SharedPreferences 是按 App 共享的，同一台
+/// 设备上账号 A 退出、账号 B 登录，会读到 A 的 intimacy（跨账号串数据）。提供 bindUser(userId)
+/// 在登录态确立时重绑定命名空间并重载；未登录用 '_anon' 命名空间。
 class CatNotifier extends StateNotifier<CatState> {
   static const _keyIntimacy = 'cat.intimacy';
   static const _keyTodayReviewed = 'cat.today_reviewed';
   static const _keyTodayDate = 'cat.today_date';
 
+  /// 当前命名空间（userId；未登录为 '_anon'）。bindUser 会改它并重载。
+  String _ns = '_anon';
+
   CatNotifier() : super(const CatState()) {
     _load();
+  }
+
+  String _k(String base) => '$_ns.$base';
+
+  /// 登录态确立时调用：切到该 userId 的命名空间并重载猫状态。
+  /// 防同设备多账号串猫（审计 P1）。userId 为 null 时回到匿名命名空间。
+  Future<void> bindUser(String? userId) async {
+    final next = (userId == null || userId.isEmpty) ? '_anon' : userId;
+    if (next == _ns) return;
+    _ns = next;
+    await _load();
   }
 
   Future<void> _load() async {
     final prefs = await SharedPreferences.getInstance();
     state = CatState(
-      intimacy: prefs.getInt(_keyIntimacy) ?? 0,
-      todayReviewed: prefs.getInt(_keyTodayReviewed) ?? 0,
-      todayDate: prefs.getString(_keyTodayDate) ?? _todayKey(),
+      intimacy: prefs.getInt(_k(_keyIntimacy)) ?? 0,
+      todayReviewed: prefs.getInt(_k(_keyTodayReviewed)) ?? 0,
+      todayDate: prefs.getString(_k(_keyTodayDate)) ?? _todayKey(),
     );
     // 跨天复位当日计数（intimacy 不动）。
     if (state.todayDate != _todayKey()) {
       state = state.copyWith(todayReviewed: 0, todayDate: _todayKey());
-      await prefs.setInt(_keyTodayReviewed, 0);
-      await prefs.setString(_keyTodayDate, _todayKey());
+      await prefs.setInt(_k(_keyTodayReviewed), 0);
+      await prefs.setString(_k(_keyTodayDate), _todayKey());
     }
   }
 
@@ -43,8 +61,8 @@ class CatNotifier extends StateNotifier<CatState> {
     );
     state = next;
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt(_keyIntimacy, next.intimacy);
-    await prefs.setInt(_keyTodayReviewed, next.todayReviewed);
+    await prefs.setInt(_k(_keyIntimacy), next.intimacy);
+    await prefs.setInt(_k(_keyTodayReviewed), next.todayReviewed);
   }
 
   /// 当日 0 点对齐的日期 key（YYYY-MM-DD），用于跨天复位。
