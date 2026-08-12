@@ -65,6 +65,15 @@ class CatNotifier extends StateNotifier<CatState> {
     await prefs.setInt(_k(_keyTodayReviewed), next.todayReviewed);
   }
 
+  /// 暖暖完成一组专注后调：intimacy +1（统一猫魂——念念/暖暖喂同一只猫）。
+  /// 只增（完成才加；放弃不加，软化不惩罚）。todayReviewed 是"复习张数"，专注不影响它。
+  Future<void> onFocusCompleted() async {
+    final next = state.copyWith(intimacy: state.intimacy + 1);
+    state = next;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(_k(_keyIntimacy), next.intimacy);
+  }
+
   /// 当日 0 点对齐的日期 key（YYYY-MM-DD），用于跨天复位。
   String _todayKey() {
     final n = DateTime.now();

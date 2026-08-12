@@ -8,6 +8,8 @@ import 'features/cat/cat_provider.dart';
 import 'features/cat/pixel_cat.dart';
 import 'features/niannian/login_screen.dart';
 import 'features/niannian/review_screen.dart';
+import 'features/nuannuan/focus_provider.dart';
+import 'features/nuannuan/focus_screen.dart';
 
 /// 内置词书（从 legacy 念念/MemoryCat 拷贝，Phase0 §5）。启动幂等导入。
 const _bundledDecks = [
@@ -111,7 +113,7 @@ class HomeScreen extends ConsumerWidget {
 
   static const _modules = [
     ('念念', '背书 · 翻卡复习', Icons.style_outlined, Color(0xFF3E8EAA), true),
-    ('暖暖', '专注', Icons.local_cafe_outlined, Color(0xFFE0A458), false),
+    ('暖暖', '专注 · 番茄钟', Icons.local_cafe_outlined, Color(0xFFE0A458), true),
     ('稳稳', '做题', Icons.checklist_outlined, Color(0xFF5B9E6F), false),
     ('知知', '笔记', Icons.edit_note_outlined, Color(0xFFB083C9), false),
     ('渊渊', '文献', Icons.menu_book_outlined, Color(0xFF8B7E6A), false),
@@ -137,6 +139,8 @@ class HomeScreen extends ConsumerWidget {
         children: [
           _CatGreeting(mood: cat.mood, intimacy: cat.intimacy, today: cat.todayReviewed),
           const SizedBox(height: 12),
+          const _TodayOverview(), // 跨模块今日总览（暖暖仪表盘底座）
+          const SizedBox(height: 12),
           for (final m in _modules)
             Card(
               child: ListTile(
@@ -150,16 +154,20 @@ class HomeScreen extends ConsumerWidget {
                     ? const Icon(Icons.chevron_right)
                     : const Chip(label: Text('待开'), visualDensity: VisualDensity.compact),
                 enabled: m.$5,
-                onTap: m.$5
-                    ? () => Navigator.of(context).push(
-                          MaterialPageRoute(builder: (_) => const DeckListScreen()),
-                        )
-                    : null,
+                onTap: !m.$5
+                    ? null
+                    : () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => m.$1 == '暖暖'
+                                ? const FocusScreen()
+                                : const DeckListScreen(),
+                          ),
+                        ),
               ),
             ),
           const SizedBox(height: 16),
           const Center(
-            child: Text('Phase1 · 念念翻卡 + 猫养成',
+            child: Text('Phase2 · 念念翻卡 + 暖暖专注 + 猫养成',
                 style: TextStyle(color: Colors.grey, fontSize: 12)),
           ),
         ],
@@ -213,6 +221,51 @@ class _CatGreeting extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// 跨模块今日总览（暖暖仪表盘底座）：今日复习张数 + 今日专注分钟。
+/// 这是"5 模块拧成一股绳"的第一个可见证据——一个屏看到念念和暖暖的今日进度。
+class _TodayOverview extends ConsumerWidget {
+  const _TodayOverview();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final focus = ref.watch(todayFocusProvider);
+    final reviewed = ref.watch(catProvider).todayReviewed;
+    final focusMinutes = focus.value?.minutes ?? 0;
+    final focusSessions = focus.value?.sessions ?? 0;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          _Stat(icon: '📚', label: '今日复习', value: '$reviewed 张'),
+          _divider(),
+          _Stat(icon: '⏱️', label: '今日专注', value: '$focusMinutes 分钟'),
+          _divider(),
+          _Stat(icon: '🐱', label: '专注完成', value: '$focusSessions 次'),
+        ],
+      ),
+    );
+  }
+
+  Widget _divider() =>
+      Container(width: 1, height: 30, color: Colors.grey.shade300);
+
+  Widget _Stat({required String icon, required String label, required String value}) {
+    return Column(
+      children: [
+        Text(icon, style: const TextStyle(fontSize: 18)),
+        const SizedBox(height: 2),
+        Text(value, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
+        Text(label, style: TextStyle(fontSize: 11, color: Colors.grey.shade600)),
+      ],
     );
   }
 }

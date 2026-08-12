@@ -12,13 +12,23 @@ part 'database.g.dart';
 /// Web 用 WasmDatabase（sqlite3 wasm）；安卓/iOS 用 NativeDatabase 落盘。
 /// 平台连接在 connection_*.dart（条件导入，避免 dart:ffi 在 Web 静态引入）。
 /// Phase0 只验证 Web + 安卓。
-@DriftDatabase(tables: [LocalDecks, LocalCards])
+@DriftDatabase(tables: [LocalDecks, LocalCards, FocusSessions])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(openConnection());
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  /// 迁移：v1 → v2 新增 FocusSessions 表。
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+        onUpgrade: (migrator, from, to) async {
+          if (from < 2) {
+            await migrator.createTable(focusSessions);
+          }
+        },
+      );
 
   // ---- 词书 ----
 
@@ -86,4 +96,28 @@ class AppDatabase extends _$AppDatabase {
 
   Future<List<LocalCard>> getUnsyncedCards() =>
       (select(localCards)..where((c) => c.synced.equals(false))).get();
+
+  // ---- 暖暖：专注记录 ----
+
+  /// 插一条专注记录。
+  Future<void> insertFocusSession(FocusSessionsCompanion s) =>
+      into(focusSessions).insertOnConflictUpdate(s);
+
+  /// 今日专注（startedAt 在今天 00:00 之后）。
+  Future<List<FocusSession>> getTodayFocusSessions({DateTime? now}) {
+    final n = now ?? DateTime.now();
+    final dayStart = DateTime(n.year, n.month, n.day);
+    return (select(focusSessions)
+          ..where((f) => f.startedAt.isBiggerOrEqualValue(dayStart))
+          ..orderBy([(f) => OrderingTerm.asc(f.startedAt)]))
+        .get();
+  }
+
+  /// 未上云的专注记录（登录/网络恢复时重试）。
+  Future<List<FocusSession>> getUnsyncedFocusSessions() =>
+      (select(focusSessions)..where((f) => f.synced.equals(false))).get();
+
+  Future<void> markFocusSynced(String id) =>
+      (update(focusSessions)..where((f) => f.id.equals(id)))
+          .write(const FocusSessionsCompanion(synced: Value(true)));
 }

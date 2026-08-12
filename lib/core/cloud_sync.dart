@@ -153,6 +153,28 @@ class CloudSync {
     }
   }
 
+  /// 暖暖：专注记录上云（focus_sessions 表，见 phase2-supabase-focus.sql）。
+  /// 暖暖写 focus_sessions（source_app=nuannuan），不写 cards。local-first：失败静默。
+  Future<bool> pushFocusSession(FocusSession s) async {
+    if (!_canSync) return false;
+    try {
+      await SupabaseConfig.client.from('focus_sessions').upsert({
+        'id': s.id,
+        'user_id': SupabaseConfig.currentUser!.id,
+        'started_at': s.startedAt.toUtc().toIso8601String(),
+        'planned_minutes': s.plannedMinutes,
+        'actual_seconds': s.actualSeconds,
+        'completed': s.completed,
+        'source_app': s.sourceApp,
+        'updated_at': DateTime.now().toUtc().toIso8601String(),
+      });
+      await db.markFocusSynced(s.id);
+      return true;
+    } catch (_) {
+      return false; // 表未建/网络/RLS → 本地仍存，synced=false 待重试
+    }
+  }
+
   /// 当日 0 点对齐的日期 key（YYYY-MM-DD），对齐 Supabase `day` 列（date 类型）。
   String _todayKey() {
     final n = DateTime.now();

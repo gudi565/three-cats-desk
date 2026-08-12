@@ -39,3 +39,22 @@ class LocalCards extends Table {
   @override
   Set<Column> get primaryKey => {id};
 }
+
+/// 专注记录（暖暖模块，local-first 主存储）。一次专注 = 一行。
+///
+/// 暖暖只写 focus_sessions（source_app=nuannuan），不写 cards——它是"让你坐得住"，
+/// 不是"让你记住"。完成/放弃都留痕（放弃软化：completed=false，不惩罚，猫"等你回来"）。
+/// actualSeconds 是真实专注时长；completed=true 且 actualSeconds 满 plannedMinutes 才算"完成"。
+class FocusSessions extends Table {
+  TextColumn get id => text()();                       // uuid
+  DateTimeColumn get startedAt => dateTime()();        // 开始时刻（今日总览按天过滤用）
+  IntColumn get plannedMinutes => integer()();         // 计划专注分钟
+  IntColumn get actualSeconds => integer().withDefault(const Constant(0))(); // 实际专注秒
+  BoolColumn get completed => boolean().withDefault(const Constant(false))(); // 是否完成（false=放弃留痕）
+  TextColumn get sourceApp => text().withDefault(const Constant('nuannuan'))();
+  BoolColumn get synced => boolean().withDefault(const Constant(false))();    // 是否已上云
+  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
