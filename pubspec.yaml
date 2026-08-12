@@ -46,6 +46,7 @@ dependencies:
   crypto: ^3.0.3         # 词书 contentHash（复导判重）
   uuid: ^4.4.0           # 卡/词书 id（uuid，对齐 Supabase uuid 列）
   path: ^1.9.1
+  http: ^1.2.0           # 渊渊 CrossRef 真实文献检索（公共免费 API，无需 key）
 
 dev_dependencies:
   flutter_test:

@@ -12,15 +12,15 @@ part 'database.g.dart';
 /// Web 用 WasmDatabase（sqlite3 wasm）；安卓/iOS 用 NativeDatabase 落盘。
 /// 平台连接在 connection_*.dart（条件导入，避免 dart:ffi 在 Web 静态引入）。
 /// Phase0 只验证 Web + 安卓。
-@DriftDatabase(tables: [LocalDecks, LocalCards, FocusSessions, Questions, Attempts, Notes])
+@DriftDatabase(tables: [LocalDecks, LocalCards, FocusSessions, Questions, Attempts, Notes, Literature])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(openConnection());
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
-  /// 迁移：v1→v2 FocusSessions；v2→v3 Questions+Attempts；v3→v4 Notes。
+  /// 迁移：v1→v2 FocusSessions；v2→v3 Questions+Attempts；v3→v4 Notes；v4→v5 Literature。
   @override
   MigrationStrategy get migration => MigrationStrategy(
         onUpgrade: (migrator, from, to) async {
@@ -33,6 +33,9 @@ class AppDatabase extends _$AppDatabase {
           }
           if (from < 4) {
             await migrator.createTable(notes);
+          }
+          if (from < 5) {
+            await migrator.createTable(literature);
           }
         },
       );
@@ -206,4 +209,41 @@ class AppDatabase extends _$AppDatabase {
           & x.archived.equals(false)))
         .get().then((l) => l.length);
   }
+
+  // ---- 渊渊：文献 ----
+
+  /// 新建/更新文献（upsert by id）。
+  Future<void> upsertLiterature(LiteratureCompanion l) =>
+      into(literature).insertOnConflictUpdate(l);
+
+  /// 按 DOI 查（检索去重：已入库的不再重复加）。
+  Future<LiteratureData?> getLiteratureByDoi(String doi) =>
+      (select(literature)..where((l) => l.doi.equals(doi))).getSingleOrNull();
+
+  /// 文献库（新更新在前，未归档）。
+  Future<List<LiteratureData>> getLiteratureList() =>
+      (select(literature)..where((l) => l.archived.equals(false))
+            ..orderBy([(l) => OrderingTerm.desc(l.updatedAt)]))
+          .get();
+
+  Future<LiteratureData?> getLiteratureById(String id) =>
+      (select(literature)..where((l) => l.id.equals(id))).getSingleOrNull();
+
+  /// 更新我的批注/摘录。
+  Future<void> updateLiteratureNote(String id, String note) =>
+      (update(literature)..where((l) => l.id.equals(id)))
+          .write(LiteratureCompanion(note: Value(note), synced: const Value(false),
+              updatedAt: Value(DateTime.now())));
+
+  Future<void> archiveLiterature(String id) =>
+      (update(literature)..where((l) => l.id.equals(id)))
+          .write(const LiteratureCompanion(archived: Value(true)));
+
+  /// 未上云文献。
+  Future<List<LiteratureData>> getUnsyncedLiterature() =>
+      (select(literature)..where((l) => l.synced.equals(false))).get();
+
+  Future<void> markLiteratureSynced(String id) =>
+      (update(literature)..where((l) => l.id.equals(id)))
+          .write(const LiteratureCompanion(synced: Value(true)));
 }

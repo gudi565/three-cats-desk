@@ -66,6 +66,33 @@ class CloudSync {
     }
   }
 
+  /// 渊渊：文献上云（literature 表，见 phase2-supabase-literature.sql）。local-first：失败静默。
+  Future<bool> pushLiterature(LiteratureData l) async {
+    if (!_canSync) return false;
+    try {
+      await SupabaseConfig.client.from('literature').upsert({
+        'id': l.id,
+        'user_id': SupabaseConfig.currentUser!.id,
+        'title': l.title,
+        'authors': l.authors,
+        'year': l.year,
+        'venue': l.venue,
+        'doi': l.doi,
+        'url': l.url,
+        'abstract': l.abstractText,
+        'note': l.note,
+        'source': l.source,
+        'source_app': 'yuanyuan',
+        'archived_at': l.archived ? DateTime.now().toUtc().toIso8601String() : null,
+        'updated_at': DateTime.now().toUtc().toIso8601String(),
+      });
+      await db.markLiteratureSynced(l.id);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
   /// 重试所有未同步卡（登录后 / 网络恢复时调用）。
   Future<int> pushAllUnsynced() async {
     if (!_canSync) return 0;

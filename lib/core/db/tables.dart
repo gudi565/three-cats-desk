@@ -107,3 +107,27 @@ class FocusSessions extends Table {
   @override
   Set<Column> get primaryKey => {id};
 }
+
+/// 文献（渊渊模块，local-first）。真实检索（CrossRef）命中 + 手动录入。
+/// 铁律：绝不 AI 造文献——所有文献来自真实公开 API / 手动录入；AI 只做基于已入库文献的问答（留口）。
+/// 摘录/高亮 → 念念复习卡（type=highlight, source_app=yuanyuan，跨猫卡箱）。
+class Literature extends Table {
+  TextColumn get id => text()();                       // uuid
+  TextColumn get title => text()();
+  TextColumn get authors => text().withDefault(const Constant(''))();   // 作者（逗号分隔）
+  TextColumn get year => text().withDefault(const Constant(''))();      // 年份
+  TextColumn get venue => text().withDefault(const Constant(''))();     // 期刊/会议
+  TextColumn get doi => text().withDefault(const Constant(''))();       // DOI（去重键）
+  TextColumn get url => text().withDefault(const Constant(''))();       // 链接
+  TextColumn get abstractText => text().withDefault(const Constant(''))(); // 摘要（CrossRef 可空）
+  TextColumn get note => text().withDefault(const Constant(''))();      // 我的批注/摘录
+  TextColumn get source => text().withDefault(const Constant('crossref'))(); // crossref / manual
+  TextColumn get sourceApp => text().withDefault(const Constant('yuanyuan'))();
+  BoolColumn get synced => boolean().withDefault(const Constant(false))();
+  BoolColumn get archived => boolean().withDefault(const Constant(false))();
+  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}

@@ -3235,6 +3235,823 @@ class NotesCompanion extends UpdateCompanion<Note> {
   }
 }
 
+class $LiteratureTable extends Literature
+    with TableInfo<$LiteratureTable, LiteratureData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $LiteratureTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _authorsMeta = const VerificationMeta(
+    'authors',
+  );
+  @override
+  late final GeneratedColumn<String> authors = GeneratedColumn<String>(
+    'authors',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _yearMeta = const VerificationMeta('year');
+  @override
+  late final GeneratedColumn<String> year = GeneratedColumn<String>(
+    'year',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _venueMeta = const VerificationMeta('venue');
+  @override
+  late final GeneratedColumn<String> venue = GeneratedColumn<String>(
+    'venue',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _doiMeta = const VerificationMeta('doi');
+  @override
+  late final GeneratedColumn<String> doi = GeneratedColumn<String>(
+    'doi',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _urlMeta = const VerificationMeta('url');
+  @override
+  late final GeneratedColumn<String> url = GeneratedColumn<String>(
+    'url',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _abstractTextMeta = const VerificationMeta(
+    'abstractText',
+  );
+  @override
+  late final GeneratedColumn<String> abstractText = GeneratedColumn<String>(
+    'abstract_text',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _noteMeta = const VerificationMeta('note');
+  @override
+  late final GeneratedColumn<String> note = GeneratedColumn<String>(
+    'note',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _sourceMeta = const VerificationMeta('source');
+  @override
+  late final GeneratedColumn<String> source = GeneratedColumn<String>(
+    'source',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('crossref'),
+  );
+  static const VerificationMeta _sourceAppMeta = const VerificationMeta(
+    'sourceApp',
+  );
+  @override
+  late final GeneratedColumn<String> sourceApp = GeneratedColumn<String>(
+    'source_app',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('yuanyuan'),
+  );
+  static const VerificationMeta _syncedMeta = const VerificationMeta('synced');
+  @override
+  late final GeneratedColumn<bool> synced = GeneratedColumn<bool>(
+    'synced',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("synced" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _archivedMeta = const VerificationMeta(
+    'archived',
+  );
+  @override
+  late final GeneratedColumn<bool> archived = GeneratedColumn<bool>(
+    'archived',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("archived" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    title,
+    authors,
+    year,
+    venue,
+    doi,
+    url,
+    abstractText,
+    note,
+    source,
+    sourceApp,
+    synced,
+    archived,
+    updatedAt,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'literature';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<LiteratureData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('authors')) {
+      context.handle(
+        _authorsMeta,
+        authors.isAcceptableOrUnknown(data['authors']!, _authorsMeta),
+      );
+    }
+    if (data.containsKey('year')) {
+      context.handle(
+        _yearMeta,
+        year.isAcceptableOrUnknown(data['year']!, _yearMeta),
+      );
+    }
+    if (data.containsKey('venue')) {
+      context.handle(
+        _venueMeta,
+        venue.isAcceptableOrUnknown(data['venue']!, _venueMeta),
+      );
+    }
+    if (data.containsKey('doi')) {
+      context.handle(
+        _doiMeta,
+        doi.isAcceptableOrUnknown(data['doi']!, _doiMeta),
+      );
+    }
+    if (data.containsKey('url')) {
+      context.handle(
+        _urlMeta,
+        url.isAcceptableOrUnknown(data['url']!, _urlMeta),
+      );
+    }
+    if (data.containsKey('abstract_text')) {
+      context.handle(
+        _abstractTextMeta,
+        abstractText.isAcceptableOrUnknown(
+          data['abstract_text']!,
+          _abstractTextMeta,
+        ),
+      );
+    }
+    if (data.containsKey('note')) {
+      context.handle(
+        _noteMeta,
+        note.isAcceptableOrUnknown(data['note']!, _noteMeta),
+      );
+    }
+    if (data.containsKey('source')) {
+      context.handle(
+        _sourceMeta,
+        source.isAcceptableOrUnknown(data['source']!, _sourceMeta),
+      );
+    }
+    if (data.containsKey('source_app')) {
+      context.handle(
+        _sourceAppMeta,
+        sourceApp.isAcceptableOrUnknown(data['source_app']!, _sourceAppMeta),
+      );
+    }
+    if (data.containsKey('synced')) {
+      context.handle(
+        _syncedMeta,
+        synced.isAcceptableOrUnknown(data['synced']!, _syncedMeta),
+      );
+    }
+    if (data.containsKey('archived')) {
+      context.handle(
+        _archivedMeta,
+        archived.isAcceptableOrUnknown(data['archived']!, _archivedMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  LiteratureData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return LiteratureData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      authors: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}authors'],
+      )!,
+      year: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}year'],
+      )!,
+      venue: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}venue'],
+      )!,
+      doi: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}doi'],
+      )!,
+      url: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}url'],
+      )!,
+      abstractText: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}abstract_text'],
+      )!,
+      note: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}note'],
+      )!,
+      source: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source'],
+      )!,
+      sourceApp: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source_app'],
+      )!,
+      synced: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}synced'],
+      )!,
+      archived: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}archived'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $LiteratureTable createAlias(String alias) {
+    return $LiteratureTable(attachedDatabase, alias);
+  }
+}
+
+class LiteratureData extends DataClass implements Insertable<LiteratureData> {
+  final String id;
+  final String title;
+  final String authors;
+  final String year;
+  final String venue;
+  final String doi;
+  final String url;
+  final String abstractText;
+  final String note;
+  final String source;
+  final String sourceApp;
+  final bool synced;
+  final bool archived;
+  final DateTime updatedAt;
+  final DateTime createdAt;
+  const LiteratureData({
+    required this.id,
+    required this.title,
+    required this.authors,
+    required this.year,
+    required this.venue,
+    required this.doi,
+    required this.url,
+    required this.abstractText,
+    required this.note,
+    required this.source,
+    required this.sourceApp,
+    required this.synced,
+    required this.archived,
+    required this.updatedAt,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['title'] = Variable<String>(title);
+    map['authors'] = Variable<String>(authors);
+    map['year'] = Variable<String>(year);
+    map['venue'] = Variable<String>(venue);
+    map['doi'] = Variable<String>(doi);
+    map['url'] = Variable<String>(url);
+    map['abstract_text'] = Variable<String>(abstractText);
+    map['note'] = Variable<String>(note);
+    map['source'] = Variable<String>(source);
+    map['source_app'] = Variable<String>(sourceApp);
+    map['synced'] = Variable<bool>(synced);
+    map['archived'] = Variable<bool>(archived);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  LiteratureCompanion toCompanion(bool nullToAbsent) {
+    return LiteratureCompanion(
+      id: Value(id),
+      title: Value(title),
+      authors: Value(authors),
+      year: Value(year),
+      venue: Value(venue),
+      doi: Value(doi),
+      url: Value(url),
+      abstractText: Value(abstractText),
+      note: Value(note),
+      source: Value(source),
+      sourceApp: Value(sourceApp),
+      synced: Value(synced),
+      archived: Value(archived),
+      updatedAt: Value(updatedAt),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory LiteratureData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return LiteratureData(
+      id: serializer.fromJson<String>(json['id']),
+      title: serializer.fromJson<String>(json['title']),
+      authors: serializer.fromJson<String>(json['authors']),
+      year: serializer.fromJson<String>(json['year']),
+      venue: serializer.fromJson<String>(json['venue']),
+      doi: serializer.fromJson<String>(json['doi']),
+      url: serializer.fromJson<String>(json['url']),
+      abstractText: serializer.fromJson<String>(json['abstractText']),
+      note: serializer.fromJson<String>(json['note']),
+      source: serializer.fromJson<String>(json['source']),
+      sourceApp: serializer.fromJson<String>(json['sourceApp']),
+      synced: serializer.fromJson<bool>(json['synced']),
+      archived: serializer.fromJson<bool>(json['archived']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'title': serializer.toJson<String>(title),
+      'authors': serializer.toJson<String>(authors),
+      'year': serializer.toJson<String>(year),
+      'venue': serializer.toJson<String>(venue),
+      'doi': serializer.toJson<String>(doi),
+      'url': serializer.toJson<String>(url),
+      'abstractText': serializer.toJson<String>(abstractText),
+      'note': serializer.toJson<String>(note),
+      'source': serializer.toJson<String>(source),
+      'sourceApp': serializer.toJson<String>(sourceApp),
+      'synced': serializer.toJson<bool>(synced),
+      'archived': serializer.toJson<bool>(archived),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  LiteratureData copyWith({
+    String? id,
+    String? title,
+    String? authors,
+    String? year,
+    String? venue,
+    String? doi,
+    String? url,
+    String? abstractText,
+    String? note,
+    String? source,
+    String? sourceApp,
+    bool? synced,
+    bool? archived,
+    DateTime? updatedAt,
+    DateTime? createdAt,
+  }) => LiteratureData(
+    id: id ?? this.id,
+    title: title ?? this.title,
+    authors: authors ?? this.authors,
+    year: year ?? this.year,
+    venue: venue ?? this.venue,
+    doi: doi ?? this.doi,
+    url: url ?? this.url,
+    abstractText: abstractText ?? this.abstractText,
+    note: note ?? this.note,
+    source: source ?? this.source,
+    sourceApp: sourceApp ?? this.sourceApp,
+    synced: synced ?? this.synced,
+    archived: archived ?? this.archived,
+    updatedAt: updatedAt ?? this.updatedAt,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  LiteratureData copyWithCompanion(LiteratureCompanion data) {
+    return LiteratureData(
+      id: data.id.present ? data.id.value : this.id,
+      title: data.title.present ? data.title.value : this.title,
+      authors: data.authors.present ? data.authors.value : this.authors,
+      year: data.year.present ? data.year.value : this.year,
+      venue: data.venue.present ? data.venue.value : this.venue,
+      doi: data.doi.present ? data.doi.value : this.doi,
+      url: data.url.present ? data.url.value : this.url,
+      abstractText: data.abstractText.present
+          ? data.abstractText.value
+          : this.abstractText,
+      note: data.note.present ? data.note.value : this.note,
+      source: data.source.present ? data.source.value : this.source,
+      sourceApp: data.sourceApp.present ? data.sourceApp.value : this.sourceApp,
+      synced: data.synced.present ? data.synced.value : this.synced,
+      archived: data.archived.present ? data.archived.value : this.archived,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LiteratureData(')
+          ..write('id: $id, ')
+          ..write('title: $title, ')
+          ..write('authors: $authors, ')
+          ..write('year: $year, ')
+          ..write('venue: $venue, ')
+          ..write('doi: $doi, ')
+          ..write('url: $url, ')
+          ..write('abstractText: $abstractText, ')
+          ..write('note: $note, ')
+          ..write('source: $source, ')
+          ..write('sourceApp: $sourceApp, ')
+          ..write('synced: $synced, ')
+          ..write('archived: $archived, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    title,
+    authors,
+    year,
+    venue,
+    doi,
+    url,
+    abstractText,
+    note,
+    source,
+    sourceApp,
+    synced,
+    archived,
+    updatedAt,
+    createdAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is LiteratureData &&
+          other.id == this.id &&
+          other.title == this.title &&
+          other.authors == this.authors &&
+          other.year == this.year &&
+          other.venue == this.venue &&
+          other.doi == this.doi &&
+          other.url == this.url &&
+          other.abstractText == this.abstractText &&
+          other.note == this.note &&
+          other.source == this.source &&
+          other.sourceApp == this.sourceApp &&
+          other.synced == this.synced &&
+          other.archived == this.archived &&
+          other.updatedAt == this.updatedAt &&
+          other.createdAt == this.createdAt);
+}
+
+class LiteratureCompanion extends UpdateCompanion<LiteratureData> {
+  final Value<String> id;
+  final Value<String> title;
+  final Value<String> authors;
+  final Value<String> year;
+  final Value<String> venue;
+  final Value<String> doi;
+  final Value<String> url;
+  final Value<String> abstractText;
+  final Value<String> note;
+  final Value<String> source;
+  final Value<String> sourceApp;
+  final Value<bool> synced;
+  final Value<bool> archived;
+  final Value<DateTime> updatedAt;
+  final Value<DateTime> createdAt;
+  final Value<int> rowid;
+  const LiteratureCompanion({
+    this.id = const Value.absent(),
+    this.title = const Value.absent(),
+    this.authors = const Value.absent(),
+    this.year = const Value.absent(),
+    this.venue = const Value.absent(),
+    this.doi = const Value.absent(),
+    this.url = const Value.absent(),
+    this.abstractText = const Value.absent(),
+    this.note = const Value.absent(),
+    this.source = const Value.absent(),
+    this.sourceApp = const Value.absent(),
+    this.synced = const Value.absent(),
+    this.archived = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  LiteratureCompanion.insert({
+    required String id,
+    required String title,
+    this.authors = const Value.absent(),
+    this.year = const Value.absent(),
+    this.venue = const Value.absent(),
+    this.doi = const Value.absent(),
+    this.url = const Value.absent(),
+    this.abstractText = const Value.absent(),
+    this.note = const Value.absent(),
+    this.source = const Value.absent(),
+    this.sourceApp = const Value.absent(),
+    this.synced = const Value.absent(),
+    this.archived = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       title = Value(title);
+  static Insertable<LiteratureData> custom({
+    Expression<String>? id,
+    Expression<String>? title,
+    Expression<String>? authors,
+    Expression<String>? year,
+    Expression<String>? venue,
+    Expression<String>? doi,
+    Expression<String>? url,
+    Expression<String>? abstractText,
+    Expression<String>? note,
+    Expression<String>? source,
+    Expression<String>? sourceApp,
+    Expression<bool>? synced,
+    Expression<bool>? archived,
+    Expression<DateTime>? updatedAt,
+    Expression<DateTime>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (title != null) 'title': title,
+      if (authors != null) 'authors': authors,
+      if (year != null) 'year': year,
+      if (venue != null) 'venue': venue,
+      if (doi != null) 'doi': doi,
+      if (url != null) 'url': url,
+      if (abstractText != null) 'abstract_text': abstractText,
+      if (note != null) 'note': note,
+      if (source != null) 'source': source,
+      if (sourceApp != null) 'source_app': sourceApp,
+      if (synced != null) 'synced': synced,
+      if (archived != null) 'archived': archived,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  LiteratureCompanion copyWith({
+    Value<String>? id,
+    Value<String>? title,
+    Value<String>? authors,
+    Value<String>? year,
+    Value<String>? venue,
+    Value<String>? doi,
+    Value<String>? url,
+    Value<String>? abstractText,
+    Value<String>? note,
+    Value<String>? source,
+    Value<String>? sourceApp,
+    Value<bool>? synced,
+    Value<bool>? archived,
+    Value<DateTime>? updatedAt,
+    Value<DateTime>? createdAt,
+    Value<int>? rowid,
+  }) {
+    return LiteratureCompanion(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      authors: authors ?? this.authors,
+      year: year ?? this.year,
+      venue: venue ?? this.venue,
+      doi: doi ?? this.doi,
+      url: url ?? this.url,
+      abstractText: abstractText ?? this.abstractText,
+      note: note ?? this.note,
+      source: source ?? this.source,
+      sourceApp: sourceApp ?? this.sourceApp,
+      synced: synced ?? this.synced,
+      archived: archived ?? this.archived,
+      updatedAt: updatedAt ?? this.updatedAt,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (authors.present) {
+      map['authors'] = Variable<String>(authors.value);
+    }
+    if (year.present) {
+      map['year'] = Variable<String>(year.value);
+    }
+    if (venue.present) {
+      map['venue'] = Variable<String>(venue.value);
+    }
+    if (doi.present) {
+      map['doi'] = Variable<String>(doi.value);
+    }
+    if (url.present) {
+      map['url'] = Variable<String>(url.value);
+    }
+    if (abstractText.present) {
+      map['abstract_text'] = Variable<String>(abstractText.value);
+    }
+    if (note.present) {
+      map['note'] = Variable<String>(note.value);
+    }
+    if (source.present) {
+      map['source'] = Variable<String>(source.value);
+    }
+    if (sourceApp.present) {
+      map['source_app'] = Variable<String>(sourceApp.value);
+    }
+    if (synced.present) {
+      map['synced'] = Variable<bool>(synced.value);
+    }
+    if (archived.present) {
+      map['archived'] = Variable<bool>(archived.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LiteratureCompanion(')
+          ..write('id: $id, ')
+          ..write('title: $title, ')
+          ..write('authors: $authors, ')
+          ..write('year: $year, ')
+          ..write('venue: $venue, ')
+          ..write('doi: $doi, ')
+          ..write('url: $url, ')
+          ..write('abstractText: $abstractText, ')
+          ..write('note: $note, ')
+          ..write('source: $source, ')
+          ..write('sourceApp: $sourceApp, ')
+          ..write('synced: $synced, ')
+          ..write('archived: $archived, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -3244,6 +4061,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $QuestionsTable questions = $QuestionsTable(this);
   late final $AttemptsTable attempts = $AttemptsTable(this);
   late final $NotesTable notes = $NotesTable(this);
+  late final $LiteratureTable literature = $LiteratureTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -3255,6 +4073,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     questions,
     attempts,
     notes,
+    literature,
   ];
 }
 
@@ -4869,6 +5688,398 @@ typedef $$NotesTableProcessedTableManager =
       Note,
       PrefetchHooks Function()
     >;
+typedef $$LiteratureTableCreateCompanionBuilder =
+    LiteratureCompanion Function({
+      required String id,
+      required String title,
+      Value<String> authors,
+      Value<String> year,
+      Value<String> venue,
+      Value<String> doi,
+      Value<String> url,
+      Value<String> abstractText,
+      Value<String> note,
+      Value<String> source,
+      Value<String> sourceApp,
+      Value<bool> synced,
+      Value<bool> archived,
+      Value<DateTime> updatedAt,
+      Value<DateTime> createdAt,
+      Value<int> rowid,
+    });
+typedef $$LiteratureTableUpdateCompanionBuilder =
+    LiteratureCompanion Function({
+      Value<String> id,
+      Value<String> title,
+      Value<String> authors,
+      Value<String> year,
+      Value<String> venue,
+      Value<String> doi,
+      Value<String> url,
+      Value<String> abstractText,
+      Value<String> note,
+      Value<String> source,
+      Value<String> sourceApp,
+      Value<bool> synced,
+      Value<bool> archived,
+      Value<DateTime> updatedAt,
+      Value<DateTime> createdAt,
+      Value<int> rowid,
+    });
+
+class $$LiteratureTableFilterComposer
+    extends Composer<_$AppDatabase, $LiteratureTable> {
+  $$LiteratureTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get authors => $composableBuilder(
+    column: $table.authors,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get year => $composableBuilder(
+    column: $table.year,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get venue => $composableBuilder(
+    column: $table.venue,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get doi => $composableBuilder(
+    column: $table.doi,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get url => $composableBuilder(
+    column: $table.url,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get abstractText => $composableBuilder(
+    column: $table.abstractText,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sourceApp => $composableBuilder(
+    column: $table.sourceApp,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get synced => $composableBuilder(
+    column: $table.synced,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get archived => $composableBuilder(
+    column: $table.archived,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$LiteratureTableOrderingComposer
+    extends Composer<_$AppDatabase, $LiteratureTable> {
+  $$LiteratureTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get authors => $composableBuilder(
+    column: $table.authors,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get year => $composableBuilder(
+    column: $table.year,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get venue => $composableBuilder(
+    column: $table.venue,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get doi => $composableBuilder(
+    column: $table.doi,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get url => $composableBuilder(
+    column: $table.url,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get abstractText => $composableBuilder(
+    column: $table.abstractText,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sourceApp => $composableBuilder(
+    column: $table.sourceApp,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get synced => $composableBuilder(
+    column: $table.synced,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get archived => $composableBuilder(
+    column: $table.archived,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$LiteratureTableAnnotationComposer
+    extends Composer<_$AppDatabase, $LiteratureTable> {
+  $$LiteratureTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get authors =>
+      $composableBuilder(column: $table.authors, builder: (column) => column);
+
+  GeneratedColumn<String> get year =>
+      $composableBuilder(column: $table.year, builder: (column) => column);
+
+  GeneratedColumn<String> get venue =>
+      $composableBuilder(column: $table.venue, builder: (column) => column);
+
+  GeneratedColumn<String> get doi =>
+      $composableBuilder(column: $table.doi, builder: (column) => column);
+
+  GeneratedColumn<String> get url =>
+      $composableBuilder(column: $table.url, builder: (column) => column);
+
+  GeneratedColumn<String> get abstractText => $composableBuilder(
+    column: $table.abstractText,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get note =>
+      $composableBuilder(column: $table.note, builder: (column) => column);
+
+  GeneratedColumn<String> get source =>
+      $composableBuilder(column: $table.source, builder: (column) => column);
+
+  GeneratedColumn<String> get sourceApp =>
+      $composableBuilder(column: $table.sourceApp, builder: (column) => column);
+
+  GeneratedColumn<bool> get synced =>
+      $composableBuilder(column: $table.synced, builder: (column) => column);
+
+  GeneratedColumn<bool> get archived =>
+      $composableBuilder(column: $table.archived, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$LiteratureTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $LiteratureTable,
+          LiteratureData,
+          $$LiteratureTableFilterComposer,
+          $$LiteratureTableOrderingComposer,
+          $$LiteratureTableAnnotationComposer,
+          $$LiteratureTableCreateCompanionBuilder,
+          $$LiteratureTableUpdateCompanionBuilder,
+          (
+            LiteratureData,
+            BaseReferences<_$AppDatabase, $LiteratureTable, LiteratureData>,
+          ),
+          LiteratureData,
+          PrefetchHooks Function()
+        > {
+  $$LiteratureTableTableManager(_$AppDatabase db, $LiteratureTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$LiteratureTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$LiteratureTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$LiteratureTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String> authors = const Value.absent(),
+                Value<String> year = const Value.absent(),
+                Value<String> venue = const Value.absent(),
+                Value<String> doi = const Value.absent(),
+                Value<String> url = const Value.absent(),
+                Value<String> abstractText = const Value.absent(),
+                Value<String> note = const Value.absent(),
+                Value<String> source = const Value.absent(),
+                Value<String> sourceApp = const Value.absent(),
+                Value<bool> synced = const Value.absent(),
+                Value<bool> archived = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => LiteratureCompanion(
+                id: id,
+                title: title,
+                authors: authors,
+                year: year,
+                venue: venue,
+                doi: doi,
+                url: url,
+                abstractText: abstractText,
+                note: note,
+                source: source,
+                sourceApp: sourceApp,
+                synced: synced,
+                archived: archived,
+                updatedAt: updatedAt,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String title,
+                Value<String> authors = const Value.absent(),
+                Value<String> year = const Value.absent(),
+                Value<String> venue = const Value.absent(),
+                Value<String> doi = const Value.absent(),
+                Value<String> url = const Value.absent(),
+                Value<String> abstractText = const Value.absent(),
+                Value<String> note = const Value.absent(),
+                Value<String> source = const Value.absent(),
+                Value<String> sourceApp = const Value.absent(),
+                Value<bool> synced = const Value.absent(),
+                Value<bool> archived = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => LiteratureCompanion.insert(
+                id: id,
+                title: title,
+                authors: authors,
+                year: year,
+                venue: venue,
+                doi: doi,
+                url: url,
+                abstractText: abstractText,
+                note: note,
+                source: source,
+                sourceApp: sourceApp,
+                synced: synced,
+                archived: archived,
+                updatedAt: updatedAt,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$LiteratureTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $LiteratureTable,
+      LiteratureData,
+      $$LiteratureTableFilterComposer,
+      $$LiteratureTableOrderingComposer,
+      $$LiteratureTableAnnotationComposer,
+      $$LiteratureTableCreateCompanionBuilder,
+      $$LiteratureTableUpdateCompanionBuilder,
+      (
+        LiteratureData,
+        BaseReferences<_$AppDatabase, $LiteratureTable, LiteratureData>,
+      ),
+      LiteratureData,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -4885,4 +6096,6 @@ class $AppDatabaseManager {
       $$AttemptsTableTableManager(_db, _db.attempts);
   $$NotesTableTableManager get notes =>
       $$NotesTableTableManager(_db, _db.notes);
+  $$LiteratureTableTableManager get literature =>
+      $$LiteratureTableTableManager(_db, _db.literature);
 }
