@@ -1656,12 +1656,1048 @@ class FocusSessionsCompanion extends UpdateCompanion<FocusSession> {
   }
 }
 
+class $QuestionsTable extends Questions
+    with TableInfo<$QuestionsTable, Question> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $QuestionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _stemMeta = const VerificationMeta('stem');
+  @override
+  late final GeneratedColumn<String> stem = GeneratedColumn<String>(
+    'stem',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _optionsJsonMeta = const VerificationMeta(
+    'optionsJson',
+  );
+  @override
+  late final GeneratedColumn<String> optionsJson = GeneratedColumn<String>(
+    'options_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _answerIndexMeta = const VerificationMeta(
+    'answerIndex',
+  );
+  @override
+  late final GeneratedColumn<int> answerIndex = GeneratedColumn<int>(
+    'answer_index',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _explanationMeta = const VerificationMeta(
+    'explanation',
+  );
+  @override
+  late final GeneratedColumn<String> explanation = GeneratedColumn<String>(
+    'explanation',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _subjectMeta = const VerificationMeta(
+    'subject',
+  );
+  @override
+  late final GeneratedColumn<String> subject = GeneratedColumn<String>(
+    'subject',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('政治'),
+  );
+  static const VerificationMeta _sourceMeta = const VerificationMeta('source');
+  @override
+  late final GeneratedColumn<String> source = GeneratedColumn<String>(
+    'source',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _sourceAppMeta = const VerificationMeta(
+    'sourceApp',
+  );
+  @override
+  late final GeneratedColumn<String> sourceApp = GeneratedColumn<String>(
+    'source_app',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('wenwen'),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    stem,
+    optionsJson,
+    answerIndex,
+    explanation,
+    subject,
+    source,
+    sourceApp,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'questions';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Question> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('stem')) {
+      context.handle(
+        _stemMeta,
+        stem.isAcceptableOrUnknown(data['stem']!, _stemMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_stemMeta);
+    }
+    if (data.containsKey('options_json')) {
+      context.handle(
+        _optionsJsonMeta,
+        optionsJson.isAcceptableOrUnknown(
+          data['options_json']!,
+          _optionsJsonMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_optionsJsonMeta);
+    }
+    if (data.containsKey('answer_index')) {
+      context.handle(
+        _answerIndexMeta,
+        answerIndex.isAcceptableOrUnknown(
+          data['answer_index']!,
+          _answerIndexMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_answerIndexMeta);
+    }
+    if (data.containsKey('explanation')) {
+      context.handle(
+        _explanationMeta,
+        explanation.isAcceptableOrUnknown(
+          data['explanation']!,
+          _explanationMeta,
+        ),
+      );
+    }
+    if (data.containsKey('subject')) {
+      context.handle(
+        _subjectMeta,
+        subject.isAcceptableOrUnknown(data['subject']!, _subjectMeta),
+      );
+    }
+    if (data.containsKey('source')) {
+      context.handle(
+        _sourceMeta,
+        source.isAcceptableOrUnknown(data['source']!, _sourceMeta),
+      );
+    }
+    if (data.containsKey('source_app')) {
+      context.handle(
+        _sourceAppMeta,
+        sourceApp.isAcceptableOrUnknown(data['source_app']!, _sourceAppMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Question map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Question(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      stem: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}stem'],
+      )!,
+      optionsJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}options_json'],
+      )!,
+      answerIndex: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}answer_index'],
+      )!,
+      explanation: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}explanation'],
+      ),
+      subject: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}subject'],
+      )!,
+      source: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source'],
+      )!,
+      sourceApp: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source_app'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $QuestionsTable createAlias(String alias) {
+    return $QuestionsTable(attachedDatabase, alias);
+  }
+}
+
+class Question extends DataClass implements Insertable<Question> {
+  final String id;
+  final String stem;
+  final String optionsJson;
+  final int answerIndex;
+  final String? explanation;
+  final String subject;
+  final String source;
+  final String sourceApp;
+  final DateTime createdAt;
+  const Question({
+    required this.id,
+    required this.stem,
+    required this.optionsJson,
+    required this.answerIndex,
+    this.explanation,
+    required this.subject,
+    required this.source,
+    required this.sourceApp,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['stem'] = Variable<String>(stem);
+    map['options_json'] = Variable<String>(optionsJson);
+    map['answer_index'] = Variable<int>(answerIndex);
+    if (!nullToAbsent || explanation != null) {
+      map['explanation'] = Variable<String>(explanation);
+    }
+    map['subject'] = Variable<String>(subject);
+    map['source'] = Variable<String>(source);
+    map['source_app'] = Variable<String>(sourceApp);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  QuestionsCompanion toCompanion(bool nullToAbsent) {
+    return QuestionsCompanion(
+      id: Value(id),
+      stem: Value(stem),
+      optionsJson: Value(optionsJson),
+      answerIndex: Value(answerIndex),
+      explanation: explanation == null && nullToAbsent
+          ? const Value.absent()
+          : Value(explanation),
+      subject: Value(subject),
+      source: Value(source),
+      sourceApp: Value(sourceApp),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory Question.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Question(
+      id: serializer.fromJson<String>(json['id']),
+      stem: serializer.fromJson<String>(json['stem']),
+      optionsJson: serializer.fromJson<String>(json['optionsJson']),
+      answerIndex: serializer.fromJson<int>(json['answerIndex']),
+      explanation: serializer.fromJson<String?>(json['explanation']),
+      subject: serializer.fromJson<String>(json['subject']),
+      source: serializer.fromJson<String>(json['source']),
+      sourceApp: serializer.fromJson<String>(json['sourceApp']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'stem': serializer.toJson<String>(stem),
+      'optionsJson': serializer.toJson<String>(optionsJson),
+      'answerIndex': serializer.toJson<int>(answerIndex),
+      'explanation': serializer.toJson<String?>(explanation),
+      'subject': serializer.toJson<String>(subject),
+      'source': serializer.toJson<String>(source),
+      'sourceApp': serializer.toJson<String>(sourceApp),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  Question copyWith({
+    String? id,
+    String? stem,
+    String? optionsJson,
+    int? answerIndex,
+    Value<String?> explanation = const Value.absent(),
+    String? subject,
+    String? source,
+    String? sourceApp,
+    DateTime? createdAt,
+  }) => Question(
+    id: id ?? this.id,
+    stem: stem ?? this.stem,
+    optionsJson: optionsJson ?? this.optionsJson,
+    answerIndex: answerIndex ?? this.answerIndex,
+    explanation: explanation.present ? explanation.value : this.explanation,
+    subject: subject ?? this.subject,
+    source: source ?? this.source,
+    sourceApp: sourceApp ?? this.sourceApp,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  Question copyWithCompanion(QuestionsCompanion data) {
+    return Question(
+      id: data.id.present ? data.id.value : this.id,
+      stem: data.stem.present ? data.stem.value : this.stem,
+      optionsJson: data.optionsJson.present
+          ? data.optionsJson.value
+          : this.optionsJson,
+      answerIndex: data.answerIndex.present
+          ? data.answerIndex.value
+          : this.answerIndex,
+      explanation: data.explanation.present
+          ? data.explanation.value
+          : this.explanation,
+      subject: data.subject.present ? data.subject.value : this.subject,
+      source: data.source.present ? data.source.value : this.source,
+      sourceApp: data.sourceApp.present ? data.sourceApp.value : this.sourceApp,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Question(')
+          ..write('id: $id, ')
+          ..write('stem: $stem, ')
+          ..write('optionsJson: $optionsJson, ')
+          ..write('answerIndex: $answerIndex, ')
+          ..write('explanation: $explanation, ')
+          ..write('subject: $subject, ')
+          ..write('source: $source, ')
+          ..write('sourceApp: $sourceApp, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    stem,
+    optionsJson,
+    answerIndex,
+    explanation,
+    subject,
+    source,
+    sourceApp,
+    createdAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Question &&
+          other.id == this.id &&
+          other.stem == this.stem &&
+          other.optionsJson == this.optionsJson &&
+          other.answerIndex == this.answerIndex &&
+          other.explanation == this.explanation &&
+          other.subject == this.subject &&
+          other.source == this.source &&
+          other.sourceApp == this.sourceApp &&
+          other.createdAt == this.createdAt);
+}
+
+class QuestionsCompanion extends UpdateCompanion<Question> {
+  final Value<String> id;
+  final Value<String> stem;
+  final Value<String> optionsJson;
+  final Value<int> answerIndex;
+  final Value<String?> explanation;
+  final Value<String> subject;
+  final Value<String> source;
+  final Value<String> sourceApp;
+  final Value<DateTime> createdAt;
+  final Value<int> rowid;
+  const QuestionsCompanion({
+    this.id = const Value.absent(),
+    this.stem = const Value.absent(),
+    this.optionsJson = const Value.absent(),
+    this.answerIndex = const Value.absent(),
+    this.explanation = const Value.absent(),
+    this.subject = const Value.absent(),
+    this.source = const Value.absent(),
+    this.sourceApp = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  QuestionsCompanion.insert({
+    required String id,
+    required String stem,
+    required String optionsJson,
+    required int answerIndex,
+    this.explanation = const Value.absent(),
+    this.subject = const Value.absent(),
+    this.source = const Value.absent(),
+    this.sourceApp = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       stem = Value(stem),
+       optionsJson = Value(optionsJson),
+       answerIndex = Value(answerIndex);
+  static Insertable<Question> custom({
+    Expression<String>? id,
+    Expression<String>? stem,
+    Expression<String>? optionsJson,
+    Expression<int>? answerIndex,
+    Expression<String>? explanation,
+    Expression<String>? subject,
+    Expression<String>? source,
+    Expression<String>? sourceApp,
+    Expression<DateTime>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (stem != null) 'stem': stem,
+      if (optionsJson != null) 'options_json': optionsJson,
+      if (answerIndex != null) 'answer_index': answerIndex,
+      if (explanation != null) 'explanation': explanation,
+      if (subject != null) 'subject': subject,
+      if (source != null) 'source': source,
+      if (sourceApp != null) 'source_app': sourceApp,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  QuestionsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? stem,
+    Value<String>? optionsJson,
+    Value<int>? answerIndex,
+    Value<String?>? explanation,
+    Value<String>? subject,
+    Value<String>? source,
+    Value<String>? sourceApp,
+    Value<DateTime>? createdAt,
+    Value<int>? rowid,
+  }) {
+    return QuestionsCompanion(
+      id: id ?? this.id,
+      stem: stem ?? this.stem,
+      optionsJson: optionsJson ?? this.optionsJson,
+      answerIndex: answerIndex ?? this.answerIndex,
+      explanation: explanation ?? this.explanation,
+      subject: subject ?? this.subject,
+      source: source ?? this.source,
+      sourceApp: sourceApp ?? this.sourceApp,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (stem.present) {
+      map['stem'] = Variable<String>(stem.value);
+    }
+    if (optionsJson.present) {
+      map['options_json'] = Variable<String>(optionsJson.value);
+    }
+    if (answerIndex.present) {
+      map['answer_index'] = Variable<int>(answerIndex.value);
+    }
+    if (explanation.present) {
+      map['explanation'] = Variable<String>(explanation.value);
+    }
+    if (subject.present) {
+      map['subject'] = Variable<String>(subject.value);
+    }
+    if (source.present) {
+      map['source'] = Variable<String>(source.value);
+    }
+    if (sourceApp.present) {
+      map['source_app'] = Variable<String>(sourceApp.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('QuestionsCompanion(')
+          ..write('id: $id, ')
+          ..write('stem: $stem, ')
+          ..write('optionsJson: $optionsJson, ')
+          ..write('answerIndex: $answerIndex, ')
+          ..write('explanation: $explanation, ')
+          ..write('subject: $subject, ')
+          ..write('source: $source, ')
+          ..write('sourceApp: $sourceApp, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $AttemptsTable extends Attempts with TableInfo<$AttemptsTable, Attempt> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AttemptsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _questionIdMeta = const VerificationMeta(
+    'questionId',
+  );
+  @override
+  late final GeneratedColumn<String> questionId = GeneratedColumn<String>(
+    'question_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _selectedIndexMeta = const VerificationMeta(
+    'selectedIndex',
+  );
+  @override
+  late final GeneratedColumn<int> selectedIndex = GeneratedColumn<int>(
+    'selected_index',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _isCorrectMeta = const VerificationMeta(
+    'isCorrect',
+  );
+  @override
+  late final GeneratedColumn<bool> isCorrect = GeneratedColumn<bool>(
+    'is_correct',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_correct" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _answeredAtMeta = const VerificationMeta(
+    'answeredAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> answeredAt = GeneratedColumn<DateTime>(
+    'answered_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _sourceAppMeta = const VerificationMeta(
+    'sourceApp',
+  );
+  @override
+  late final GeneratedColumn<String> sourceApp = GeneratedColumn<String>(
+    'source_app',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('wenwen'),
+  );
+  static const VerificationMeta _syncedMeta = const VerificationMeta('synced');
+  @override
+  late final GeneratedColumn<bool> synced = GeneratedColumn<bool>(
+    'synced',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("synced" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    questionId,
+    selectedIndex,
+    isCorrect,
+    answeredAt,
+    sourceApp,
+    synced,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'attempts';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Attempt> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('question_id')) {
+      context.handle(
+        _questionIdMeta,
+        questionId.isAcceptableOrUnknown(data['question_id']!, _questionIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_questionIdMeta);
+    }
+    if (data.containsKey('selected_index')) {
+      context.handle(
+        _selectedIndexMeta,
+        selectedIndex.isAcceptableOrUnknown(
+          data['selected_index']!,
+          _selectedIndexMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_selectedIndexMeta);
+    }
+    if (data.containsKey('is_correct')) {
+      context.handle(
+        _isCorrectMeta,
+        isCorrect.isAcceptableOrUnknown(data['is_correct']!, _isCorrectMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_isCorrectMeta);
+    }
+    if (data.containsKey('answered_at')) {
+      context.handle(
+        _answeredAtMeta,
+        answeredAt.isAcceptableOrUnknown(data['answered_at']!, _answeredAtMeta),
+      );
+    }
+    if (data.containsKey('source_app')) {
+      context.handle(
+        _sourceAppMeta,
+        sourceApp.isAcceptableOrUnknown(data['source_app']!, _sourceAppMeta),
+      );
+    }
+    if (data.containsKey('synced')) {
+      context.handle(
+        _syncedMeta,
+        synced.isAcceptableOrUnknown(data['synced']!, _syncedMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Attempt map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Attempt(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      questionId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}question_id'],
+      )!,
+      selectedIndex: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}selected_index'],
+      )!,
+      isCorrect: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_correct'],
+      )!,
+      answeredAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}answered_at'],
+      )!,
+      sourceApp: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source_app'],
+      )!,
+      synced: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}synced'],
+      )!,
+    );
+  }
+
+  @override
+  $AttemptsTable createAlias(String alias) {
+    return $AttemptsTable(attachedDatabase, alias);
+  }
+}
+
+class Attempt extends DataClass implements Insertable<Attempt> {
+  final String id;
+  final String questionId;
+  final int selectedIndex;
+  final bool isCorrect;
+  final DateTime answeredAt;
+  final String sourceApp;
+  final bool synced;
+  const Attempt({
+    required this.id,
+    required this.questionId,
+    required this.selectedIndex,
+    required this.isCorrect,
+    required this.answeredAt,
+    required this.sourceApp,
+    required this.synced,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['question_id'] = Variable<String>(questionId);
+    map['selected_index'] = Variable<int>(selectedIndex);
+    map['is_correct'] = Variable<bool>(isCorrect);
+    map['answered_at'] = Variable<DateTime>(answeredAt);
+    map['source_app'] = Variable<String>(sourceApp);
+    map['synced'] = Variable<bool>(synced);
+    return map;
+  }
+
+  AttemptsCompanion toCompanion(bool nullToAbsent) {
+    return AttemptsCompanion(
+      id: Value(id),
+      questionId: Value(questionId),
+      selectedIndex: Value(selectedIndex),
+      isCorrect: Value(isCorrect),
+      answeredAt: Value(answeredAt),
+      sourceApp: Value(sourceApp),
+      synced: Value(synced),
+    );
+  }
+
+  factory Attempt.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Attempt(
+      id: serializer.fromJson<String>(json['id']),
+      questionId: serializer.fromJson<String>(json['questionId']),
+      selectedIndex: serializer.fromJson<int>(json['selectedIndex']),
+      isCorrect: serializer.fromJson<bool>(json['isCorrect']),
+      answeredAt: serializer.fromJson<DateTime>(json['answeredAt']),
+      sourceApp: serializer.fromJson<String>(json['sourceApp']),
+      synced: serializer.fromJson<bool>(json['synced']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'questionId': serializer.toJson<String>(questionId),
+      'selectedIndex': serializer.toJson<int>(selectedIndex),
+      'isCorrect': serializer.toJson<bool>(isCorrect),
+      'answeredAt': serializer.toJson<DateTime>(answeredAt),
+      'sourceApp': serializer.toJson<String>(sourceApp),
+      'synced': serializer.toJson<bool>(synced),
+    };
+  }
+
+  Attempt copyWith({
+    String? id,
+    String? questionId,
+    int? selectedIndex,
+    bool? isCorrect,
+    DateTime? answeredAt,
+    String? sourceApp,
+    bool? synced,
+  }) => Attempt(
+    id: id ?? this.id,
+    questionId: questionId ?? this.questionId,
+    selectedIndex: selectedIndex ?? this.selectedIndex,
+    isCorrect: isCorrect ?? this.isCorrect,
+    answeredAt: answeredAt ?? this.answeredAt,
+    sourceApp: sourceApp ?? this.sourceApp,
+    synced: synced ?? this.synced,
+  );
+  Attempt copyWithCompanion(AttemptsCompanion data) {
+    return Attempt(
+      id: data.id.present ? data.id.value : this.id,
+      questionId: data.questionId.present
+          ? data.questionId.value
+          : this.questionId,
+      selectedIndex: data.selectedIndex.present
+          ? data.selectedIndex.value
+          : this.selectedIndex,
+      isCorrect: data.isCorrect.present ? data.isCorrect.value : this.isCorrect,
+      answeredAt: data.answeredAt.present
+          ? data.answeredAt.value
+          : this.answeredAt,
+      sourceApp: data.sourceApp.present ? data.sourceApp.value : this.sourceApp,
+      synced: data.synced.present ? data.synced.value : this.synced,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Attempt(')
+          ..write('id: $id, ')
+          ..write('questionId: $questionId, ')
+          ..write('selectedIndex: $selectedIndex, ')
+          ..write('isCorrect: $isCorrect, ')
+          ..write('answeredAt: $answeredAt, ')
+          ..write('sourceApp: $sourceApp, ')
+          ..write('synced: $synced')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    questionId,
+    selectedIndex,
+    isCorrect,
+    answeredAt,
+    sourceApp,
+    synced,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Attempt &&
+          other.id == this.id &&
+          other.questionId == this.questionId &&
+          other.selectedIndex == this.selectedIndex &&
+          other.isCorrect == this.isCorrect &&
+          other.answeredAt == this.answeredAt &&
+          other.sourceApp == this.sourceApp &&
+          other.synced == this.synced);
+}
+
+class AttemptsCompanion extends UpdateCompanion<Attempt> {
+  final Value<String> id;
+  final Value<String> questionId;
+  final Value<int> selectedIndex;
+  final Value<bool> isCorrect;
+  final Value<DateTime> answeredAt;
+  final Value<String> sourceApp;
+  final Value<bool> synced;
+  final Value<int> rowid;
+  const AttemptsCompanion({
+    this.id = const Value.absent(),
+    this.questionId = const Value.absent(),
+    this.selectedIndex = const Value.absent(),
+    this.isCorrect = const Value.absent(),
+    this.answeredAt = const Value.absent(),
+    this.sourceApp = const Value.absent(),
+    this.synced = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AttemptsCompanion.insert({
+    required String id,
+    required String questionId,
+    required int selectedIndex,
+    required bool isCorrect,
+    this.answeredAt = const Value.absent(),
+    this.sourceApp = const Value.absent(),
+    this.synced = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       questionId = Value(questionId),
+       selectedIndex = Value(selectedIndex),
+       isCorrect = Value(isCorrect);
+  static Insertable<Attempt> custom({
+    Expression<String>? id,
+    Expression<String>? questionId,
+    Expression<int>? selectedIndex,
+    Expression<bool>? isCorrect,
+    Expression<DateTime>? answeredAt,
+    Expression<String>? sourceApp,
+    Expression<bool>? synced,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (questionId != null) 'question_id': questionId,
+      if (selectedIndex != null) 'selected_index': selectedIndex,
+      if (isCorrect != null) 'is_correct': isCorrect,
+      if (answeredAt != null) 'answered_at': answeredAt,
+      if (sourceApp != null) 'source_app': sourceApp,
+      if (synced != null) 'synced': synced,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AttemptsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? questionId,
+    Value<int>? selectedIndex,
+    Value<bool>? isCorrect,
+    Value<DateTime>? answeredAt,
+    Value<String>? sourceApp,
+    Value<bool>? synced,
+    Value<int>? rowid,
+  }) {
+    return AttemptsCompanion(
+      id: id ?? this.id,
+      questionId: questionId ?? this.questionId,
+      selectedIndex: selectedIndex ?? this.selectedIndex,
+      isCorrect: isCorrect ?? this.isCorrect,
+      answeredAt: answeredAt ?? this.answeredAt,
+      sourceApp: sourceApp ?? this.sourceApp,
+      synced: synced ?? this.synced,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (questionId.present) {
+      map['question_id'] = Variable<String>(questionId.value);
+    }
+    if (selectedIndex.present) {
+      map['selected_index'] = Variable<int>(selectedIndex.value);
+    }
+    if (isCorrect.present) {
+      map['is_correct'] = Variable<bool>(isCorrect.value);
+    }
+    if (answeredAt.present) {
+      map['answered_at'] = Variable<DateTime>(answeredAt.value);
+    }
+    if (sourceApp.present) {
+      map['source_app'] = Variable<String>(sourceApp.value);
+    }
+    if (synced.present) {
+      map['synced'] = Variable<bool>(synced.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AttemptsCompanion(')
+          ..write('id: $id, ')
+          ..write('questionId: $questionId, ')
+          ..write('selectedIndex: $selectedIndex, ')
+          ..write('isCorrect: $isCorrect, ')
+          ..write('answeredAt: $answeredAt, ')
+          ..write('sourceApp: $sourceApp, ')
+          ..write('synced: $synced, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $LocalDecksTable localDecks = $LocalDecksTable(this);
   late final $LocalCardsTable localCards = $LocalCardsTable(this);
   late final $FocusSessionsTable focusSessions = $FocusSessionsTable(this);
+  late final $QuestionsTable questions = $QuestionsTable(this);
+  late final $AttemptsTable attempts = $AttemptsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -1670,6 +2706,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     localDecks,
     localCards,
     focusSessions,
+    questions,
+    attempts,
   ];
 }
 
@@ -2501,6 +3539,520 @@ typedef $$FocusSessionsTableProcessedTableManager =
       FocusSession,
       PrefetchHooks Function()
     >;
+typedef $$QuestionsTableCreateCompanionBuilder =
+    QuestionsCompanion Function({
+      required String id,
+      required String stem,
+      required String optionsJson,
+      required int answerIndex,
+      Value<String?> explanation,
+      Value<String> subject,
+      Value<String> source,
+      Value<String> sourceApp,
+      Value<DateTime> createdAt,
+      Value<int> rowid,
+    });
+typedef $$QuestionsTableUpdateCompanionBuilder =
+    QuestionsCompanion Function({
+      Value<String> id,
+      Value<String> stem,
+      Value<String> optionsJson,
+      Value<int> answerIndex,
+      Value<String?> explanation,
+      Value<String> subject,
+      Value<String> source,
+      Value<String> sourceApp,
+      Value<DateTime> createdAt,
+      Value<int> rowid,
+    });
+
+class $$QuestionsTableFilterComposer
+    extends Composer<_$AppDatabase, $QuestionsTable> {
+  $$QuestionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get stem => $composableBuilder(
+    column: $table.stem,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get optionsJson => $composableBuilder(
+    column: $table.optionsJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get answerIndex => $composableBuilder(
+    column: $table.answerIndex,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get explanation => $composableBuilder(
+    column: $table.explanation,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get subject => $composableBuilder(
+    column: $table.subject,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sourceApp => $composableBuilder(
+    column: $table.sourceApp,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$QuestionsTableOrderingComposer
+    extends Composer<_$AppDatabase, $QuestionsTable> {
+  $$QuestionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get stem => $composableBuilder(
+    column: $table.stem,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get optionsJson => $composableBuilder(
+    column: $table.optionsJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get answerIndex => $composableBuilder(
+    column: $table.answerIndex,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get explanation => $composableBuilder(
+    column: $table.explanation,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get subject => $composableBuilder(
+    column: $table.subject,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sourceApp => $composableBuilder(
+    column: $table.sourceApp,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$QuestionsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $QuestionsTable> {
+  $$QuestionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get stem =>
+      $composableBuilder(column: $table.stem, builder: (column) => column);
+
+  GeneratedColumn<String> get optionsJson => $composableBuilder(
+    column: $table.optionsJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get answerIndex => $composableBuilder(
+    column: $table.answerIndex,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get explanation => $composableBuilder(
+    column: $table.explanation,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get subject =>
+      $composableBuilder(column: $table.subject, builder: (column) => column);
+
+  GeneratedColumn<String> get source =>
+      $composableBuilder(column: $table.source, builder: (column) => column);
+
+  GeneratedColumn<String> get sourceApp =>
+      $composableBuilder(column: $table.sourceApp, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$QuestionsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $QuestionsTable,
+          Question,
+          $$QuestionsTableFilterComposer,
+          $$QuestionsTableOrderingComposer,
+          $$QuestionsTableAnnotationComposer,
+          $$QuestionsTableCreateCompanionBuilder,
+          $$QuestionsTableUpdateCompanionBuilder,
+          (Question, BaseReferences<_$AppDatabase, $QuestionsTable, Question>),
+          Question,
+          PrefetchHooks Function()
+        > {
+  $$QuestionsTableTableManager(_$AppDatabase db, $QuestionsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$QuestionsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$QuestionsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$QuestionsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> stem = const Value.absent(),
+                Value<String> optionsJson = const Value.absent(),
+                Value<int> answerIndex = const Value.absent(),
+                Value<String?> explanation = const Value.absent(),
+                Value<String> subject = const Value.absent(),
+                Value<String> source = const Value.absent(),
+                Value<String> sourceApp = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => QuestionsCompanion(
+                id: id,
+                stem: stem,
+                optionsJson: optionsJson,
+                answerIndex: answerIndex,
+                explanation: explanation,
+                subject: subject,
+                source: source,
+                sourceApp: sourceApp,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String stem,
+                required String optionsJson,
+                required int answerIndex,
+                Value<String?> explanation = const Value.absent(),
+                Value<String> subject = const Value.absent(),
+                Value<String> source = const Value.absent(),
+                Value<String> sourceApp = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => QuestionsCompanion.insert(
+                id: id,
+                stem: stem,
+                optionsJson: optionsJson,
+                answerIndex: answerIndex,
+                explanation: explanation,
+                subject: subject,
+                source: source,
+                sourceApp: sourceApp,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$QuestionsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $QuestionsTable,
+      Question,
+      $$QuestionsTableFilterComposer,
+      $$QuestionsTableOrderingComposer,
+      $$QuestionsTableAnnotationComposer,
+      $$QuestionsTableCreateCompanionBuilder,
+      $$QuestionsTableUpdateCompanionBuilder,
+      (Question, BaseReferences<_$AppDatabase, $QuestionsTable, Question>),
+      Question,
+      PrefetchHooks Function()
+    >;
+typedef $$AttemptsTableCreateCompanionBuilder =
+    AttemptsCompanion Function({
+      required String id,
+      required String questionId,
+      required int selectedIndex,
+      required bool isCorrect,
+      Value<DateTime> answeredAt,
+      Value<String> sourceApp,
+      Value<bool> synced,
+      Value<int> rowid,
+    });
+typedef $$AttemptsTableUpdateCompanionBuilder =
+    AttemptsCompanion Function({
+      Value<String> id,
+      Value<String> questionId,
+      Value<int> selectedIndex,
+      Value<bool> isCorrect,
+      Value<DateTime> answeredAt,
+      Value<String> sourceApp,
+      Value<bool> synced,
+      Value<int> rowid,
+    });
+
+class $$AttemptsTableFilterComposer
+    extends Composer<_$AppDatabase, $AttemptsTable> {
+  $$AttemptsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get questionId => $composableBuilder(
+    column: $table.questionId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get selectedIndex => $composableBuilder(
+    column: $table.selectedIndex,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isCorrect => $composableBuilder(
+    column: $table.isCorrect,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get answeredAt => $composableBuilder(
+    column: $table.answeredAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sourceApp => $composableBuilder(
+    column: $table.sourceApp,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get synced => $composableBuilder(
+    column: $table.synced,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AttemptsTableOrderingComposer
+    extends Composer<_$AppDatabase, $AttemptsTable> {
+  $$AttemptsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get questionId => $composableBuilder(
+    column: $table.questionId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get selectedIndex => $composableBuilder(
+    column: $table.selectedIndex,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isCorrect => $composableBuilder(
+    column: $table.isCorrect,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get answeredAt => $composableBuilder(
+    column: $table.answeredAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sourceApp => $composableBuilder(
+    column: $table.sourceApp,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get synced => $composableBuilder(
+    column: $table.synced,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AttemptsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $AttemptsTable> {
+  $$AttemptsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get questionId => $composableBuilder(
+    column: $table.questionId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get selectedIndex => $composableBuilder(
+    column: $table.selectedIndex,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isCorrect =>
+      $composableBuilder(column: $table.isCorrect, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get answeredAt => $composableBuilder(
+    column: $table.answeredAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get sourceApp =>
+      $composableBuilder(column: $table.sourceApp, builder: (column) => column);
+
+  GeneratedColumn<bool> get synced =>
+      $composableBuilder(column: $table.synced, builder: (column) => column);
+}
+
+class $$AttemptsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $AttemptsTable,
+          Attempt,
+          $$AttemptsTableFilterComposer,
+          $$AttemptsTableOrderingComposer,
+          $$AttemptsTableAnnotationComposer,
+          $$AttemptsTableCreateCompanionBuilder,
+          $$AttemptsTableUpdateCompanionBuilder,
+          (Attempt, BaseReferences<_$AppDatabase, $AttemptsTable, Attempt>),
+          Attempt,
+          PrefetchHooks Function()
+        > {
+  $$AttemptsTableTableManager(_$AppDatabase db, $AttemptsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AttemptsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AttemptsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AttemptsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> questionId = const Value.absent(),
+                Value<int> selectedIndex = const Value.absent(),
+                Value<bool> isCorrect = const Value.absent(),
+                Value<DateTime> answeredAt = const Value.absent(),
+                Value<String> sourceApp = const Value.absent(),
+                Value<bool> synced = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AttemptsCompanion(
+                id: id,
+                questionId: questionId,
+                selectedIndex: selectedIndex,
+                isCorrect: isCorrect,
+                answeredAt: answeredAt,
+                sourceApp: sourceApp,
+                synced: synced,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String questionId,
+                required int selectedIndex,
+                required bool isCorrect,
+                Value<DateTime> answeredAt = const Value.absent(),
+                Value<String> sourceApp = const Value.absent(),
+                Value<bool> synced = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AttemptsCompanion.insert(
+                id: id,
+                questionId: questionId,
+                selectedIndex: selectedIndex,
+                isCorrect: isCorrect,
+                answeredAt: answeredAt,
+                sourceApp: sourceApp,
+                synced: synced,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AttemptsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $AttemptsTable,
+      Attempt,
+      $$AttemptsTableFilterComposer,
+      $$AttemptsTableOrderingComposer,
+      $$AttemptsTableAnnotationComposer,
+      $$AttemptsTableCreateCompanionBuilder,
+      $$AttemptsTableUpdateCompanionBuilder,
+      (Attempt, BaseReferences<_$AppDatabase, $AttemptsTable, Attempt>),
+      Attempt,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -2511,4 +4063,8 @@ class $AppDatabaseManager {
       $$LocalCardsTableTableManager(_db, _db.localCards);
   $$FocusSessionsTableTableManager get focusSessions =>
       $$FocusSessionsTableTableManager(_db, _db.focusSessions);
+  $$QuestionsTableTableManager get questions =>
+      $$QuestionsTableTableManager(_db, _db.questions);
+  $$AttemptsTableTableManager get attempts =>
+      $$AttemptsTableTableManager(_db, _db.attempts);
 }

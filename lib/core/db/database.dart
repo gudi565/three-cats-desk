@@ -12,20 +12,24 @@ part 'database.g.dart';
 /// Web 用 WasmDatabase（sqlite3 wasm）；安卓/iOS 用 NativeDatabase 落盘。
 /// 平台连接在 connection_*.dart（条件导入，避免 dart:ffi 在 Web 静态引入）。
 /// Phase0 只验证 Web + 安卓。
-@DriftDatabase(tables: [LocalDecks, LocalCards, FocusSessions])
+@DriftDatabase(tables: [LocalDecks, LocalCards, FocusSessions, Questions, Attempts])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(openConnection());
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
-  /// 迁移：v1 → v2 新增 FocusSessions 表。
+  /// 迁移：v1→v2 新增 FocusSessions；v2→v3 新增 Questions + Attempts。
   @override
   MigrationStrategy get migration => MigrationStrategy(
         onUpgrade: (migrator, from, to) async {
           if (from < 2) {
             await migrator.createTable(focusSessions);
+          }
+          if (from < 3) {
+            await migrator.createTable(questions);
+            await migrator.createTable(attempts);
           }
         },
       );
@@ -120,4 +124,47 @@ class AppDatabase extends _$AppDatabase {
   Future<void> markFocusSynced(String id) =>
       (update(focusSessions)..where((f) => f.id.equals(id)))
           .write(const FocusSessionsCompanion(synced: Value(true)));
+
+  // ---- 稳稳：题库 + 做题记录 ----
+
+  /// 幂等插入题（按 id upsert，重复导入不重复）。
+  Future<void> insertQuestions(List<QuestionsCompanion> qs) =>
+      batch((b) => b.insertAllOnConflictUpdate(questions, qs));
+
+  Future<List<Question>> getAllQuestions() =>
+      (select(questions)..orderBy([(q) => OrderingTerm.asc(q.createdAt)])).get();
+
+  Future<List<Question>> getQuestionsBySubject(String subject) =>
+      (select(questions)..where((q) => q.subject.equals(subject))
+            ..orderBy([(q) => OrderingTerm.asc(q.createdAt)]))
+          .get();
+
+  Future<int> countQuestions() =>
+      select(questions).get().then((l) => l.length);
+
+  /// 插一条作答记录。
+  Future<void> insertAttempt(AttemptsCompanion a) =>
+      into(attempts).insertOnConflictUpdate(a);
+
+  /// 未上云的作答（登录/网络恢复重试）。
+  Future<List<Attempt>> getUnsyncedAttempts() =>
+      (select(attempts)..where((a) => a.synced.equals(false))).get();
+
+  Future<void> markAttemptSynced(String id) =>
+      (update(attempts)..where((a) => a.id.equals(id)))
+          .write(const AttemptsCompanion(synced: Value(true)));
+
+  /// 错题（isCorrect=false 的作答，错题本用）。
+  Future<List<Attempt>> getWrongAttempts() =>
+      (select(attempts)..where((a) => a.isCorrect.equals(false))
+            ..orderBy([(a) => OrderingTerm.desc(a.answeredAt)]))
+          .get();
+
+  /// 今日作答数（仪表盘）。
+  Future<int> getTodayAttemptCount({DateTime? now}) {
+    final n = now ?? DateTime.now();
+    final dayStart = DateTime(n.year, n.month, n.day);
+    return (select(attempts)..where((a) => a.answeredAt.isBiggerOrEqualValue(dayStart)))
+        .get().then((l) => l.length);
+  }
 }

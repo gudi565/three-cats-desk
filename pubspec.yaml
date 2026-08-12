@@ -74,6 +74,7 @@ flutter:
   # 词书资源（从 legacy 念念/MemoryCat 拷贝，Phase0 §5）
   assets:
     - assets/decks/
+    - assets/questions/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

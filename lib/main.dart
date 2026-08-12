@@ -10,6 +10,7 @@ import 'features/niannian/login_screen.dart';
 import 'features/niannian/review_screen.dart';
 import 'features/nuannuan/focus_provider.dart';
 import 'features/nuannuan/focus_screen.dart';
+import 'features/wenwen/quiz_screen.dart';
 
 /// 内置词书（从 legacy 念念/MemoryCat 拷贝，Phase0 §5）。启动幂等导入。
 const _bundledDecks = [
@@ -48,6 +49,12 @@ class _BootstrapAppState extends ConsumerState<BootstrapApp> {
     // 登录态恢复后重试未同步卡（PUSH）
     if (SupabaseConfig.isLoggedIn) {
       await ref.read(cloudSyncProvider).pushAllUnsynced();
+    }
+    // 稳稳题库（幂等按 id）——assets/questions/*.json
+    try {
+      await ref.read(quizImporterProvider).importFromAsset('assets/questions/sample-quiz.json');
+    } catch (e) {
+      debugPrint('[bootstrap] 题库导入失败：$e');
     }
     // 雷2 埋点：登录态确立后，猫 key 重绑到该 userId（防同设备多账号串猫），
     // 并标今日打开（留存度量唯一云端信号）+ 顺手带上 intimacy 快照（防资产归零+归因）。
@@ -114,7 +121,7 @@ class HomeScreen extends ConsumerWidget {
   static const _modules = [
     ('念念', '背书 · 翻卡复习', Icons.style_outlined, Color(0xFF3E8EAA), true),
     ('暖暖', '专注 · 番茄钟', Icons.local_cafe_outlined, Color(0xFFE0A458), true),
-    ('稳稳', '做题', Icons.checklist_outlined, Color(0xFF5B9E6F), false),
+    ('稳稳', '做题 · 考研真题', Icons.checklist_outlined, Color(0xFF5B9E6F), true),
     ('知知', '笔记', Icons.edit_note_outlined, Color(0xFFB083C9), false),
     ('渊渊', '文献', Icons.menu_book_outlined, Color(0xFF8B7E6A), false),
   ];
@@ -160,7 +167,9 @@ class HomeScreen extends ConsumerWidget {
                           MaterialPageRoute(
                             builder: (_) => m.$1 == '暖暖'
                                 ? const FocusScreen()
-                                : const DeckListScreen(),
+                                : m.$1 == '稳稳'
+                                    ? const WenwenHomeScreen()
+                                    : const DeckListScreen(),
                           ),
                         ),
               ),

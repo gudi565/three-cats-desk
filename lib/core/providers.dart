@@ -4,6 +4,7 @@ import 'package:three_cats_desk/core/cloud_sync.dart';
 import 'package:three_cats_desk/core/db/database.dart';
 import 'package:three_cats_desk/core/deck_importer.dart';
 import 'package:three_cats_desk/core/supabase_client.dart';
+import 'package:three_cats_desk/features/wenwen/quiz_importer.dart';
 
 /// 全局单例 providers（core 层）。
 
@@ -15,6 +16,10 @@ final appDatabaseProvider = Provider<AppDatabase>((ref) {
 
 final deckImporterProvider = Provider<DeckImporter>((ref) {
   return DeckImporter(ref.watch(appDatabaseProvider));
+});
+
+final quizImporterProvider = Provider<QuizImporter>((ref) {
+  return QuizImporter(ref.watch(appDatabaseProvider));
 });
 
 final cloudSyncProvider = Provider<CloudSync>((ref) {

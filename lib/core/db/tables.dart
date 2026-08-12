@@ -40,6 +40,38 @@ class LocalCards extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+/// 题库（稳稳模块，local-first）。内置考研题 + 导入。
+/// 单选（options json 数组 + answerIndex）。题干/解析 Markdown。
+class Questions extends Table {
+  TextColumn get id => text()();                       // 题 id（内容侧给定，如 zz-001）
+  TextColumn get stem => text()();                     // 题干
+  TextColumn get optionsJson => text()();              // 选项 json 数组 ["A...","B...","C...","D..."]
+  IntColumn get answerIndex => integer()();            // 正确选项下标 0-3
+  TextColumn get explanation => text().nullable()();   // 解析
+  TextColumn get subject => text().withDefault(const Constant('政治'))(); // 科目
+  TextColumn get source => text().withDefault(const Constant(''))();      // 来源标签
+  TextColumn get sourceApp => text().withDefault(const Constant('wenwen'))();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+/// 做题记录（稳稳）。一次作答 = 一行。
+/// isCorrect 客观判分（0 LLM）；correct 写 cloud attempts 表；错（isCorrect=false）→ 生成念念复习卡。
+class Attempts extends Table {
+  TextColumn get id => text()();                       // uuid
+  TextColumn get questionId => text()();               // 所属题
+  IntColumn get selectedIndex => integer()();          // 用户选的选项下标
+  BoolColumn get isCorrect => boolean()();             // 客观判分
+  DateTimeColumn get answeredAt => dateTime().withDefault(currentDateAndTime)();
+  TextColumn get sourceApp => text().withDefault(const Constant('wenwen'))();
+  BoolColumn get synced => boolean().withDefault(const Constant(false))();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 /// 专注记录（暖暖模块，local-first 主存储）。一次专注 = 一行。
 ///
 /// 暖暖只写 focus_sessions（source_app=nuannuan），不写 cards——它是"让你坐得住"，

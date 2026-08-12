@@ -175,6 +175,28 @@ class CloudSync {
     }
   }
 
+  /// 稳稳：作答记录上云（attempts 表，见 phase2-supabase-quiz.sql）。
+  /// 客观判分（isCorrect），local-first：失败静默。
+  Future<bool> pushAttempt(Attempt a, Question q) async {
+    if (!_canSync) return false;
+    try {
+      await SupabaseConfig.client.from('attempts').upsert({
+        'id': a.id,
+        'user_id': SupabaseConfig.currentUser!.id,
+        'question_id': a.questionId,
+        'selected_index': a.selectedIndex,
+        'is_correct': a.isCorrect,
+        'answered_at': a.answeredAt.toUtc().toIso8601String(),
+        'source_app': 'wenwen',
+        'updated_at': DateTime.now().toUtc().toIso8601String(),
+      });
+      await db.markAttemptSynced(a.id);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
   /// 当日 0 点对齐的日期 key（YYYY-MM-DD），对齐 Supabase `day` 列（date 类型）。
   String _todayKey() {
     final n = DateTime.now();
