@@ -72,6 +72,23 @@ class Attempts extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+/// 笔记（知知模块，local-first）。title + content(Markdown 正文)。
+/// 签名能力「笔记即卡片」：笔记块一键转念念复习卡（type=qa, source_app=zhizhi）。
+class Notes extends Table {
+  TextColumn get id => text()();                       // uuid
+  TextColumn get title => text().withDefault(const Constant(''))();
+  TextColumn get content => text().withDefault(const Constant(''))();   // Markdown 正文
+  TextColumn get subject => text().withDefault(const Constant(''))();   // 学科标签（可选）
+  TextColumn get sourceApp => text().withDefault(const Constant('zhizhi'))();
+  BoolColumn get synced => boolean().withDefault(const Constant(false))();
+  BoolColumn get archived => boolean().withDefault(const Constant(false))();
+  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 /// 专注记录（暖暖模块，local-first 主存储）。一次专注 = 一行。
 ///
 /// 暖暖只写 focus_sessions（source_app=nuannuan），不写 cards——它是"让你坐得住"，

@@ -11,6 +11,7 @@ import 'features/niannian/review_screen.dart';
 import 'features/nuannuan/focus_provider.dart';
 import 'features/nuannuan/focus_screen.dart';
 import 'features/wenwen/quiz_screen.dart';
+import 'features/zhizhi/notes_screen.dart';
 
 /// 内置词书（从 legacy 念念/MemoryCat 拷贝，Phase0 §5）。启动幂等导入。
 const _bundledDecks = [
@@ -122,7 +123,7 @@ class HomeScreen extends ConsumerWidget {
     ('念念', '背书 · 翻卡复习', Icons.style_outlined, Color(0xFF3E8EAA), true),
     ('暖暖', '专注 · 番茄钟', Icons.local_cafe_outlined, Color(0xFFE0A458), true),
     ('稳稳', '做题 · 考研真题', Icons.checklist_outlined, Color(0xFF5B9E6F), true),
-    ('知知', '笔记', Icons.edit_note_outlined, Color(0xFFB083C9), false),
+    ('知知', '笔记 · 笔记即卡片', Icons.edit_note_outlined, Color(0xFFB083C9), true),
     ('渊渊', '文献', Icons.menu_book_outlined, Color(0xFF8B7E6A), false),
   ];
 
@@ -169,7 +170,9 @@ class HomeScreen extends ConsumerWidget {
                                 ? const FocusScreen()
                                 : m.$1 == '稳稳'
                                     ? const WenwenHomeScreen()
-                                    : const DeckListScreen(),
+                                    : m.$1 == '知知'
+                                        ? const ZhizhiHomeScreen()
+                                        : const DeckListScreen(),
                           ),
                         ),
               ),

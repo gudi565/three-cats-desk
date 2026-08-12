@@ -2,14 +2,12 @@ import 'dart:convert';
 
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:three_cats_desk/core/cross_app_cards.dart';
 import 'package:three_cats_desk/core/db/database.dart';
-import 'package:three_cats_desk/core/deck_importer.dart';
-import 'package:three_cats_desk/core/fsrs.dart';
 import 'package:three_cats_desk/core/providers.dart';
 import 'package:uuid/uuid.dart';
 
 import '../cat/cat_provider.dart';
-import '../niannian/deck_provider.dart';
 
 /// 稳稳做题模块。
 ///
@@ -142,35 +140,12 @@ final quizControllerProvider = StateNotifierProvider.autoDispose
 });
 
 /// 错题→念念复习卡（写 cards: type=error, source_app=wenwen → 进念念跨猫卡箱）。
-Future<void> _wrongToCard(Ref ref, Question q) async {
-  final db = ref.read(appDatabaseProvider);
-  final cardId = const Uuid().v4();
-  final front = '[稳稳·错题] ${q.stem}';
+/// 复用跨猫卡箱 helper：确保 deckId 非 null（否则卡在 drift 里 deckId=null 进不了任何列表）。
+Future<void> _wrongToCard(dynamic ref, Question q) async {
   final opts = (jsonDecode(q.optionsJson) as List).map((e) => e.toString()).toList();
   final correct = q.answerIndex >= 0 && q.answerIndex < opts.length ? opts[q.answerIndex] : '';
   final back = '正确答案：${String.fromCharCode(65 + q.answerIndex)}. $correct\n解析：${q.explanation ?? ''}';
-
-  final fsrs = FsrsCard(id: cardId);
-  final companion = LocalCardsCompanion(
-    id: Value(cardId),
-    deckId: const Value.absent(),
-    type: const Value('error'),
-    front: Value(front),
-    back: Value(back),
-    sourceApp: const Value('wenwen'),
-    fsrsState: Value(jsonEncode(fsrs.toJson())),
-    due: Value(fsrs.due),
-    state: Value(fsrs.state.value),
-    synced: const Value(false),
-  );
-  await db.insertCards([companion]);
-  // 上云（念念 cards 表，wenwen 卡）
-  final card = LocalCard(
-    id: cardId, deckId: null, type: 'error', front: front, back: back,
-    sourceApp: 'wenwen', fsrsState: jsonEncode(fsrs.toJson()),
-    due: fsrs.due, state: fsrs.state.value, synced: false, updatedAt: DateTime.now(),
-  );
-  await ref.read(cloudSyncProvider).pushCard(card, fsrs);
-  // 触发念念 deck 列表刷新
-  ref.read(deckRevisionProvider.notifier).state++;
+  await CrossAppCards.add(ref,
+      front: '[稳稳·错题] ${q.stem}', back: back,
+      sourceApp: 'wenwen', type: 'error', sourceRef: q.id);
 }

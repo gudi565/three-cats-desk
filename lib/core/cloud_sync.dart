@@ -32,7 +32,7 @@ class CloudSync {
         'type': card.type,
         'front': card.front,
         'back': card.back,
-        'source_app': 'niannian',
+        'source_app': card.sourceApp,   // 用卡自身的 sourceApp（跨 App 卡流：wenwen/zhizhi 错题/笔记卡）
         'fsrs_state': fsrs.toJson(),
         'updated_at': DateTime.now().toIso8601String(),
       });
@@ -42,6 +42,27 @@ class CloudSync {
       return false; // RLS/约束拒绝等 → 本地仍存，synced=false
     } catch (_) {
       return false; // 网络等
+    }
+  }
+
+  /// 知知：笔记上云（notes 表，见 phase2-supabase-notes.sql）。local-first：失败静默。
+  Future<bool> pushNote(Note n) async {
+    if (!_canSync) return false;
+    try {
+      await SupabaseConfig.client.from('notes').upsert({
+        'id': n.id,
+        'user_id': SupabaseConfig.currentUser!.id,
+        'title': n.title,
+        'content': n.content,
+        'subject': n.subject,
+        'source_app': 'zhizhi',
+        'archived_at': n.archived ? DateTime.now().toUtc().toIso8601String() : null,
+        'updated_at': DateTime.now().toUtc().toIso8601String(),
+      });
+      await db.markNoteSynced(n.id);
+      return true;
+    } catch (_) {
+      return false;
     }
   }
 

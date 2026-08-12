@@ -2690,6 +2690,551 @@ class AttemptsCompanion extends UpdateCompanion<Attempt> {
   }
 }
 
+class $NotesTable extends Notes with TableInfo<$NotesTable, Note> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $NotesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _contentMeta = const VerificationMeta(
+    'content',
+  );
+  @override
+  late final GeneratedColumn<String> content = GeneratedColumn<String>(
+    'content',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _subjectMeta = const VerificationMeta(
+    'subject',
+  );
+  @override
+  late final GeneratedColumn<String> subject = GeneratedColumn<String>(
+    'subject',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _sourceAppMeta = const VerificationMeta(
+    'sourceApp',
+  );
+  @override
+  late final GeneratedColumn<String> sourceApp = GeneratedColumn<String>(
+    'source_app',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('zhizhi'),
+  );
+  static const VerificationMeta _syncedMeta = const VerificationMeta('synced');
+  @override
+  late final GeneratedColumn<bool> synced = GeneratedColumn<bool>(
+    'synced',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("synced" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _archivedMeta = const VerificationMeta(
+    'archived',
+  );
+  @override
+  late final GeneratedColumn<bool> archived = GeneratedColumn<bool>(
+    'archived',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("archived" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    title,
+    content,
+    subject,
+    sourceApp,
+    synced,
+    archived,
+    updatedAt,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'notes';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Note> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    }
+    if (data.containsKey('content')) {
+      context.handle(
+        _contentMeta,
+        content.isAcceptableOrUnknown(data['content']!, _contentMeta),
+      );
+    }
+    if (data.containsKey('subject')) {
+      context.handle(
+        _subjectMeta,
+        subject.isAcceptableOrUnknown(data['subject']!, _subjectMeta),
+      );
+    }
+    if (data.containsKey('source_app')) {
+      context.handle(
+        _sourceAppMeta,
+        sourceApp.isAcceptableOrUnknown(data['source_app']!, _sourceAppMeta),
+      );
+    }
+    if (data.containsKey('synced')) {
+      context.handle(
+        _syncedMeta,
+        synced.isAcceptableOrUnknown(data['synced']!, _syncedMeta),
+      );
+    }
+    if (data.containsKey('archived')) {
+      context.handle(
+        _archivedMeta,
+        archived.isAcceptableOrUnknown(data['archived']!, _archivedMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Note map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Note(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      content: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}content'],
+      )!,
+      subject: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}subject'],
+      )!,
+      sourceApp: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source_app'],
+      )!,
+      synced: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}synced'],
+      )!,
+      archived: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}archived'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $NotesTable createAlias(String alias) {
+    return $NotesTable(attachedDatabase, alias);
+  }
+}
+
+class Note extends DataClass implements Insertable<Note> {
+  final String id;
+  final String title;
+  final String content;
+  final String subject;
+  final String sourceApp;
+  final bool synced;
+  final bool archived;
+  final DateTime updatedAt;
+  final DateTime createdAt;
+  const Note({
+    required this.id,
+    required this.title,
+    required this.content,
+    required this.subject,
+    required this.sourceApp,
+    required this.synced,
+    required this.archived,
+    required this.updatedAt,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['title'] = Variable<String>(title);
+    map['content'] = Variable<String>(content);
+    map['subject'] = Variable<String>(subject);
+    map['source_app'] = Variable<String>(sourceApp);
+    map['synced'] = Variable<bool>(synced);
+    map['archived'] = Variable<bool>(archived);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  NotesCompanion toCompanion(bool nullToAbsent) {
+    return NotesCompanion(
+      id: Value(id),
+      title: Value(title),
+      content: Value(content),
+      subject: Value(subject),
+      sourceApp: Value(sourceApp),
+      synced: Value(synced),
+      archived: Value(archived),
+      updatedAt: Value(updatedAt),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory Note.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Note(
+      id: serializer.fromJson<String>(json['id']),
+      title: serializer.fromJson<String>(json['title']),
+      content: serializer.fromJson<String>(json['content']),
+      subject: serializer.fromJson<String>(json['subject']),
+      sourceApp: serializer.fromJson<String>(json['sourceApp']),
+      synced: serializer.fromJson<bool>(json['synced']),
+      archived: serializer.fromJson<bool>(json['archived']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'title': serializer.toJson<String>(title),
+      'content': serializer.toJson<String>(content),
+      'subject': serializer.toJson<String>(subject),
+      'sourceApp': serializer.toJson<String>(sourceApp),
+      'synced': serializer.toJson<bool>(synced),
+      'archived': serializer.toJson<bool>(archived),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  Note copyWith({
+    String? id,
+    String? title,
+    String? content,
+    String? subject,
+    String? sourceApp,
+    bool? synced,
+    bool? archived,
+    DateTime? updatedAt,
+    DateTime? createdAt,
+  }) => Note(
+    id: id ?? this.id,
+    title: title ?? this.title,
+    content: content ?? this.content,
+    subject: subject ?? this.subject,
+    sourceApp: sourceApp ?? this.sourceApp,
+    synced: synced ?? this.synced,
+    archived: archived ?? this.archived,
+    updatedAt: updatedAt ?? this.updatedAt,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  Note copyWithCompanion(NotesCompanion data) {
+    return Note(
+      id: data.id.present ? data.id.value : this.id,
+      title: data.title.present ? data.title.value : this.title,
+      content: data.content.present ? data.content.value : this.content,
+      subject: data.subject.present ? data.subject.value : this.subject,
+      sourceApp: data.sourceApp.present ? data.sourceApp.value : this.sourceApp,
+      synced: data.synced.present ? data.synced.value : this.synced,
+      archived: data.archived.present ? data.archived.value : this.archived,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Note(')
+          ..write('id: $id, ')
+          ..write('title: $title, ')
+          ..write('content: $content, ')
+          ..write('subject: $subject, ')
+          ..write('sourceApp: $sourceApp, ')
+          ..write('synced: $synced, ')
+          ..write('archived: $archived, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    title,
+    content,
+    subject,
+    sourceApp,
+    synced,
+    archived,
+    updatedAt,
+    createdAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Note &&
+          other.id == this.id &&
+          other.title == this.title &&
+          other.content == this.content &&
+          other.subject == this.subject &&
+          other.sourceApp == this.sourceApp &&
+          other.synced == this.synced &&
+          other.archived == this.archived &&
+          other.updatedAt == this.updatedAt &&
+          other.createdAt == this.createdAt);
+}
+
+class NotesCompanion extends UpdateCompanion<Note> {
+  final Value<String> id;
+  final Value<String> title;
+  final Value<String> content;
+  final Value<String> subject;
+  final Value<String> sourceApp;
+  final Value<bool> synced;
+  final Value<bool> archived;
+  final Value<DateTime> updatedAt;
+  final Value<DateTime> createdAt;
+  final Value<int> rowid;
+  const NotesCompanion({
+    this.id = const Value.absent(),
+    this.title = const Value.absent(),
+    this.content = const Value.absent(),
+    this.subject = const Value.absent(),
+    this.sourceApp = const Value.absent(),
+    this.synced = const Value.absent(),
+    this.archived = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  NotesCompanion.insert({
+    required String id,
+    this.title = const Value.absent(),
+    this.content = const Value.absent(),
+    this.subject = const Value.absent(),
+    this.sourceApp = const Value.absent(),
+    this.synced = const Value.absent(),
+    this.archived = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id);
+  static Insertable<Note> custom({
+    Expression<String>? id,
+    Expression<String>? title,
+    Expression<String>? content,
+    Expression<String>? subject,
+    Expression<String>? sourceApp,
+    Expression<bool>? synced,
+    Expression<bool>? archived,
+    Expression<DateTime>? updatedAt,
+    Expression<DateTime>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (title != null) 'title': title,
+      if (content != null) 'content': content,
+      if (subject != null) 'subject': subject,
+      if (sourceApp != null) 'source_app': sourceApp,
+      if (synced != null) 'synced': synced,
+      if (archived != null) 'archived': archived,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  NotesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? title,
+    Value<String>? content,
+    Value<String>? subject,
+    Value<String>? sourceApp,
+    Value<bool>? synced,
+    Value<bool>? archived,
+    Value<DateTime>? updatedAt,
+    Value<DateTime>? createdAt,
+    Value<int>? rowid,
+  }) {
+    return NotesCompanion(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      content: content ?? this.content,
+      subject: subject ?? this.subject,
+      sourceApp: sourceApp ?? this.sourceApp,
+      synced: synced ?? this.synced,
+      archived: archived ?? this.archived,
+      updatedAt: updatedAt ?? this.updatedAt,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (content.present) {
+      map['content'] = Variable<String>(content.value);
+    }
+    if (subject.present) {
+      map['subject'] = Variable<String>(subject.value);
+    }
+    if (sourceApp.present) {
+      map['source_app'] = Variable<String>(sourceApp.value);
+    }
+    if (synced.present) {
+      map['synced'] = Variable<bool>(synced.value);
+    }
+    if (archived.present) {
+      map['archived'] = Variable<bool>(archived.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('NotesCompanion(')
+          ..write('id: $id, ')
+          ..write('title: $title, ')
+          ..write('content: $content, ')
+          ..write('subject: $subject, ')
+          ..write('sourceApp: $sourceApp, ')
+          ..write('synced: $synced, ')
+          ..write('archived: $archived, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -2698,6 +3243,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $FocusSessionsTable focusSessions = $FocusSessionsTable(this);
   late final $QuestionsTable questions = $QuestionsTable(this);
   late final $AttemptsTable attempts = $AttemptsTable(this);
+  late final $NotesTable notes = $NotesTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -2708,6 +3254,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     focusSessions,
     questions,
     attempts,
+    notes,
   ];
 }
 
@@ -4053,6 +4600,275 @@ typedef $$AttemptsTableProcessedTableManager =
       Attempt,
       PrefetchHooks Function()
     >;
+typedef $$NotesTableCreateCompanionBuilder =
+    NotesCompanion Function({
+      required String id,
+      Value<String> title,
+      Value<String> content,
+      Value<String> subject,
+      Value<String> sourceApp,
+      Value<bool> synced,
+      Value<bool> archived,
+      Value<DateTime> updatedAt,
+      Value<DateTime> createdAt,
+      Value<int> rowid,
+    });
+typedef $$NotesTableUpdateCompanionBuilder =
+    NotesCompanion Function({
+      Value<String> id,
+      Value<String> title,
+      Value<String> content,
+      Value<String> subject,
+      Value<String> sourceApp,
+      Value<bool> synced,
+      Value<bool> archived,
+      Value<DateTime> updatedAt,
+      Value<DateTime> createdAt,
+      Value<int> rowid,
+    });
+
+class $$NotesTableFilterComposer extends Composer<_$AppDatabase, $NotesTable> {
+  $$NotesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get content => $composableBuilder(
+    column: $table.content,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get subject => $composableBuilder(
+    column: $table.subject,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sourceApp => $composableBuilder(
+    column: $table.sourceApp,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get synced => $composableBuilder(
+    column: $table.synced,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get archived => $composableBuilder(
+    column: $table.archived,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$NotesTableOrderingComposer
+    extends Composer<_$AppDatabase, $NotesTable> {
+  $$NotesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get content => $composableBuilder(
+    column: $table.content,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get subject => $composableBuilder(
+    column: $table.subject,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sourceApp => $composableBuilder(
+    column: $table.sourceApp,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get synced => $composableBuilder(
+    column: $table.synced,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get archived => $composableBuilder(
+    column: $table.archived,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$NotesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $NotesTable> {
+  $$NotesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get content =>
+      $composableBuilder(column: $table.content, builder: (column) => column);
+
+  GeneratedColumn<String> get subject =>
+      $composableBuilder(column: $table.subject, builder: (column) => column);
+
+  GeneratedColumn<String> get sourceApp =>
+      $composableBuilder(column: $table.sourceApp, builder: (column) => column);
+
+  GeneratedColumn<bool> get synced =>
+      $composableBuilder(column: $table.synced, builder: (column) => column);
+
+  GeneratedColumn<bool> get archived =>
+      $composableBuilder(column: $table.archived, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$NotesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $NotesTable,
+          Note,
+          $$NotesTableFilterComposer,
+          $$NotesTableOrderingComposer,
+          $$NotesTableAnnotationComposer,
+          $$NotesTableCreateCompanionBuilder,
+          $$NotesTableUpdateCompanionBuilder,
+          (Note, BaseReferences<_$AppDatabase, $NotesTable, Note>),
+          Note,
+          PrefetchHooks Function()
+        > {
+  $$NotesTableTableManager(_$AppDatabase db, $NotesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$NotesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$NotesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$NotesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String> content = const Value.absent(),
+                Value<String> subject = const Value.absent(),
+                Value<String> sourceApp = const Value.absent(),
+                Value<bool> synced = const Value.absent(),
+                Value<bool> archived = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => NotesCompanion(
+                id: id,
+                title: title,
+                content: content,
+                subject: subject,
+                sourceApp: sourceApp,
+                synced: synced,
+                archived: archived,
+                updatedAt: updatedAt,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                Value<String> title = const Value.absent(),
+                Value<String> content = const Value.absent(),
+                Value<String> subject = const Value.absent(),
+                Value<String> sourceApp = const Value.absent(),
+                Value<bool> synced = const Value.absent(),
+                Value<bool> archived = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => NotesCompanion.insert(
+                id: id,
+                title: title,
+                content: content,
+                subject: subject,
+                sourceApp: sourceApp,
+                synced: synced,
+                archived: archived,
+                updatedAt: updatedAt,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$NotesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $NotesTable,
+      Note,
+      $$NotesTableFilterComposer,
+      $$NotesTableOrderingComposer,
+      $$NotesTableAnnotationComposer,
+      $$NotesTableCreateCompanionBuilder,
+      $$NotesTableUpdateCompanionBuilder,
+      (Note, BaseReferences<_$AppDatabase, $NotesTable, Note>),
+      Note,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -4067,4 +4883,6 @@ class $AppDatabaseManager {
       $$QuestionsTableTableManager(_db, _db.questions);
   $$AttemptsTableTableManager get attempts =>
       $$AttemptsTableTableManager(_db, _db.attempts);
+  $$NotesTableTableManager get notes =>
+      $$NotesTableTableManager(_db, _db.notes);
 }

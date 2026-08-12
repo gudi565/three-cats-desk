@@ -12,15 +12,15 @@ part 'database.g.dart';
 /// Web 用 WasmDatabase（sqlite3 wasm）；安卓/iOS 用 NativeDatabase 落盘。
 /// 平台连接在 connection_*.dart（条件导入，避免 dart:ffi 在 Web 静态引入）。
 /// Phase0 只验证 Web + 安卓。
-@DriftDatabase(tables: [LocalDecks, LocalCards, FocusSessions, Questions, Attempts])
+@DriftDatabase(tables: [LocalDecks, LocalCards, FocusSessions, Questions, Attempts, Notes])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(openConnection());
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
-  /// 迁移：v1→v2 新增 FocusSessions；v2→v3 新增 Questions + Attempts。
+  /// 迁移：v1→v2 FocusSessions；v2→v3 Questions+Attempts；v3→v4 Notes。
   @override
   MigrationStrategy get migration => MigrationStrategy(
         onUpgrade: (migrator, from, to) async {
@@ -30,6 +30,9 @@ class AppDatabase extends _$AppDatabase {
           if (from < 3) {
             await migrator.createTable(questions);
             await migrator.createTable(attempts);
+          }
+          if (from < 4) {
+            await migrator.createTable(notes);
           }
         },
       );
@@ -165,6 +168,42 @@ class AppDatabase extends _$AppDatabase {
     final n = now ?? DateTime.now();
     final dayStart = DateTime(n.year, n.month, n.day);
     return (select(attempts)..where((a) => a.answeredAt.isBiggerOrEqualValue(dayStart)))
+        .get().then((l) => l.length);
+  }
+
+  // ---- 知知：笔记 ----
+
+  /// 新建/更新笔记（upsert by id）。
+  Future<void> upsertNote(NotesCompanion n) =>
+      into(notes).insertOnConflictUpdate(n);
+
+  /// 所有未归档笔记（新更新在前）。
+  Future<List<Note>> getNotes() =>
+      (select(notes)..where((n) => n.archived.equals(false))
+            ..orderBy([(n) => OrderingTerm.desc(n.updatedAt)]))
+          .get();
+
+  Future<Note?> getNoteById(String id) =>
+      (select(notes)..where((n) => n.id.equals(id))).getSingleOrNull();
+
+  Future<void> archiveNote(String id) =>
+      (update(notes)..where((n) => n.id.equals(id)))
+          .write(const NotesCompanion(archived: Value(true)));
+
+  /// 未上云笔记（登录/网络恢复重试）。
+  Future<List<Note>> getUnsyncedNotes() =>
+      (select(notes)..where((n) => n.synced.equals(false))).get();
+
+  Future<void> markNoteSynced(String id) =>
+      (update(notes)..where((n) => n.id.equals(id)))
+          .write(const NotesCompanion(synced: Value(true)));
+
+  /// 今日更新笔记数（仪表盘）。
+  Future<int> getTodayNoteCount({DateTime? now}) {
+    final n = now ?? DateTime.now();
+    final dayStart = DateTime(n.year, n.month, n.day);
+    return (select(notes)..where((x) => x.updatedAt.isBiggerOrEqualValue(dayStart)
+          & x.archived.equals(false)))
         .get().then((l) => l.length);
   }
 }
