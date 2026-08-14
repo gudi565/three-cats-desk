@@ -11,6 +11,8 @@ import 'features/niannian/login_screen.dart';
 import 'features/niannian/review_screen.dart';
 import 'features/nuannuan/focus_provider.dart';
 import 'features/nuannuan/focus_screen.dart';
+import 'features/profile/onboarding_screen.dart';
+import 'features/profile/user_profile.dart';
 import 'features/wenwen/quiz_screen.dart';
 import 'features/zhizhi/notes_screen.dart';
 import 'features/yuanyuan/yuanyuan_screen.dart';
@@ -100,10 +102,14 @@ class SanmaoApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final profile = ref.watch(userProfileProvider);
+    // 本地专属版：未完成初始化向导 → 先进 Onboarding（无账号，填昵称/院校/日期）。
+    // 完成后进主页。设置页可改。
     final router = GoRouter(
-      initialLocation: '/',
+      initialLocation: profile.setupDone ? '/' : '/onboarding',
       routes: [
         GoRoute(path: '/', builder: (_, __) => const HomeScreen()),
+        GoRoute(path: '/onboarding', builder: (_, __) => const OnboardingScreen()),
         GoRoute(path: '/login', builder: (_, __) => const LoginScreen()),
       ],
     );
@@ -135,14 +141,27 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final cat = ref.watch(catProvider);
+    final profile = ref.watch(userProfileProvider);
+    final days = profile.daysToExam;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('三猫书桌 · 考研'),
+        // 专属标题：「小明 · 北京大学 新闻与传播」（未填则「三猫书桌 · 考研」）
+        title: Text(profile.setupDone && profile.titleLine != '三猫书桌'
+            ? profile.titleLine
+            : '三猫书桌 · 考研'),
         actions: [
+          if (days != null)
+            Padding(
+              padding: const EdgeInsets.only(right: 4),
+              child: Center(
+                child: Text('距考试 $days 天',
+                    style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+              ),
+            ),
           IconButton(
             icon: const Icon(Icons.person_outline),
             onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const LoginScreen()),
+              MaterialPageRoute(builder: (_) => const OnboardingScreen()),
             ),
           ),
         ],
@@ -150,7 +169,12 @@ class HomeScreen extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          _CatGreeting(mood: cat.mood, intimacy: cat.intimacy, today: cat.todayReviewed),
+          _CatGreeting(
+            mood: cat.mood,
+            intimacy: cat.intimacy,
+            today: cat.todayReviewed,
+            nickname: profile.nickname,
+          ),
           const SizedBox(height: 12),
           const _TodayOverview(), // 跨模块今日总览（暖暖仪表盘底座）
           const SizedBox(height: 12),
@@ -186,7 +210,7 @@ class HomeScreen extends ConsumerWidget {
             ),
           const SizedBox(height: 16),
           const Center(
-            child: Text('Phase2 · 念念翻卡 + 暖暖专注 + 猫养成',
+            child: Text('五猫套装 · 念念背书 + 暖暖专注 + 稳稳做题 + 知知笔记 + 渊渊文献',
                 style: TextStyle(color: Colors.grey, fontSize: 12)),
           ),
         ],
@@ -201,11 +225,18 @@ class _CatGreeting extends StatelessWidget {
   final CatMood mood;
   final int intimacy;
   final int today;
-  const _CatGreeting({required this.mood, required this.intimacy, required this.today});
+  final String nickname;
+  const _CatGreeting({
+    required this.mood,
+    required this.intimacy,
+    required this.today,
+    this.nickname = '',
+  });
 
   @override
   Widget build(BuildContext context) {
     final hasReviewedToday = today > 0;
+    final who = nickname.isEmpty ? '' : '$nickname，';
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
@@ -226,8 +257,8 @@ class _CatGreeting extends StatelessWidget {
               children: [
                 Text(
                   hasReviewedToday
-                      ? '今天复习了 $today 张，猫咪很满足～'
-                      : '猫咪在等你今天来复习哦！',
+                      ? '${who}今天复习了 $today 张，猫咪很满足～'
+                      : '${who}猫咪在等你今天来复习哦！',
                   style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 4),
