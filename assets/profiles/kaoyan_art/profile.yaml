@@ -1,0 +1,18 @@
+# 美术考研 · 国美方向 内容包 profile
+# 这是「按人定制」的样例：客户版=assets内容+此profile，代码零分叉。
+id: kaoyan_art
+displayName: 美术考研 · 国美方向
+suggestSchool: 中国美术学院
+suggestMajor: 美术史论
+modules: [niannian, nuannuan, wenwen, zhizhi, yuanyuan]
+decks:
+  - decks/中外美术史.ncpack
+  - decks/艺术学概论.ncpack
+  - decks/西方美学史.ncpack
+  - decks/中国画论.ncpack
+  - decks/熟词僻义.ncpack
+  - decks/考研英语核心词组.ncpack
+  - decks/english-kaoyan-hifi.json
+questions:
+  - questions.json
+syllabus: syllabus.md

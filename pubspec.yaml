@@ -47,6 +47,7 @@ dependencies:
   uuid: ^4.4.0           # 卡/词书 id（uuid，对齐 Supabase uuid 列）
   path: ^1.9.1
   http: ^1.2.0           # 渊渊 CrossRef 真实文献检索（公共免费 API，无需 key）
+  yaml: ^3.1.3
 
 dev_dependencies:
   flutter_test:
@@ -76,6 +77,9 @@ flutter:
   assets:
     - assets/decks/
     - assets/questions/
+    # 客户内容包（按人定制）：每个子目录一个 profile（profile.yaml+decks+questions+syllabus）
+    - assets/profiles/kaoyan_art/
+    - assets/profiles/kaoyan_art/decks/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

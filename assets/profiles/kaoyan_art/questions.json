@@ -1,0 +1,282 @@
+[
+  {
+    "id": "zz-001",
+    "subject": "政治",
+    "stem": "马克思主义哲学认为，实践之所以成为检验认识真理性的唯一标准，最根本的原因是",
+    "options": [
+      "实践具有直接现实性，能把主观认识变成客观现实并加以对照",
+      "实践是社会历史性的活动，受历史条件制约",
+      "实践是人类有意识有目的的能动性活动",
+      "实践的形式是多种多样的"
+    ],
+    "answerIndex": 0,
+    "explanation": "解析：真理是主观与客观相符合的认识，而只有实践具有直接现实性，能把观念中的认识转化为客观现实，从而使主观认识同客观结果加以对照，验证其是否符合，所以实践是检验真理的唯一标准。B说的是实践的制约性，C说的是实践的能动性，D说的是实践的形式，都与'检验真理'的原因无关。",
+    "source": "政治·马原"
+  },
+  {
+    "id": "zz-002",
+    "subject": "政治",
+    "stem": "事物发展的源泉和动力在于",
+    "options": [
+      "事物的量变积累",
+      "事物之间的相互联系",
+      "事物内部的否定因素",
+      "事物内部的矛盾运动"
+    ],
+    "answerIndex": 3,
+    "explanation": "解析：对立统一规律（矛盾规律）是唯物辩证法的实质和核心，矛盾即事物内部的对立统一，是事物发展的源泉和动力。量变只是发展的形式之一，联系是辩证法的总特征之一，否定因素是辩证否定观的内容，均不构成发展的根本动力。",
+    "source": "政治·马原"
+  },
+  {
+    "id": "zz-003",
+    "subject": "政治",
+    "stem": "商品是用来交换的劳动产品，商品的二因素是",
+    "options": [
+      "具体劳动和抽象劳动",
+      "私人劳动和社会劳动",
+      "使用价值和价值",
+      "价值和交换价值"
+    ],
+    "answerIndex": 2,
+    "explanation": "解析：商品具有使用价值和价值二因素：使用价值是商品能满足人们某种需要的属性，价值是凝结在商品中的无差别的一般人类劳动。A是生产商品的劳动二重性（它决定商品二因素），B是简单商品经济的基本矛盾，D中交换价值只是价值的表现形式。",
+    "source": "政治·马原"
+  },
+  {
+    "id": "zz-004",
+    "subject": "政治",
+    "stem": "从感性认识向理性认识飞跃，必须具备的两个基本条件是",
+    "options": [
+      "掌握辩证思维方法和把握事物的本质",
+      "获取丰富真实的感性材料并进行科学的抽象概括",
+      "坚持理论联系实际和接受实践检验",
+      "充分发挥主观能动性和尊重客观规律"
+    ],
+    "answerIndex": 1,
+    "explanation": "解析：实现从感性认识到理性认识的第一次飞跃，一要勇于实践、深入调查，获取十分丰富和合乎实际的感性材料；二要经过理性思考，运用科学思维方法对材料进行去粗取精、去伪存真、由此及彼、由表及里的加工。A、C、D都不是这一认识飞跃所规定的基本条件。",
+    "source": "政治·马原"
+  },
+  {
+    "id": "zz-005",
+    "subject": "政治",
+    "stem": "1992年邓小平在南方谈话中明确指出，社会主义的本质是",
+    "options": [
+      "公有制占主体，按劳分配为主体",
+      "计划经济与市场调节相结合",
+      "解放生产力，发展生产力，消灭剥削，消除两极分化，最终达到共同富裕",
+      "人民当家作主，实现共同理想"
+    ],
+    "answerIndex": 2,
+    "explanation": "解析：1992年南方谈话中，邓小平对社会主义本质作出经典概括：解放生产力，发展生产力，消灭剥削，消除两极分化，最终达到共同富裕。A说的是社会主义初级阶段基本经济制度层面的特征，C是经济体制问题，D是政治与理想层面，都不是'本质'的规范表述。",
+    "source": "政治·毛中特"
+  },
+  {
+    "id": "zz-006",
+    "subject": "政治",
+    "stem": "党的十九大报告指出，中国特色社会主义进入新时代，我国社会主要矛盾已经转化为",
+    "options": [
+      "人民日益增长的物质文化需要同落后的社会生产之间的矛盾",
+      "人民日益增长的美好生活需要和不平衡不充分的发展之间的矛盾",
+      "生产力与生产关系、经济基础与上层建筑之间的矛盾",
+      "人民对于建立先进的工业国的要求同落后的农业国的现实之间的矛盾"
+    ],
+    "answerIndex": 1,
+    "explanation": "解析：新时代我国社会主要矛盾是人民日益增长的美好生活需要和不平衡不充分的发展之间的矛盾。A是1981年十一届六中全会对当时主要矛盾的表述，C是贯穿人类社会的基本矛盾，D是党的八大对社会主义改造基本完成后主要矛盾的提法。",
+    "source": "政治·毛中特"
+  },
+  {
+    "id": "zz-007",
+    "subject": "政治",
+    "stem": "毛泽东指出，新民主主义革命时期，中国共产党战胜敌人的三大法宝是",
+    "options": [
+      "实事求是、群众路线、独立自主",
+      "统一战线、武装斗争、党的建设",
+      "理论联系实际、密切联系群众、批评与自我批评",
+      "土地革命、武装斗争、根据地建设"
+    ],
+    "answerIndex": 1,
+    "explanation": "解析：毛泽东在《〈共产党人〉发刊词》中把统一战线、武装斗争、党的建设概括为战胜敌人的三大法宝。A是毛泽东思想活的灵魂的三个基本方面，C是党的三大作风，D是'工农武装割据'的主要内容，注意区分，不要混淆。",
+    "source": "政治·毛中特"
+  },
+  {
+    "id": "zz-008",
+    "subject": "政治",
+    "stem": "辛亥革命是一次比较完全意义上的资产阶级民主革命，但其失败的根本原因是",
+    "options": [
+      "没有提出彻底的反帝反封建革命纲领，未能充分发动和依靠群众，缺乏坚强有力的革命政党",
+      "革命果实被袁世凯窃取，临时政府迁往北京",
+      "帝国主义与封建势力相互勾结、力量过于强大",
+      "革命党人放弃了武装斗争，对旧势力妥协退让"
+    ],
+    "answerIndex": 0,
+    "explanation": "解析：辛亥革命失败的根本原因在于民族资产阶级的软弱性和妥协性：没有彻底的反帝反封建纲领，不能充分发动和依靠人民群众，不能建立坚强有力的革命政党。B是革命失败的直接表现而非根本原因，C是客观原因（外部条件），D表述不准确，革命党人长期坚持武装斗争。",
+    "source": "政治·史纲"
+  },
+  {
+    "id": "zz-009",
+    "subject": "政治",
+    "stem": "1935年1月召开的遵义会议，集中解决了当时具有决定意义的问题是",
+    "options": [
+      "政治路线问题和思想路线问题",
+      "土地革命问题和经济政策问题",
+      "军事问题和组织问题",
+      "统一战线问题和武装斗争问题"
+    ],
+    "answerIndex": 2,
+    "explanation": "解析：遵义会议集中解决了当时具有决定意义的军事问题和组织问题，确立了毛泽东在党中央和红军中的领导地位，在极其危急的情况下挽救了党、挽救了红军、挽救了中国革命，是党的历史上一个生死攸关的转折点。思想路线问题主要是后来延安整风解决的，A、C、D均不符合史实。",
+    "source": "政治·史纲"
+  },
+  {
+    "id": "zz-010",
+    "subject": "政治",
+    "stem": "社会主义道德建设要以为人民服务为核心。决定社会主义道德必须以为人民服务为核心的根本依据是",
+    "options": [
+      "中华民族传统美德的要求",
+      "社会主义经济基础和人际关系的客观性质",
+      "中国共产党的人民立场",
+      "全体社会成员的共同愿望"
+    ],
+    "answerIndex": 1,
+    "explanation": "解析：道德属于上层建筑，由经济基础决定。社会主义道德以为人民服务为核心，是社会主义经济基础和人与人之间平等互助关系的客观要求，这是根本依据。党的立场、传统美德、人民愿望都与这一核心相契合，但都不是决定道德核心的根本原因。",
+    "source": "政治·思修"
+  },
+  {
+    "id": "en-011",
+    "subject": "英语",
+    "stem": "The committee's findings had a ______ impact on the government's environmental policy, leading to sweeping reforms within a year.",
+    "options": [
+      "profound",
+      "shallow",
+      "superficial",
+      "moderate"
+    ],
+    "answerIndex": 0,
+    "explanation": "解析：profound 意为'深刻的、深远的'，常与 impact/influence/effect 搭配，符合句中'一年内引发全面改革'的语境。shallow（肤浅的）和 superficial（表面的）感情色彩与语义均相反，moderate（适度的）与 sweeping reforms 矛盾。",
+    "source": "英语·词汇"
+  },
+  {
+    "id": "en-012",
+    "subject": "英语",
+    "stem": "The three words most similar in meaning to 'scrutinize' are all EXCEPT:",
+    "options": [
+      "examine",
+      "inspect",
+      "investigate",
+      "neglect"
+    ],
+    "answerIndex": 3,
+    "explanation": "解析：scrutinize 意为'仔细审查、细看'，与 examine、inspect、investigate 同属'检查、调查'语义场。neglect 意为'忽视、疏忽'，与 scrutinize 意思相反，故选 D。考研阅读中 scrutinize 常与 regulatory scrutiny（监管审查）搭配出现。",
+    "source": "英语·词汇"
+  },
+  {
+    "id": "en-013",
+    "subject": "英语",
+    "stem": "Regular exercise ______ a lower risk of heart disease, according to decades of epidemiological research.",
+    "options": [
+      "contributes to",
+      "attributes to",
+      "distributes to",
+      "devotes to"
+    ],
+    "answerIndex": 0,
+    "explanation": "解析：contribute to 表示'促成、有助于'，符合'锻炼降低心脏病风险'的因果语境。attribute to 表示'归因于'，主语应是结果而非原因；distribute 意为'分配、分发'；devote...to 意为'致力于'，且用法为 devote oneself/sth. to。",
+    "source": "英语·词汇"
+  },
+  {
+    "id": "en-014",
+    "subject": "英语",
+    "stem": "By the end of next year, the research team ______ on this vaccine project for over a decade.",
+    "options": [
+      "will work",
+      "will have been working",
+      "has worked",
+      "had worked"
+    ],
+    "answerIndex": 1,
+    "explanation": "解析：句中 by the end of next year（到将来某时为止）+ for over a decade（持续时间段），应用将来完成进行时 will have been doing，强调动作持续到将来某时刻并可能继续。A只表将来，C为现在完成时，D为过去完成时，时间参照均不符。",
+    "source": "英语·语法"
+  },
+  {
+    "id": "en-015",
+    "subject": "英语",
+    "stem": "The mayor declined to comment on the scandal, ______ further speculation among the press.",
+    "options": [
+      "to fuel",
+      "fueled",
+      "having fueled",
+      "fueling"
+    ],
+    "answerIndex": 3,
+    "explanation": "解析：逗号后作结果状语，表示自然而然产生的结果，应用现在分词 fueling（加剧、助长）。不定式 to fuel 作结果状语多表示出乎意料的结果，常与 only 连用；fueled 为过去分词，表被动或完成，逻辑不通；having fueled 表示先于谓语完成，此处两动作几乎同时发生，不适用。",
+    "source": "英语·语法"
+  },
+  {
+    "id": "en-016",
+    "subject": "英语",
+    "stem": "______ the high cost of imported components, the company decided to develop its own supply chain.",
+    "options": [
+      "In terms of",
+      "In spite of",
+      "In view of",
+      "In charge of"
+    ],
+    "answerIndex": 2,
+    "explanation": "解析：in view of 意为'鉴于、考虑到'，引出公司决定自建供应链的原因，符合逻辑。in terms of 意为'就……而言'，in spite of 意为'尽管'（表让步，与句意相反），in charge of 意为'负责'，均不合句意。",
+    "source": "英语·完形"
+  },
+  {
+    "id": "en-017",
+    "subject": "英语",
+    "stem": "Public suspicion about the new technology ______, and soon the whole plan collapsed for lack of support.",
+    "options": [
+      "articulated",
+      "arose",
+      "aroused",
+      "raised"
+    ],
+    "answerIndex": 1,
+    "explanation": "解析：arise（arose, arisen）为不及物动词，意为'出现、产生'，主语可以是 suspicion，'怀疑情绪出现'语义通顺。arouse 是及物动词'唤起'，需带宾语；articulate 意为'清晰表达'；raise 作'引起'讲时也是及物动词，需说 raise suspicion。",
+    "source": "英语·词汇"
+  },
+  {
+    "id": "en-018",
+    "subject": "英语",
+    "stem": "Even seemingly minor changes in diet and sleep can ______ to significant improvements in long-term health.",
+    "options": [
+      "add up",
+      "count up",
+      "sum up",
+      "build on"
+    ],
+    "answerIndex": 0,
+    "explanation": "解析：add up to 为固定搭配，意为'累计为、合起来意味着'，句中表示微小改变累积成显著改善。count up 意为'清点、算出总数'，sum up 意为'总结'，build on 意为'在……基础上发展'，三者均无'累计达到某结果'之义，且不与 to 这样搭配。",
+    "source": "英语·词汇"
+  },
+  {
+    "id": "en-019",
+    "subject": "英语",
+    "stem": "Not until the 1980s ______ to recognize the ecological value of the wetlands.",
+    "options": [
+      "scientists began",
+      "began scientists",
+      "did scientists begin",
+      "scientists had begun"
+    ],
+    "answerIndex": 2,
+    "explanation": "解析：not until 位于句首时，主句须部分倒装，即把助动词提到主语之前，故用 did scientists begin。A未倒装，C为全部倒装（部分倒装不能把实义动词提前），D时态与倒装结构均不对。",
+    "source": "英语·语法"
+  },
+  {
+    "id": "en-020",
+    "subject": "英语",
+    "stem": "The new manager's proposal was ______ innovative, combining cutting-edge technology with traditional craftsmanship.",
+    "options": [
+      "remarkable",
+      "remarkably enough",
+      "remarked",
+      "remarkably"
+    ],
+    "answerIndex": 3,
+    "explanation": "解析：空格修饰形容词 innovative，须用副词 remarkably（非常、显著地），remarkably innovative 意为'极具创新性'。D为形容词，不能修饰形容词；C为动词过去式；B结构中 enough 应后置（innovative enough），且填入后语序不通。",
+    "source": "英语·词汇"
+  }
+]

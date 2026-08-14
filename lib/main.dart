@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'core/app_mode.dart';
+import 'core/profile/content_profile.dart';
+import 'core/profile/profile_notifier.dart';
 import 'core/providers.dart';
 import 'core/supabase_client.dart';
 import 'features/cat/cat_provider.dart';
@@ -16,13 +18,6 @@ import 'features/profile/user_profile.dart';
 import 'features/wenwen/quiz_screen.dart';
 import 'features/zhizhi/notes_screen.dart';
 import 'features/yuanyuan/yuanyuan_screen.dart';
-
-/// 内置词书（从 legacy 念念/MemoryCat 拷贝，Phase0 §5）。启动幂等导入。
-const _bundledDecks = [
-  'assets/decks/熟词僻义.ncpack',
-  'assets/decks/考研英语核心词组.ncpack',
-  'assets/decks/english-kaoyan-hifi.json',
-];
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -46,23 +41,16 @@ class _BootstrapAppState extends ConsumerState<BootstrapApp> {
   late final Future<void> _ready = _bootstrap();
 
   Future<void> _bootstrap() async {
-    final importer = ref.read(deckImporterProvider);
-    for (final path in _bundledDecks) {
-      try {
-        await importer.importFromAsset(path);
-      } catch (e) {
-        debugPrint('[bootstrap] 导入 $path 失败：$e'); // 单本失败不阻塞其它
-      }
+    // 内容包驱动导入（按人定制的引擎）：探测客户 profile → 导入其词书/题库/考纲，
+    // 找不到客户包 → 回落通用版（公共课词书+示例题库）。幂等，单失败不阻塞。
+    try {
+      await ref.read(contentProfileProvider.notifier).loadAndImport();
+    } catch (e) {
+      debugPrint('[bootstrap] profile 导入失败：$e');
     }
     // 登录态恢复后重试未同步卡（PUSH）
     if (SupabaseConfig.isLoggedIn) {
       await ref.read(cloudSyncProvider).pushAllUnsynced();
-    }
-    // 稳稳题库（幂等按 id）——assets/questions/*.json
-    try {
-      await ref.read(quizImporterProvider).importFromAsset('assets/questions/sample-quiz.json');
-    } catch (e) {
-      debugPrint('[bootstrap] 题库导入失败：$e');
     }
     // 雷2 埋点：登录态确立后，猫 key 重绑到该 userId（防同设备多账号串猫），
     // 并标今日打开（留存度量唯一云端信号）+ 顺手带上 intimacy 快照（防资产归零+归因）。
@@ -142,19 +130,24 @@ class SanmaoApp extends ConsumerWidget {
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
+  /// 五猫模块清单：(显示名, 副标题, 图标, 主色, 模块key)。模块key 对应 profile.yaml 的 modules。
   static const _modules = [
-    ('念念', '背书 · 翻卡复习', Icons.style_outlined, Color(0xFF3E8EAA), true),
-    ('暖暖', '专注 · 番茄钟', Icons.local_cafe_outlined, Color(0xFFE0A458), true),
-    ('稳稳', '做题 · 考研真题', Icons.checklist_outlined, Color(0xFF5B9E6F), true),
-    ('知知', '笔记 · 笔记即卡片', Icons.edit_note_outlined, Color(0xFFB083C9), true),
-    ('渊渊', '文献 · 真实检索', Icons.menu_book_outlined, Color(0xFF8B7E6A), true),
+    ('念念', '背书 · 翻卡复习', Icons.style_outlined, Color(0xFF3E8EAA), 'niannian'),
+    ('暖暖', '专注 · 番茄钟', Icons.local_cafe_outlined, Color(0xFFE0A458), 'nuannuan'),
+    ('稳稳', '做题 · 考研真题', Icons.checklist_outlined, Color(0xFF5B9E6F), 'wenwen'),
+    ('知知', '笔记 · 笔记即卡片', Icons.edit_note_outlined, Color(0xFFB083C9), 'zhizhi'),
+    ('渊渊', '文献 · 真实检索', Icons.menu_book_outlined, Color(0xFF8B7E6A), 'yuanyuan'),
   ];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final cat = ref.watch(catProvider);
     final profile = ref.watch(userProfileProvider);
+    final content = ref.watch(contentProfileProvider);
     final days = profile.daysToExam;
+    // 模块按 profile 开关（按人定制：只显示客户启用的猫）。
+    final visibleModules =
+        _modules.where((m) => content.hasModule(m.$5)).toList();
     return Scaffold(
       appBar: AppBar(
         // 专属标题：「小明 · 北京大学 新闻与传播」（未填则「三猫书桌 · 考研」）
@@ -190,7 +183,7 @@ class HomeScreen extends ConsumerWidget {
           const SizedBox(height: 12),
           const _TodayOverview(), // 跨模块今日总览（暖暖仪表盘底座）
           const SizedBox(height: 12),
-          for (final m in _modules)
+          for (final m in visibleModules)
             Card(
               child: ListTile(
                 leading: CircleAvatar(
@@ -199,31 +192,26 @@ class HomeScreen extends ConsumerWidget {
                 ),
                 title: Text(m.$1),
                 subtitle: Text(m.$2),
-                trailing: m.$5
-                    ? const Icon(Icons.chevron_right)
-                    : const Chip(label: Text('待开'), visualDensity: VisualDensity.compact),
-                enabled: m.$5,
-                onTap: !m.$5
-                    ? null
-                    : () => Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => m.$1 == '暖暖'
-                                ? const FocusScreen()
-                                : m.$1 == '稳稳'
-                                    ? const WenwenHomeScreen()
-                                    : m.$1 == '知知'
-                                        ? const ZhizhiHomeScreen()
-                                        : m.$1 == '渊渊'
-                                            ? const YuanyuanHomeScreen()
-                                            : const DeckListScreen(),
-                          ),
-                        ),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => m.$5 == 'nuannuan'
+                        ? const FocusScreen()
+                        : m.$5 == 'wenwen'
+                            ? const WenwenHomeScreen()
+                            : m.$5 == 'zhizhi'
+                                ? const ZhizhiHomeScreen()
+                                : m.$5 == 'yuanyuan'
+                                    ? const YuanyuanHomeScreen()
+                                    : const DeckListScreen(),
+                  ),
+                ),
               ),
             ),
-          const SizedBox(height: 16),
-          const Center(
-            child: Text('五猫套装 · 念念背书 + 暖暖专注 + 稳稳做题 + 知知笔记 + 渊渊文献',
-                style: TextStyle(color: Colors.grey, fontSize: 12)),
+          const SizedBox(height: 8),
+          Center(
+            child: Text(content.displayName,
+                style: const TextStyle(color: Colors.grey, fontSize: 12)),
           ),
         ],
       ),
