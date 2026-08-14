@@ -1,0 +1,20 @@
+# 美术考研 · 国美方向 示例资源包配置
+# 生成：dart run tool/make_pack.dart tool/packs/kaoyan_art.yaml
+# 路径可写绝对路径（如 04_内容与题库 的全量库）或相对本文件的路径。
+id: kaoyan_art
+displayName: 美术考研 · 国美方向
+suggestSchool: 中国美术学院
+suggestMajor: 美术史论
+examDate: 2026-12-26
+modules: [niannian, nuannuan, wenwen, zhizhi, yuanyuan]
+decks:
+  - ../../assets/profiles/kaoyan_art/decks/中外美术史.ncpack
+  - ../../assets/profiles/kaoyan_art/decks/艺术学概论.ncpack
+  - ../../assets/profiles/kaoyan_art/decks/西方美学史.ncpack
+  - ../../assets/profiles/kaoyan_art/decks/中国画论.ncpack
+  - ../../assets/profiles/kaoyan_art/decks/熟词僻义.ncpack
+  - ../../assets/profiles/kaoyan_art/decks/考研英语核心词组.ncpack
+  - ../../assets/profiles/kaoyan_art/decks/english-kaoyan-hifi.json
+questions:
+  - ../../assets/profiles/kaoyan_art/questions.json
+syllabus: ../../assets/profiles/kaoyan_art/syllabus.md

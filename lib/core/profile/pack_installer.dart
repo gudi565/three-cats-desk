@@ -34,7 +34,12 @@ class PackInstaller {
   /// 安装一个 .smpack（字节流来自 file_picker / 网络 / 测试）。
   /// 解析失败（非 zip / 缺 profile.yaml）抛 [PackFormatException]，UI 提示"不是有效的资源包"。
   Future<PackInstallResult> installFromBytes(List<int> bytes) async {
-    final archive = ZipDecoder().decodeBytes(bytes);
+    final Archive archive;
+    try {
+      archive = ZipDecoder().decodeBytes(bytes);
+    } catch (_) {
+      throw PackFormatException('无法解压（不是有效的三猫资源包文件）');
+    }
     final profileFile = archive.find('profile.yaml');
     if (profileFile == null) {
       throw PackFormatException('资源包缺少 profile.yaml（不是有效的三猫资源包）');

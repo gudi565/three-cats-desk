@@ -19,6 +19,8 @@ jobs:
           flutter-version: '3.44.x'
       - run: flutter pub get
       - run: dart run build_runner build --delete-conflicting-outputs
+      # 先生成示例 .smpack（往返测试的输入）
+      - run: dart run tool/make_pack.dart tool/packs/kaoyan_art.yaml
       - run: flutter test
 
   build-web:
@@ -98,3 +100,20 @@ jobs:
         with:
           name: app-windows-portable
           path: three_cats_desk-windows.zip
+
+  # .smpack 示例资源包（卖家端生成器产出 + 往返测试在 test job 先跑生成）。
+  build-pack:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.44.x'
+      - run: flutter pub get
+      - run: dart run tool/make_pack.dart tool/packs/kaoyan_art.yaml
+      - uses: actions/upload-artifact@v6
+        with:
+          name: sample-smpack-kaoyan-art
+          path: build/packs/kaoyan_art.smpack
