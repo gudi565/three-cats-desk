@@ -12,15 +12,15 @@ part 'database.g.dart';
 /// Web 用 WasmDatabase（sqlite3 wasm）；安卓/iOS 用 NativeDatabase 落盘。
 /// 平台连接在 connection_*.dart（条件导入，避免 dart:ffi 在 Web 静态引入）。
 /// Phase0 只验证 Web + 安卓。
-@DriftDatabase(tables: [LocalDecks, LocalCards, FocusSessions, Questions, Attempts, Notes, Literature])
+@DriftDatabase(tables: [LocalDecks, LocalCards, FocusSessions, Questions, Attempts, Notes, Literature, ActivityLog])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(openConnection());
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
-  /// 迁移：v1→v2 FocusSessions；v2→v3 Questions+Attempts；v3→v4 Notes；v4→v5 Literature。
+  /// 迁移：v1→v2 FocusSessions；v2→v3 Questions+Attempts；v3→v4 Notes；v4→v5 Literature；v5→v6 ActivityLog。
   @override
   MigrationStrategy get migration => MigrationStrategy(
         onUpgrade: (migrator, from, to) async {
@@ -36,6 +36,9 @@ class AppDatabase extends _$AppDatabase {
           }
           if (from < 5) {
             await migrator.createTable(literature);
+          }
+          if (from < 6) {
+            await migrator.createTable(activityLog);
           }
         },
       );
@@ -246,4 +249,62 @@ class AppDatabase extends _$AppDatabase {
   Future<void> markLiteratureSynced(String id) =>
       (update(literature)..where((l) => l.id.equals(id)))
           .write(const LiteratureCompanion(synced: Value(true)));
+
+  // ---- 本地留存度量（activity_log，本地专属版观测仪器）----
+
+  /// 记录一次 App 打开（upsert by day）：openCount+1、首/末次打开时间、intimacy 快照。
+  /// 幂等：同一天多次调用只递增计数。本地留存度量的唯一信号源。
+  Future<void> recordAppOpen(String day, {int? intimacy}) async {
+    final now = DateTime.now();
+    final existing = await (select(activityLog)..where((a) => a.day.equals(day)))
+        .getSingleOrNull();
+    if (existing == null) {
+      await into(activityLog).insert(ActivityLogCompanion(
+        day: Value(day),
+        openCount: const Value(1),
+        intimacy: Value(intimacy ?? 0),
+        firstOpenedAt: Value(now),
+        lastOpenedAt: Value(now),
+      ));
+    } else {
+      await (update(activityLog)..where((a) => a.day.equals(day))).write(
+        ActivityLogCompanion(
+          openCount: Value(existing.openCount + 1),
+          intimacy: Value(intimacy ?? existing.intimacy),
+          lastOpenedAt: Value(now),
+        ),
+      );
+    }
+  }
+
+  /// 复习一张卡后：当日 reviewed+1（ upsert 保底当天有行）。
+  Future<void> recordReviewed(String day, {int? intimacy}) async {
+    final existing = await (select(activityLog)..where((a) => a.day.equals(day)))
+        .getSingleOrNull();
+    if (existing == null) {
+      await into(activityLog).insert(ActivityLogCompanion(
+        day: Value(day),
+        reviewed: const Value(1),
+        intimacy: Value(intimacy ?? 0),
+      ));
+    } else {
+      await (update(activityLog)..where((a) => a.day.equals(day))).write(
+        ActivityLogCompanion(
+          reviewed: Value(existing.reviewed + 1),
+          intimacy: Value(intimacy ?? existing.intimacy),
+        ),
+      );
+    }
+  }
+
+  /// 取最近 N 天活动（坚持仪表盘 + 诊断包导出）。
+  Future<List<ActivityLogData>> getRecentActivity(int days) =>
+      (select(activityLog)
+            ..orderBy([(a) => OrderingTerm.desc(a.day)])
+            ..limit(days))
+          .get();
+
+  /// 活跃天数（有打开记录的天数，留存计算用）。
+  Future<int> countActiveDays() =>
+      select(activityLog).get().then((l) => l.length);
 }

@@ -4052,6 +4052,485 @@ class LiteratureCompanion extends UpdateCompanion<LiteratureData> {
   }
 }
 
+class $ActivityLogTable extends ActivityLog
+    with TableInfo<$ActivityLogTable, ActivityLogData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ActivityLogTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _dayMeta = const VerificationMeta('day');
+  @override
+  late final GeneratedColumn<String> day = GeneratedColumn<String>(
+    'day',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _openCountMeta = const VerificationMeta(
+    'openCount',
+  );
+  @override
+  late final GeneratedColumn<int> openCount = GeneratedColumn<int>(
+    'open_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _reviewedMeta = const VerificationMeta(
+    'reviewed',
+  );
+  @override
+  late final GeneratedColumn<int> reviewed = GeneratedColumn<int>(
+    'reviewed',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _focusMinutesMeta = const VerificationMeta(
+    'focusMinutes',
+  );
+  @override
+  late final GeneratedColumn<int> focusMinutes = GeneratedColumn<int>(
+    'focus_minutes',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _intimacyMeta = const VerificationMeta(
+    'intimacy',
+  );
+  @override
+  late final GeneratedColumn<int> intimacy = GeneratedColumn<int>(
+    'intimacy',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _firstOpenedAtMeta = const VerificationMeta(
+    'firstOpenedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> firstOpenedAt =
+      GeneratedColumn<DateTime>(
+        'first_opened_at',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _lastOpenedAtMeta = const VerificationMeta(
+    'lastOpenedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastOpenedAt = GeneratedColumn<DateTime>(
+    'last_opened_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    day,
+    openCount,
+    reviewed,
+    focusMinutes,
+    intimacy,
+    firstOpenedAt,
+    lastOpenedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'activity_log';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ActivityLogData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('day')) {
+      context.handle(
+        _dayMeta,
+        day.isAcceptableOrUnknown(data['day']!, _dayMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dayMeta);
+    }
+    if (data.containsKey('open_count')) {
+      context.handle(
+        _openCountMeta,
+        openCount.isAcceptableOrUnknown(data['open_count']!, _openCountMeta),
+      );
+    }
+    if (data.containsKey('reviewed')) {
+      context.handle(
+        _reviewedMeta,
+        reviewed.isAcceptableOrUnknown(data['reviewed']!, _reviewedMeta),
+      );
+    }
+    if (data.containsKey('focus_minutes')) {
+      context.handle(
+        _focusMinutesMeta,
+        focusMinutes.isAcceptableOrUnknown(
+          data['focus_minutes']!,
+          _focusMinutesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('intimacy')) {
+      context.handle(
+        _intimacyMeta,
+        intimacy.isAcceptableOrUnknown(data['intimacy']!, _intimacyMeta),
+      );
+    }
+    if (data.containsKey('first_opened_at')) {
+      context.handle(
+        _firstOpenedAtMeta,
+        firstOpenedAt.isAcceptableOrUnknown(
+          data['first_opened_at']!,
+          _firstOpenedAtMeta,
+        ),
+      );
+    }
+    if (data.containsKey('last_opened_at')) {
+      context.handle(
+        _lastOpenedAtMeta,
+        lastOpenedAt.isAcceptableOrUnknown(
+          data['last_opened_at']!,
+          _lastOpenedAtMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {day};
+  @override
+  ActivityLogData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ActivityLogData(
+      day: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}day'],
+      )!,
+      openCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}open_count'],
+      )!,
+      reviewed: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}reviewed'],
+      )!,
+      focusMinutes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}focus_minutes'],
+      )!,
+      intimacy: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}intimacy'],
+      )!,
+      firstOpenedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}first_opened_at'],
+      ),
+      lastOpenedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_opened_at'],
+      ),
+    );
+  }
+
+  @override
+  $ActivityLogTable createAlias(String alias) {
+    return $ActivityLogTable(attachedDatabase, alias);
+  }
+}
+
+class ActivityLogData extends DataClass implements Insertable<ActivityLogData> {
+  final String day;
+  final int openCount;
+  final int reviewed;
+  final int focusMinutes;
+  final int intimacy;
+  final DateTime? firstOpenedAt;
+  final DateTime? lastOpenedAt;
+  const ActivityLogData({
+    required this.day,
+    required this.openCount,
+    required this.reviewed,
+    required this.focusMinutes,
+    required this.intimacy,
+    this.firstOpenedAt,
+    this.lastOpenedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['day'] = Variable<String>(day);
+    map['open_count'] = Variable<int>(openCount);
+    map['reviewed'] = Variable<int>(reviewed);
+    map['focus_minutes'] = Variable<int>(focusMinutes);
+    map['intimacy'] = Variable<int>(intimacy);
+    if (!nullToAbsent || firstOpenedAt != null) {
+      map['first_opened_at'] = Variable<DateTime>(firstOpenedAt);
+    }
+    if (!nullToAbsent || lastOpenedAt != null) {
+      map['last_opened_at'] = Variable<DateTime>(lastOpenedAt);
+    }
+    return map;
+  }
+
+  ActivityLogCompanion toCompanion(bool nullToAbsent) {
+    return ActivityLogCompanion(
+      day: Value(day),
+      openCount: Value(openCount),
+      reviewed: Value(reviewed),
+      focusMinutes: Value(focusMinutes),
+      intimacy: Value(intimacy),
+      firstOpenedAt: firstOpenedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(firstOpenedAt),
+      lastOpenedAt: lastOpenedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastOpenedAt),
+    );
+  }
+
+  factory ActivityLogData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ActivityLogData(
+      day: serializer.fromJson<String>(json['day']),
+      openCount: serializer.fromJson<int>(json['openCount']),
+      reviewed: serializer.fromJson<int>(json['reviewed']),
+      focusMinutes: serializer.fromJson<int>(json['focusMinutes']),
+      intimacy: serializer.fromJson<int>(json['intimacy']),
+      firstOpenedAt: serializer.fromJson<DateTime?>(json['firstOpenedAt']),
+      lastOpenedAt: serializer.fromJson<DateTime?>(json['lastOpenedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'day': serializer.toJson<String>(day),
+      'openCount': serializer.toJson<int>(openCount),
+      'reviewed': serializer.toJson<int>(reviewed),
+      'focusMinutes': serializer.toJson<int>(focusMinutes),
+      'intimacy': serializer.toJson<int>(intimacy),
+      'firstOpenedAt': serializer.toJson<DateTime?>(firstOpenedAt),
+      'lastOpenedAt': serializer.toJson<DateTime?>(lastOpenedAt),
+    };
+  }
+
+  ActivityLogData copyWith({
+    String? day,
+    int? openCount,
+    int? reviewed,
+    int? focusMinutes,
+    int? intimacy,
+    Value<DateTime?> firstOpenedAt = const Value.absent(),
+    Value<DateTime?> lastOpenedAt = const Value.absent(),
+  }) => ActivityLogData(
+    day: day ?? this.day,
+    openCount: openCount ?? this.openCount,
+    reviewed: reviewed ?? this.reviewed,
+    focusMinutes: focusMinutes ?? this.focusMinutes,
+    intimacy: intimacy ?? this.intimacy,
+    firstOpenedAt: firstOpenedAt.present
+        ? firstOpenedAt.value
+        : this.firstOpenedAt,
+    lastOpenedAt: lastOpenedAt.present ? lastOpenedAt.value : this.lastOpenedAt,
+  );
+  ActivityLogData copyWithCompanion(ActivityLogCompanion data) {
+    return ActivityLogData(
+      day: data.day.present ? data.day.value : this.day,
+      openCount: data.openCount.present ? data.openCount.value : this.openCount,
+      reviewed: data.reviewed.present ? data.reviewed.value : this.reviewed,
+      focusMinutes: data.focusMinutes.present
+          ? data.focusMinutes.value
+          : this.focusMinutes,
+      intimacy: data.intimacy.present ? data.intimacy.value : this.intimacy,
+      firstOpenedAt: data.firstOpenedAt.present
+          ? data.firstOpenedAt.value
+          : this.firstOpenedAt,
+      lastOpenedAt: data.lastOpenedAt.present
+          ? data.lastOpenedAt.value
+          : this.lastOpenedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ActivityLogData(')
+          ..write('day: $day, ')
+          ..write('openCount: $openCount, ')
+          ..write('reviewed: $reviewed, ')
+          ..write('focusMinutes: $focusMinutes, ')
+          ..write('intimacy: $intimacy, ')
+          ..write('firstOpenedAt: $firstOpenedAt, ')
+          ..write('lastOpenedAt: $lastOpenedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    day,
+    openCount,
+    reviewed,
+    focusMinutes,
+    intimacy,
+    firstOpenedAt,
+    lastOpenedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ActivityLogData &&
+          other.day == this.day &&
+          other.openCount == this.openCount &&
+          other.reviewed == this.reviewed &&
+          other.focusMinutes == this.focusMinutes &&
+          other.intimacy == this.intimacy &&
+          other.firstOpenedAt == this.firstOpenedAt &&
+          other.lastOpenedAt == this.lastOpenedAt);
+}
+
+class ActivityLogCompanion extends UpdateCompanion<ActivityLogData> {
+  final Value<String> day;
+  final Value<int> openCount;
+  final Value<int> reviewed;
+  final Value<int> focusMinutes;
+  final Value<int> intimacy;
+  final Value<DateTime?> firstOpenedAt;
+  final Value<DateTime?> lastOpenedAt;
+  final Value<int> rowid;
+  const ActivityLogCompanion({
+    this.day = const Value.absent(),
+    this.openCount = const Value.absent(),
+    this.reviewed = const Value.absent(),
+    this.focusMinutes = const Value.absent(),
+    this.intimacy = const Value.absent(),
+    this.firstOpenedAt = const Value.absent(),
+    this.lastOpenedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ActivityLogCompanion.insert({
+    required String day,
+    this.openCount = const Value.absent(),
+    this.reviewed = const Value.absent(),
+    this.focusMinutes = const Value.absent(),
+    this.intimacy = const Value.absent(),
+    this.firstOpenedAt = const Value.absent(),
+    this.lastOpenedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : day = Value(day);
+  static Insertable<ActivityLogData> custom({
+    Expression<String>? day,
+    Expression<int>? openCount,
+    Expression<int>? reviewed,
+    Expression<int>? focusMinutes,
+    Expression<int>? intimacy,
+    Expression<DateTime>? firstOpenedAt,
+    Expression<DateTime>? lastOpenedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (day != null) 'day': day,
+      if (openCount != null) 'open_count': openCount,
+      if (reviewed != null) 'reviewed': reviewed,
+      if (focusMinutes != null) 'focus_minutes': focusMinutes,
+      if (intimacy != null) 'intimacy': intimacy,
+      if (firstOpenedAt != null) 'first_opened_at': firstOpenedAt,
+      if (lastOpenedAt != null) 'last_opened_at': lastOpenedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ActivityLogCompanion copyWith({
+    Value<String>? day,
+    Value<int>? openCount,
+    Value<int>? reviewed,
+    Value<int>? focusMinutes,
+    Value<int>? intimacy,
+    Value<DateTime?>? firstOpenedAt,
+    Value<DateTime?>? lastOpenedAt,
+    Value<int>? rowid,
+  }) {
+    return ActivityLogCompanion(
+      day: day ?? this.day,
+      openCount: openCount ?? this.openCount,
+      reviewed: reviewed ?? this.reviewed,
+      focusMinutes: focusMinutes ?? this.focusMinutes,
+      intimacy: intimacy ?? this.intimacy,
+      firstOpenedAt: firstOpenedAt ?? this.firstOpenedAt,
+      lastOpenedAt: lastOpenedAt ?? this.lastOpenedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (day.present) {
+      map['day'] = Variable<String>(day.value);
+    }
+    if (openCount.present) {
+      map['open_count'] = Variable<int>(openCount.value);
+    }
+    if (reviewed.present) {
+      map['reviewed'] = Variable<int>(reviewed.value);
+    }
+    if (focusMinutes.present) {
+      map['focus_minutes'] = Variable<int>(focusMinutes.value);
+    }
+    if (intimacy.present) {
+      map['intimacy'] = Variable<int>(intimacy.value);
+    }
+    if (firstOpenedAt.present) {
+      map['first_opened_at'] = Variable<DateTime>(firstOpenedAt.value);
+    }
+    if (lastOpenedAt.present) {
+      map['last_opened_at'] = Variable<DateTime>(lastOpenedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ActivityLogCompanion(')
+          ..write('day: $day, ')
+          ..write('openCount: $openCount, ')
+          ..write('reviewed: $reviewed, ')
+          ..write('focusMinutes: $focusMinutes, ')
+          ..write('intimacy: $intimacy, ')
+          ..write('firstOpenedAt: $firstOpenedAt, ')
+          ..write('lastOpenedAt: $lastOpenedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -4062,6 +4541,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $AttemptsTable attempts = $AttemptsTable(this);
   late final $NotesTable notes = $NotesTable(this);
   late final $LiteratureTable literature = $LiteratureTable(this);
+  late final $ActivityLogTable activityLog = $ActivityLogTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -4074,6 +4554,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     attempts,
     notes,
     literature,
+    activityLog,
   ];
 }
 
@@ -6080,6 +6561,250 @@ typedef $$LiteratureTableProcessedTableManager =
       LiteratureData,
       PrefetchHooks Function()
     >;
+typedef $$ActivityLogTableCreateCompanionBuilder =
+    ActivityLogCompanion Function({
+      required String day,
+      Value<int> openCount,
+      Value<int> reviewed,
+      Value<int> focusMinutes,
+      Value<int> intimacy,
+      Value<DateTime?> firstOpenedAt,
+      Value<DateTime?> lastOpenedAt,
+      Value<int> rowid,
+    });
+typedef $$ActivityLogTableUpdateCompanionBuilder =
+    ActivityLogCompanion Function({
+      Value<String> day,
+      Value<int> openCount,
+      Value<int> reviewed,
+      Value<int> focusMinutes,
+      Value<int> intimacy,
+      Value<DateTime?> firstOpenedAt,
+      Value<DateTime?> lastOpenedAt,
+      Value<int> rowid,
+    });
+
+class $$ActivityLogTableFilterComposer
+    extends Composer<_$AppDatabase, $ActivityLogTable> {
+  $$ActivityLogTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get day => $composableBuilder(
+    column: $table.day,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get openCount => $composableBuilder(
+    column: $table.openCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get reviewed => $composableBuilder(
+    column: $table.reviewed,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get focusMinutes => $composableBuilder(
+    column: $table.focusMinutes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get intimacy => $composableBuilder(
+    column: $table.intimacy,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get firstOpenedAt => $composableBuilder(
+    column: $table.firstOpenedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastOpenedAt => $composableBuilder(
+    column: $table.lastOpenedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ActivityLogTableOrderingComposer
+    extends Composer<_$AppDatabase, $ActivityLogTable> {
+  $$ActivityLogTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get day => $composableBuilder(
+    column: $table.day,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get openCount => $composableBuilder(
+    column: $table.openCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get reviewed => $composableBuilder(
+    column: $table.reviewed,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get focusMinutes => $composableBuilder(
+    column: $table.focusMinutes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get intimacy => $composableBuilder(
+    column: $table.intimacy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get firstOpenedAt => $composableBuilder(
+    column: $table.firstOpenedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastOpenedAt => $composableBuilder(
+    column: $table.lastOpenedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ActivityLogTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ActivityLogTable> {
+  $$ActivityLogTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get day =>
+      $composableBuilder(column: $table.day, builder: (column) => column);
+
+  GeneratedColumn<int> get openCount =>
+      $composableBuilder(column: $table.openCount, builder: (column) => column);
+
+  GeneratedColumn<int> get reviewed =>
+      $composableBuilder(column: $table.reviewed, builder: (column) => column);
+
+  GeneratedColumn<int> get focusMinutes => $composableBuilder(
+    column: $table.focusMinutes,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get intimacy =>
+      $composableBuilder(column: $table.intimacy, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get firstOpenedAt => $composableBuilder(
+    column: $table.firstOpenedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get lastOpenedAt => $composableBuilder(
+    column: $table.lastOpenedAt,
+    builder: (column) => column,
+  );
+}
+
+class $$ActivityLogTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ActivityLogTable,
+          ActivityLogData,
+          $$ActivityLogTableFilterComposer,
+          $$ActivityLogTableOrderingComposer,
+          $$ActivityLogTableAnnotationComposer,
+          $$ActivityLogTableCreateCompanionBuilder,
+          $$ActivityLogTableUpdateCompanionBuilder,
+          (
+            ActivityLogData,
+            BaseReferences<_$AppDatabase, $ActivityLogTable, ActivityLogData>,
+          ),
+          ActivityLogData,
+          PrefetchHooks Function()
+        > {
+  $$ActivityLogTableTableManager(_$AppDatabase db, $ActivityLogTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ActivityLogTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ActivityLogTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ActivityLogTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> day = const Value.absent(),
+                Value<int> openCount = const Value.absent(),
+                Value<int> reviewed = const Value.absent(),
+                Value<int> focusMinutes = const Value.absent(),
+                Value<int> intimacy = const Value.absent(),
+                Value<DateTime?> firstOpenedAt = const Value.absent(),
+                Value<DateTime?> lastOpenedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ActivityLogCompanion(
+                day: day,
+                openCount: openCount,
+                reviewed: reviewed,
+                focusMinutes: focusMinutes,
+                intimacy: intimacy,
+                firstOpenedAt: firstOpenedAt,
+                lastOpenedAt: lastOpenedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String day,
+                Value<int> openCount = const Value.absent(),
+                Value<int> reviewed = const Value.absent(),
+                Value<int> focusMinutes = const Value.absent(),
+                Value<int> intimacy = const Value.absent(),
+                Value<DateTime?> firstOpenedAt = const Value.absent(),
+                Value<DateTime?> lastOpenedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ActivityLogCompanion.insert(
+                day: day,
+                openCount: openCount,
+                reviewed: reviewed,
+                focusMinutes: focusMinutes,
+                intimacy: intimacy,
+                firstOpenedAt: firstOpenedAt,
+                lastOpenedAt: lastOpenedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ActivityLogTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ActivityLogTable,
+      ActivityLogData,
+      $$ActivityLogTableFilterComposer,
+      $$ActivityLogTableOrderingComposer,
+      $$ActivityLogTableAnnotationComposer,
+      $$ActivityLogTableCreateCompanionBuilder,
+      $$ActivityLogTableUpdateCompanionBuilder,
+      (
+        ActivityLogData,
+        BaseReferences<_$AppDatabase, $ActivityLogTable, ActivityLogData>,
+      ),
+      ActivityLogData,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -6098,4 +6823,6 @@ class $AppDatabaseManager {
       $$NotesTableTableManager(_db, _db.notes);
   $$LiteratureTableTableManager get literature =>
       $$LiteratureTableTableManager(_db, _db.literature);
+  $$ActivityLogTableTableManager get activityLog =>
+      $$ActivityLogTableTableManager(_db, _db.activityLog);
 }

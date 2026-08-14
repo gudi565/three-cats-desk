@@ -131,3 +131,21 @@ class Literature extends Table {
   @override
   Set<Column> get primaryKey => {id};
 }
+
+/// 本地留存度量（本地部署方向，2026-08-13）。无云端后「用户用没用」会失明——
+/// v1 正是死于零验证。这张表是本地专属版的「观测仪器」：
+/// 每天打开记一行（upsert by day），记录当天打开了几次、复习了几张、专注了几分钟、
+/// 猫 intimacy 快照。既是用户自己的坚持仪表盘（专属功能卖点），也是诊断包导出的数据源
+/// （客户自愿回传换月更内容 → 我们的留存信号回来了，不依赖云）。
+class ActivityLog extends Table {
+  TextColumn get day => text()();                       // YYYY-MM-DD（主键，当天 0 点对齐）
+  IntColumn get openCount => integer().withDefault(const Constant(0))(); // 当日打开次数
+  IntColumn get reviewed => integer().withDefault(const Constant(0))();  // 当日复习张数
+  IntColumn get focusMinutes => integer().withDefault(const Constant(0))(); // 当日专注分钟
+  IntColumn get intimacy => integer().withDefault(const Constant(0))();  // 当日猫亲密度快照
+  DateTimeColumn get firstOpenedAt => dateTime().nullable()(); // 当日首次打开
+  DateTimeColumn get lastOpenedAt => dateTime().nullable()();  // 当日最近打开
+
+  @override
+  Set<Column> get primaryKey => {day};
+}

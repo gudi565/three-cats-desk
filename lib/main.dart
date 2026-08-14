@@ -71,6 +71,18 @@ class _BootstrapAppState extends ConsumerState<BootstrapApp> {
       await cat.bindUser(SupabaseConfig.currentUser!.id);
       await ref.read(cloudSyncProvider).markActivity(intimacy: ref.read(catProvider).intimacy);
     }
+    // 本地留存度量（本地专属版观测仪器，无云端时的唯一留存信号）：
+    // 标今日打开 + intimacy 快照。local-first：写本地 drift，不依赖网络。
+    try {
+      final now = DateTime.now();
+      final day = '${now.year.toString().padLeft(4, '0')}-'
+          '${now.month.toString().padLeft(2, '0')}-'
+          '${now.day.toString().padLeft(2, '0')}';
+      await ref.read(appDatabaseProvider).recordAppOpen(day,
+          intimacy: ref.read(catProvider).intimacy);
+    } catch (e) {
+      debugPrint('[bootstrap] recordAppOpen 失败：$e'); // 度量失败不阻塞启动
+    }
   }
 
   @override
