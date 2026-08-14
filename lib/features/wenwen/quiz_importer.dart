@@ -17,7 +17,12 @@ class QuizImporter {
   /// 从 asset 导入题库。返回导入题数；重复 id 幂等更新。
   Future<int> importFromAsset(String assetPath) async {
     final bytes = await rootBundle.load(assetPath);
-    final list = jsonDecode(utf8.decode(bytes.buffer.asUint8List())) as List;
+    return importFromBytes(bytes.buffer.asUint8List());
+  }
+
+  /// 从字节流导入（.smpack 运行时安装 / CLI 生成器校验共用路径）。幂等按 id。
+  Future<int> importFromBytes(List<int> data) async {
+    final list = jsonDecode(utf8.decode(data)) as List;
     var n = 0;
     final companions = <QuestionsCompanion>[];
     for (final e in list) {

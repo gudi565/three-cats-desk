@@ -14,6 +14,7 @@ import 'features/niannian/review_screen.dart';
 import 'features/nuannuan/focus_provider.dart';
 import 'features/nuannuan/focus_screen.dart';
 import 'features/profile/onboarding_screen.dart';
+import 'features/profile/pack_import_button.dart';
 import 'features/profile/user_profile.dart';
 import 'features/wenwen/quiz_screen.dart';
 import 'features/zhizhi/notes_screen.dart';
@@ -163,6 +164,8 @@ class HomeScreen extends ConsumerWidget {
                     style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
               ),
             ),
+          // 一键导入 .smpack 专属资源包（客户交付模式）
+          const PackImportButton(compact: true),
           IconButton(
             icon: const Icon(Icons.person_outline),
             onPressed: () => Navigator.of(context).push(
@@ -181,6 +184,7 @@ class HomeScreen extends ConsumerWidget {
             nickname: profile.nickname,
           ),
           const SizedBox(height: 12),
+          const PackGuideCard(), // 未装专属包时显示导入引导（装了自动消失）
           const _TodayOverview(), // 跨模块今日总览（暖暖仪表盘底座）
           const SizedBox(height: 12),
           for (final m in visibleModules)

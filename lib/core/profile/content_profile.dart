@@ -36,6 +36,7 @@ class ContentProfile {
   final String displayName;
   final String suggestSchool;
   final String suggestMajor;
+  final String examDate; // 客户包可带考试日期（YYYY-MM-DD，向导自动预填）
   final List<String> modules; // 启用的猫：niannian/nuannuan/wenwen/zhizhi/yuanyuan
   final List<String> decks;
   final List<String> questions;
@@ -48,6 +49,7 @@ class ContentProfile {
     required this.displayName,
     this.suggestSchool = '',
     this.suggestMajor = '',
+    this.examDate = '',
     this.modules = const ['niannian', 'nuannuan', 'wenwen', 'zhizhi', 'yuanyuan'],
     this.decks = const [],
     this.questions = const [],
@@ -89,6 +91,7 @@ class ProfileLoader {
         displayName: (doc['displayName'] ?? doc['id'] ?? '').toString(),
         suggestSchool: (doc['suggestSchool'] ?? '').toString(),
         suggestMajor: (doc['suggestMajor'] ?? '').toString(),
+        examDate: (doc['examDate'] ?? '').toString(),
         modules: strList(doc['modules']).isEmpty
             ? const ['niannian', 'nuannuan', 'wenwen', 'zhizhi', 'yuanyuan']
             : strList(doc['modules']),
@@ -116,6 +119,7 @@ class ProfileLoader {
         displayName: p.displayName,
         suggestSchool: p.suggestSchool,
         suggestMajor: p.suggestMajor,
+        examDate: p.examDate,
         modules: p.modules,
         decks: p.decks.map(full).toList(),
         questions: p.questions.map(full).toList(),

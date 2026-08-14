@@ -27,17 +27,23 @@ class DeckImporter {
   Future<String> importFromAsset(String assetPath, {String? deckName}) async {
     final bytes = await rootBundle.load(assetPath);
     final data = bytes.buffer.asUint8List();
+    return importFromBytes(data,
+        name: deckName ?? _nameFromPath(assetPath), isNcPack: assetPath.endsWith('.ncpack'));
+  }
 
+  /// 从字节流导入（.smpack 运行时安装 / CLI 生成器校验共用路径）。
+  /// [name] 词书名；[isNcPack] true=zip 封装 ncpack，false=纯 JSON 数组。
+  /// 幂等：内容 hash 相同返回已有 deckId。
+  Future<String> importFromBytes(List<int> data,
+      {required String name, required bool isNcPack}) async {
     List<Map<String, String>> rawCards;
-    String name = deckName ?? _nameFromPath(assetPath);
-
-    if (assetPath.endsWith('.ncpack')) {
+    if (isNcPack) {
       rawCards = _parseNcPack(data);
     } else {
       rawCards = _parseJsonArray(utf8.decode(data));
     }
     if (rawCards.isEmpty) {
-      throw StateError('词书 $assetPath 无卡（解析出 0 张）');
+      throw StateError('词书「$name」无卡（解析出 0 张）');
     }
 
     // 复导判重：内容 hash 相同 → 已导入过。

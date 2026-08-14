@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../profile/user_profile.dart';
+import 'pack_import_button.dart';
+import 'user_profile.dart';
 
 /// 本地专属初始化向导（本地部署方向）：首次启动时填写 昵称/目标院校/专业/考试日期。
 ///
@@ -126,6 +127,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     style: FilledButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16)),
                     child: const Text('开始我的备考', style: TextStyle(fontSize: 16)),
                   ),
+                  const SizedBox(height: 12),
+                  // 有 .smpack 专属资源包的用户：这里一键导入，院校/专业/日期自动预填
+                  const Text('已购买专属资源包？', style: TextStyle(fontSize: 13)),
+                  const SizedBox(height: 6),
+                  const PackImportButton(),
                   const SizedBox(height: 12),
                   Text(
                     '数据只存在这台设备上，无需联网。',
