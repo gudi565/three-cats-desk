@@ -72,3 +72,29 @@ jobs:
         with:
           name: app-release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
+
+  # Windows 桌面版（本地专属版主力交付形态，2026-08-13）。
+  # 产出便携 zip（含 exe + 全部 dll + data），客户解压双击即用。
+  # 本地专属模式默认开启（AppMode 默认 local），无需 --dart-define。
+  build-windows:
+    needs: test
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.44.x'
+      - run: flutter pub get
+      - run: dart run build_runner build --delete-conflicting-outputs
+      - run: flutter config --enable-windows-desktop
+      - run: flutter build windows --release
+      # 打包 Release 目录成 zip（exe + flutter_windows.dll + data/ 全套）
+      - name: Zip portable package
+        run: |
+          $src = "build\windows\x64\runner\Release"
+          Compress-Archive -Path "$src\*" -DestinationPath "three_cats_desk-windows.zip" -Force
+      - uses: actions/upload-artifact@v6
+        with:
+          name: app-windows-portable
+          path: three_cats_desk-windows.zip
