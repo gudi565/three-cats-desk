@@ -2,6 +2,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:three_cats_desk/core/profile/pack_installer.dart';
 import 'package:three_cats_desk/core/profile/profile_notifier.dart';
 import 'user_profile.dart';
 
@@ -16,15 +17,14 @@ class PackImportButton extends ConsumerWidget {
 
   Future<void> _pickAndInstall(BuildContext context, WidgetRef ref) async {
     final messenger = ScaffoldMessenger.of(context);
-    final res = await FilePicker.platform.pickFiles(
+    final files = await FilePicker.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['smpack'],
-      withData: true, // 一次读完字节（包小，无需流式）
     );
-    final file = res?.files.singleOrNull;
+    final file = files.isEmpty ? null : files.single;
     if (file == null) return; // 用户取消
-    final bytes = file.bytes;
-    if (bytes == null) {
+    final bytes = await file.readAsBytes();
+    if (bytes.isEmpty) {
       messenger.showSnackBar(const SnackBar(content: Text('无法读取文件')));
       return;
     }
