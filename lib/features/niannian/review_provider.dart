@@ -7,6 +7,7 @@ import 'package:three_cats_desk/core/cloud_sync.dart';
 import 'package:three_cats_desk/core/db/database.dart';
 import 'package:three_cats_desk/core/providers.dart';
 import 'package:three_cats_desk/core/fsrs.dart';
+import 'package:three_cats_desk/core/sync_backend.dart';
 import '../cat/cat_provider.dart';
 import 'deck_provider.dart';
 
@@ -41,7 +42,7 @@ class ReviewSession {
 /// 未登录跳过上云（local-first 不破）。
 class ReviewController extends StateNotifier<ReviewSession> {
   final AppDatabase db;
-  final CloudSync sync;
+  final SyncBackend sync;
   final String deckId;
   /// 评分成功后调（provider 层注入：自增 deckRevisionProvider → deck 列表到期数刷新）。
   final void Function()? onGraded;

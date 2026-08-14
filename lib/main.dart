@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'core/app_mode.dart';
 import 'core/providers.dart';
 import 'core/supabase_client.dart';
 import 'features/cat/cat_provider.dart';
@@ -23,8 +24,11 @@ const _bundledDecks = [
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // Supabase 初始化（失败降级 local-first，不阻塞启动）
-  await SupabaseConfig.initialize();
+  // Supabase 初始化（仅 cloud 模式；local 本地专属版跳过，彻底无云端依赖）。
+  // 失败降级 local-first，不阻塞启动。
+  if (AppMode.isCloud) {
+    await SupabaseConfig.initialize();
+  }
   runApp(const ProviderScope(child: BootstrapApp()));
 }
 

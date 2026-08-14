@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:three_cats_desk/core/db/database.dart';
 import 'package:three_cats_desk/core/fsrs.dart';
 import 'package:three_cats_desk/core/supabase_client.dart';
+import 'package:three_cats_desk/core/sync_backend.dart';
 
 /// 云同步：本地 drift（local-first）→ Supabase cards 表（异步上云）。
 ///
@@ -15,13 +16,16 @@ import 'package:three_cats_desk/core/supabase_client.dart';
 ///   fsrs_state jsonb 含 stability/difficulty/retrievability/state/reps/lapses/last_review/due。
 ///
 /// local-first 铁律：未登录 / 未初始化 / 网络失败 → 静默跳过，本地 drift 不破，synced=false 待重试。
-class CloudSync {
+///
+/// 实现 [SyncBackend] 契约（云端版后端）。本地专属版用 `LocalOnlyBackend`（全 no-op）。
+class CloudSync implements SyncBackend {
   final AppDatabase db;
   CloudSync(this.db);
 
   bool get _canSync => SupabaseConfig.isInitialized && SupabaseConfig.isLoggedIn;
 
   /// 评分后上云一张卡。成功返回 true 并标记 synced。
+  @override
   Future<bool> pushCard(LocalCard card, FsrsCard fsrs) async {
     if (!_canSync) return false;
     try {
@@ -46,6 +50,7 @@ class CloudSync {
   }
 
   /// 知知：笔记上云（notes 表，见 phase2-supabase-notes.sql）。local-first：失败静默。
+  @override
   Future<bool> pushNote(Note n) async {
     if (!_canSync) return false;
     try {
@@ -67,6 +72,7 @@ class CloudSync {
   }
 
   /// 渊渊：文献上云（literature 表，见 phase2-supabase-literature.sql）。local-first：失败静默。
+  @override
   Future<bool> pushLiterature(LiteratureData l) async {
     if (!_canSync) return false;
     try {
@@ -94,6 +100,7 @@ class CloudSync {
   }
 
   /// 重试所有未同步卡（登录后 / 网络恢复时调用）。
+  @override
   Future<int> pushAllUnsynced() async {
     if (!_canSync) return 0;
     final unsynced = await db.getUnsyncedCards();
@@ -110,6 +117,7 @@ class CloudSync {
   ///
   /// 只拉回 source_app=niannian 且 deckId 匹配的卡。Phase0 验证 cloud sync 至少 PUSH 通，
   /// 这里是 PULL 的最小实现：远端行覆盖/补齐本地（按 updated_at 较新者胜）。
+  @override
   Future<int> pullDeck(String deckId) async {
     if (!_canSync) return 0;
     try {
@@ -159,6 +167,7 @@ class CloudSync {
   /// 幂等：同一天多次调用只更新 last_opened_at / open_count / intimacy。
   /// 依赖 Supabase 表 user_daily_activity（见 02_Flutter工程/phase1a-supabase-activity.sql）。
   /// local-first：表不存在/未登录/无网时静默降级。
+  @override
   Future<void> markActivity({int? intimacy}) async {
     if (!_canSync) return; // 未初始化/未登录（匿名）：无云端脚印，本地不破
     final client = SupabaseConfig.client;
@@ -203,6 +212,7 @@ class CloudSync {
 
   /// 暖暖：专注记录上云（focus_sessions 表，见 phase2-supabase-focus.sql）。
   /// 暖暖写 focus_sessions（source_app=nuannuan），不写 cards。local-first：失败静默。
+  @override
   Future<bool> pushFocusSession(FocusSession s) async {
     if (!_canSync) return false;
     try {
@@ -225,6 +235,7 @@ class CloudSync {
 
   /// 稳稳：作答记录上云（attempts 表，见 phase2-supabase-quiz.sql）。
   /// 客观判分（isCorrect），local-first：失败静默。
+  @override
   Future<bool> pushAttempt(Attempt a, Question q) async {
     if (!_canSync) return false;
     try {
