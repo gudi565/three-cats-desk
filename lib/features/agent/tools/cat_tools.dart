@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:three_cats_desk/core/db/database.dart';
+import 'package:three_cats_desk/core/rag/rag_indexer.dart';
 import 'package:three_cats_desk/features/agent/agent_loop.dart';
 
 /// 五猫工具集 v1（P1-2，2026-08-15）——智能体读得懂数据的第一步。
@@ -164,9 +165,51 @@ class QuerySyllabusNotesTool extends AgentTool {
   }
 }
 
+/// 知识库 BM25 检索（P2-2）：智能体引用"他自己的资料"的主通道。
+/// 覆盖念念全部卡片 + 知知笔记/考纲；中文 bigram 分词写读同源。
+class SearchKnowledgeTool extends AgentTool {
+  final RagIndexer rag;
+  SearchKnowledgeTool(this.rag)
+      : super(
+          'search_knowledge',
+          '在用户的知识库里全文检索（他的词书卡片、笔记、考纲）。答疑、讲解、'
+              '引用"他自己的资料"时先用这个；query_syllabus_notes 只查笔记且是包含匹配，'
+              '这个是全库相关性排序，优先用它。',
+          {
+            'type': 'object',
+            'properties': {
+              'query': {
+                'type': 'string',
+                'description': '检索词（自然词组即可，如"谢赫六法"、"矛盾的特殊性"）',
+              },
+            },
+            'required': ['query'],
+          },
+        );
+
+  @override
+  Future<String> execute(Map<String, dynamic> args) async {
+    final query = args['query']?.toString() ?? '';
+    if (query.isEmpty) return jsonEncode({'error': 'query 必填'});
+    if (!rag.isReady) {
+      return jsonEncode({'error': '知识库尚未就绪（请先导入资源包）'});
+    }
+    final hits = rag.search(query, topK: 8);
+    return jsonEncode({
+      'query': query,
+      'hits': [
+        for (final (title, score) in hits) {'title': title, 'score': score.toStringAsFixed(2)}
+      ],
+    });
+  }
+}
+
 /// 组装默认工具集（provider 层用）。
-Map<String, AgentTool> buildCatTools(AppDatabase db, {required int Function() intimacyOf}) => {
+Map<String, AgentTool> buildCatTools(AppDatabase db,
+        {required int Function() intimacyOf, RagIndexer? rag}) =>
+    {
       'query_wrong_questions': QueryWrongQuestionsTool(db),
       'query_today_progress': QueryTodayProgressTool(db, intimacyOf: intimacyOf),
       'query_syllabus_notes': QuerySyllabusNotesTool(db),
+      if (rag != null) 'search_knowledge': SearchKnowledgeTool(rag),
     };
