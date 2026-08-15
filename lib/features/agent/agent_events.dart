@@ -20,6 +20,13 @@ class AgentText extends AgentEvent {
   const AgentText(this.text);
 }
 
+/// 思考通道（reasoning 模型的 <think> 块 / reasoning_content）。
+/// UI 可折叠显示；不参与完成判定。
+class AgentThinking extends AgentEvent {
+  final String text;
+  const AgentThinking(this.text);
+}
+
 /// 模型请求调用工具。
 class AgentToolCall extends AgentEvent {
   final String name;

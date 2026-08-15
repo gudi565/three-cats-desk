@@ -53,7 +53,11 @@ class LlmClient {
     final choice = (data['choices'] as List?)?.firstOrNull as Map<String, dynamic>?;
     if (choice == null) throw LlmException('LLM 响应缺 choices');
     final msg = (choice['message'] ?? const {}) as Map<String, dynamic>;
-    final content = (msg['content'] ?? '').toString();
+    final rawContent = (msg['content'] ?? '').toString();
+    // reasoning 模型（GLM 深思/DeepSeek-R1 等）走 OpenAI 兼容必带 <think> 标签
+    // 或 reasoning_content 字段——思考与作答分离（DeepTutor InlineThinkFilter 同款）。
+    final reasoning = (msg['reasoning_content'] ?? '').toString();
+    final stripped = _stripThink(rawContent);
     final rawCalls = (msg['tool_calls'] as List?) ?? const [];
     final calls = <LlmToolCall>[
       for (final c in rawCalls)
@@ -64,7 +68,25 @@ class LlmClient {
             args: _parseArgs((((c['function'] ?? const {}) as Map)['arguments'] ?? '{}').toString()),
           ),
     ];
-    return LlmResponse(content: content, toolCalls: calls);
+    return LlmResponse(
+      content: stripped.content,
+      reasoning: reasoning.isEmpty ? stripped.think : '$reasoning\n${stripped.think}',
+      toolCalls: calls,
+      finishReason: (choice['finish_reason'] ?? '').toString(),
+    );
+  }
+
+  /// 剥离 <think>/<thinking> 块：完成判定必须用剥离后的文本
+  /// （防"只有推理没有回答"被误判为完成）。
+  ({String content, String think}) _stripThink(String text) {
+    final re = RegExp(r'<think(?:ing)?>\s*([\s\S]*?)</think(?:ing)?>',
+        caseSensitive: false);
+    final thinks = <String>[];
+    final content = text.replaceAllMapped(re, (m) {
+      thinks.add(m.group(1) ?? '');
+      return '';
+    });
+    return (content: content.trim(), think: thinks.join('\n'));
   }
 
   /// 容错解析 arguments（模型偶发输出非严格 JSON，比如尾逗号/裸引号）。
@@ -87,11 +109,23 @@ class LlmClient {
 
 /// 一轮模型响应。
 class LlmResponse {
-  final String content; // 文本（最终回答或推理叙述，可为空）
+  final String content; // 剥离 think 后的正文（最终回答或叙述，可为空）
+  final String reasoning; // 思考通道（<think> 块/reasoning_content；空=无）
   final List<LlmToolCall> toolCalls; // 模型请求的工具调用（空=回答完成）
-  const LlmResponse({required this.content, required this.toolCalls});
+  final String finishReason; // stop / tool_calls / length(max_tokens) …
+
+  const LlmResponse({
+    required this.content,
+    this.reasoning = '',
+    required this.toolCalls,
+    this.finishReason = '',
+  });
 
   bool get wantsTool => toolCalls.isNotEmpty;
+
+  /// 输出因 token 上限被截断（需续写）。
+  bool get truncated =>
+      finishReason == 'length' || finishReason == 'max_tokens';
 }
 
 class LlmToolCall {
