@@ -16,6 +16,9 @@ import 'features/nuannuan/focus_screen.dart';
 import 'features/profile/onboarding_screen.dart';
 import 'features/profile/pack_import_button.dart';
 import 'features/profile/user_profile.dart';
+import 'features/shell/agent_screen.dart';
+import 'features/shell/desk_shell.dart';
+import 'features/shell/knowledge_screen.dart';
 import 'features/wenwen/quiz_screen.dart';
 import 'features/zhizhi/notes_screen.dart';
 import 'features/yuanyuan/yuanyuan_screen.dart';
@@ -126,19 +129,68 @@ class SanmaoApp extends ConsumerWidget {
   }
 }
 
-/// 主页：1 App 五模块骨架。Phase0 只「念念」可用，其余留占位（后面阶段填）。
-/// 顶部猫横条（Phase 1a）：首屏就看见猫，强化「为猫打开」hook。
-class HomeScreen extends ConsumerWidget {
+/// 主页：站外壳（DeepTutor 形态，2026-08-15）。
+/// 左栏 = 首页/考研智能体/知识库/笔记本 + 五猫五个项目；右侧为主区。
+/// 宽屏固定侧栏，窄屏 Drawer。
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
-  /// 五猫模块清单：(显示名, 副标题, 图标, 主色, 模块key)。模块key 对应 profile.yaml 的 modules。
-  static const _modules = [
-    ('念念', '背书 · 翻卡复习', Icons.style_outlined, Color(0xFF3E8EAA), 'niannian'),
-    ('暖暖', '专注 · 番茄钟', Icons.local_cafe_outlined, Color(0xFFE0A458), 'nuannuan'),
-    ('稳稳', '做题 · 考研真题', Icons.checklist_outlined, Color(0xFF5B9E6F), 'wenwen'),
-    ('知知', '笔记 · 笔记即卡片', Icons.edit_note_outlined, Color(0xFFB083C9), 'zhizhi'),
-    ('渊渊', '文献 · 真实检索', Icons.menu_book_outlined, Color(0xFF8B7E6A), 'yuanyuan'),
-  ];
+  @override
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  int _selected = 0;
+
+  /// 站导航项与 DeskShell 的顺序一致（desk 区 4 项 + 五猫按开关过滤）。
+  List<({String key, Widget page})> get _pages {
+    final content = ref.read(contentProfileProvider);
+    final pages = <({String key, Widget page})>[
+      (key: 'home', page: const _HomeContent()),
+      (key: 'agent', page: const AgentScreen()),
+      (key: 'knowledge', page: const KnowledgeScreen()),
+      (key: 'notebook', page: const ZhizhiHomeScreen()),
+    ];
+    for (final m in DeskShell.catModules) {
+      if (content.hasModule(m.$5)) {
+        pages.add((key: m.$5, page: _catPage(m.$5)));
+      }
+    }
+    return pages;
+  }
+
+  Widget _catPage(String key) {
+    switch (key) {
+      case 'nuannuan':
+        return const FocusScreen();
+      case 'wenwen':
+        return const WenwenHomeScreen();
+      case 'zhizhi':
+        return const ZhizhiHomeScreen();
+      case 'yuanyuan':
+        return const YuanyuanHomeScreen();
+      default:
+        return const DeckListScreen();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // watch 让模块开关/profile 变化时重建页面列表
+    ref.watch(contentProfileProvider);
+    final pages = _pages;
+    final idx = _selected.clamp(0, pages.length - 1);
+    return DeskShell(
+      selectedIndex: idx,
+      onSelect: (i) => setState(() => _selected = i),
+      child: pages[idx].page,
+    );
+  }
+}
+
+/// 首页内容（站外壳主区第一项）：猫问候 + 引导卡 + 今日总览 + 五猫速览。
+class _HomeContent extends ConsumerWidget {
+  const _HomeContent();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -146,11 +198,11 @@ class HomeScreen extends ConsumerWidget {
     final profile = ref.watch(userProfileProvider);
     final content = ref.watch(contentProfileProvider);
     final days = profile.daysToExam;
-    // 模块按 profile 开关（按人定制：只显示客户启用的猫）。
     final visibleModules =
-        _modules.where((m) => content.hasModule(m.$5)).toList();
+        DeskShell.catModules.where((m) => content.hasModule(m.$5)).toList();
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         // 专属标题：「小明 · 北京大学 新闻与传播」（未填则「三猫书桌 · 考研」）
         title: Text(profile.setupDone && profile.titleLine != '三猫书桌'
             ? profile.titleLine
@@ -161,7 +213,8 @@ class HomeScreen extends ConsumerWidget {
               padding: const EdgeInsets.only(right: 4),
               child: Center(
                 child: Text('距考试 $days 天',
-                    style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                    style: const TextStyle(
+                        fontSize: 13, fontWeight: FontWeight.w600)),
               ),
             ),
           // 一键导入 .smpack 专属资源包（客户交付模式）
@@ -185,8 +238,9 @@ class HomeScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 12),
           const PackGuideCard(), // 未装专属包时显示导入引导（装了自动消失）
-          const _TodayOverview(), // 跨模块今日总览（暖暖仪表盘底座）
+          const _TodayOverview(), // 跨模块今日总览
           const SizedBox(height: 12),
+          // 五猫速览（点击进入对应模块；完整导航在左栏）
           for (final m in visibleModules)
             Card(
               child: ListTile(
@@ -198,17 +252,7 @@ class HomeScreen extends ConsumerWidget {
                 subtitle: Text(m.$2),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => m.$5 == 'nuannuan'
-                        ? const FocusScreen()
-                        : m.$5 == 'wenwen'
-                            ? const WenwenHomeScreen()
-                            : m.$5 == 'zhizhi'
-                                ? const ZhizhiHomeScreen()
-                                : m.$5 == 'yuanyuan'
-                                    ? const YuanyuanHomeScreen()
-                                    : const DeckListScreen(),
-                  ),
+                  MaterialPageRoute(builder: (_) => _catPageFor(m.$5)),
                 ),
               ),
             ),
@@ -220,6 +264,21 @@ class HomeScreen extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  Widget _catPageFor(String key) {
+    switch (key) {
+      case 'nuannuan':
+        return const FocusScreen();
+      case 'wenwen':
+        return const WenwenHomeScreen();
+      case 'zhizhi':
+        return const ZhizhiHomeScreen();
+      case 'yuanyuan':
+        return const YuanyuanHomeScreen();
+      default:
+        return const DeckListScreen();
+    }
   }
 }
 
