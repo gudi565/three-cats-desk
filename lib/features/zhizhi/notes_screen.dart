@@ -15,6 +15,7 @@ class ZhizhiHomeScreen extends ConsumerWidget {
     final cat = ref.watch(catProvider);
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('知知 · 笔记'),
         actions: [Padding(padding: const EdgeInsets.only(right: 12),
             child: Center(child: PixelCat(mood: cat.mood, size: 36)))],

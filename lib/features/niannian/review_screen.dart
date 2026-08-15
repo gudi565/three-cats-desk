@@ -19,6 +19,7 @@ class DeckListScreen extends ConsumerWidget {
     final decks = ref.watch(deckListProvider);
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('念念 · 词书'),
         actions: [
           IconButton(

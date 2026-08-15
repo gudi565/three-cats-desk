@@ -53,7 +53,10 @@ void main() {
 
     await tester.pumpWidget(_wrap(
       DeskShell(
-          selectedIndex: 0, onSelect: (_) {}, child: const Text('主区')),
+          items: ['home','agent','knowledge','notebook','niannian','nuannuan','wenwen','zhizhi','yuanyuan'],
+          selectedKey: 'home',
+          onSelectKey: (_) {},
+          child: const Text('主区')),
       db,
     ));
     await tester.pump(); await tester.pump(const Duration(milliseconds: 100));
@@ -84,7 +87,11 @@ void main() {
       modules: ['niannian', 'wenwen'],
     );
     await tester.pumpWidget(_wrap(
-      DeskShell(selectedIndex: 0, onSelect: (_) {}, child: const Text('主区')),
+      DeskShell(
+          items: ['home','agent','knowledge','niannian','wenwen'],
+          selectedKey: 'home',
+          onSelectKey: (_) {},
+          child: const Text('主区')),
       db,
       profile: partial,
     ));
@@ -95,6 +102,7 @@ void main() {
     expect(find.text('暖暖'), findsNothing); // 关
     expect(find.text('知知'), findsNothing); // 关
     expect(find.text('渊渊'), findsNothing); // 关
+    expect(find.text('笔记本'), findsNothing); // zhizhi 关→笔记本入口也关
   });
 
   testWidgets('点侧栏切换触发 onSelect', (tester) async {
@@ -104,11 +112,12 @@ void main() {
     final db = AppDatabase.forTesting(NativeDatabase.memory());
     addTearDown(() async => db.close());
 
-    int? selected;
+    String? selected;
     await tester.pumpWidget(_wrap(
       DeskShell(
-          selectedIndex: 0,
-          onSelect: (i) => selected = i,
+          items: ['home','agent','knowledge','notebook','niannian','nuannuan','wenwen','zhizhi','yuanyuan'],
+          selectedKey: 'home',
+          onSelectKey: (k) => selected = k,
           child: const Text('主区')),
       db,
     ));
@@ -116,7 +125,7 @@ void main() {
 
     await tester.tap(find.text('考研智能体'));
     await tester.pump();
-    expect(selected, 1); // desk 区第二项
+    expect(selected, 'agent'); // desk 区第二项
   });
 
   testWidgets('智能体/知识库占位屏渲染（全中文，无报错）', (tester) async {

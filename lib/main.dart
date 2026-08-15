@@ -132,6 +132,9 @@ class SanmaoApp extends ConsumerWidget {
 /// 主页：站外壳（DeepTutor 形态，2026-08-15）。
 /// 左栏 = 首页/考研智能体/知识库/笔记本 + 五猫五个项目；右侧为主区。
 /// 宽屏固定侧栏，窄屏 Drawer。
+///
+/// 导航用 key（非位置索引）：装包增删模块后选中项跟随 key 不错位；
+/// 笔记本入口受 zhizhi 开关约束（按人定制 gating 不被绕过）。
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
@@ -140,16 +143,15 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-  int _selected = 0;
+  String _selectedKey = 'home';
 
-  /// 站导航项与 DeskShell 的顺序一致（desk 区 4 项 + 五猫按开关过滤）。
-  List<({String key, Widget page})> get _pages {
-    final content = ref.read(contentProfileProvider);
+  List<({String key, Widget page})> _pagesFor(ContentProfile content) {
     final pages = <({String key, Widget page})>[
-      (key: 'home', page: const _HomeContent()),
+      (key: 'home', page: _HomeContent(onOpenModule: (k) => setState(() => _selectedKey = k))),
       (key: 'agent', page: const AgentScreen()),
       (key: 'knowledge', page: const KnowledgeScreen()),
-      (key: 'notebook', page: const ZhizhiHomeScreen()),
+      // 笔记本 = 知知的入口，受 zhizhi 模块开关约束（客户关掉知知则不显示）。
+      if (content.hasModule('zhizhi')) (key: 'notebook', page: const ZhizhiHomeScreen()),
     ];
     for (final m in DeskShell.catModules) {
       if (content.hasModule(m.$5)) {
@@ -162,35 +164,60 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget _catPage(String key) {
     switch (key) {
       case 'nuannuan':
-        return const FocusScreen();
+        // keepAlive：壳内嵌页面切走不销毁——专注计时中切页不丢会话。
+        return const _KeepAlive(child: FocusScreen());
       case 'wenwen':
-        return const WenwenHomeScreen();
+        return const _KeepAlive(child: WenwenHomeScreen());
       case 'zhizhi':
-        return const ZhizhiHomeScreen();
+        return const _KeepAlive(child: ZhizhiHomeScreen());
       case 'yuanyuan':
-        return const YuanyuanHomeScreen();
+        return const _KeepAlive(child: YuanyuanHomeScreen());
       default:
-        return const DeckListScreen();
+        return const _KeepAlive(child: DeckListScreen());
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // watch 让模块开关/profile 变化时重建页面列表
-    ref.watch(contentProfileProvider);
-    final pages = _pages;
-    final idx = _selected.clamp(0, pages.length - 1);
+    final content = ref.watch(contentProfileProvider);
+    final pages = _pagesFor(content);
+    // key 选择：profile 变化后选中 key 仍有效则保持，失效回落首页（不错位）。
+    final keys = pages.map((p) => p.key).toSet();
+    if (!keys.contains(_selectedKey)) _selectedKey = 'home';
     return DeskShell(
-      selectedIndex: idx,
-      onSelect: (i) => setState(() => _selected = i),
-      child: pages[idx].page,
+      items: pages.map((p) => p.key).toList(),
+      selectedKey: _selectedKey,
+      onSelectKey: (k) => setState(() => _selectedKey = k),
+      child: pages.firstWhere((p) => p.key == _selectedKey).page,
     );
+  }
+}
+
+/// IndexedStack keepAlive 包装：壳内切换页面时不销毁状态
+/// （autoDispose provider 的计时器/会话在切页后存活）。
+class _KeepAlive extends StatefulWidget {
+  final Widget child;
+  const _KeepAlive({required this.child});
+  @override
+  State<_KeepAlive> createState() => _KeepAliveState();
+}
+
+class _KeepAliveState extends State<_KeepAlive>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return widget.child;
   }
 }
 
 /// 首页内容（站外壳主区第一项）：猫问候 + 引导卡 + 今日总览 + 五猫速览。
 class _HomeContent extends ConsumerWidget {
-  const _HomeContent();
+  /// 点五猫速览卡 → 切到对应模块页（与左栏同一导航，不 push 路由）。
+  final void Function(String moduleKey)? onOpenModule;
+  const _HomeContent({this.onOpenModule});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -240,7 +267,8 @@ class _HomeContent extends ConsumerWidget {
           const PackGuideCard(), // 未装专属包时显示导入引导（装了自动消失）
           const _TodayOverview(), // 跨模块今日总览
           const SizedBox(height: 12),
-          // 五猫速览（点击进入对应模块；完整导航在左栏）
+          // 五猫速览（点击切到对应模块页——与左栏同一导航，不再 push 新路由，
+          // 修复审查回归③：壳内嵌屏不再叠加返回箭头/双 AppBar）
           for (final m in visibleModules)
             Card(
               child: ListTile(
@@ -251,9 +279,7 @@ class _HomeContent extends ConsumerWidget {
                 title: Text(m.$1),
                 subtitle: Text(m.$2),
                 trailing: const Icon(Icons.chevron_right),
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => _catPageFor(m.$5)),
-                ),
+                onTap: () => onOpenModule?.call(m.$5),
               ),
             ),
           const SizedBox(height: 8),
@@ -264,21 +290,6 @@ class _HomeContent extends ConsumerWidget {
         ],
       ),
     );
-  }
-
-  Widget _catPageFor(String key) {
-    switch (key) {
-      case 'nuannuan':
-        return const FocusScreen();
-      case 'wenwen':
-        return const WenwenHomeScreen();
-      case 'zhizhi':
-        return const ZhizhiHomeScreen();
-      case 'yuanyuan':
-        return const YuanyuanHomeScreen();
-      default:
-        return const DeckListScreen();
-    }
   }
 }
 

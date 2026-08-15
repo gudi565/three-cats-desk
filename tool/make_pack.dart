@@ -131,7 +131,7 @@ void main(List<String> args) {
   if (examDate.isNotEmpty) yamlOut.writeln('examDate: $examDate');
   final modules = paths('modules');
   yamlOut.writeln('modules: [${modules.isEmpty
-      ? 'niannuan, nuannuan, wenwen, zhizhi, yuanyuan' : modules.join(', ')}]');
+      ? 'niannian, nuannuan, wenwen, zhizhi, yuanyuan' : modules.join(', ')}]');
   final yamlBytes = utf8.encode(yamlOut.toString());
   archive.addFile(ArchiveFile('profile.yaml', yamlBytes.length, yamlBytes));
 

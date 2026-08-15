@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/db/database.dart';
+import '../../core/profile/profile_notifier.dart';
 import '../../core/providers.dart';
 import '../profile/pack_import_button.dart';
 
@@ -15,8 +16,12 @@ class KnowledgeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final db = ref.watch(appDatabaseProvider);
+    // watch profile：装包后 contentProfileProvider 变化 → key 变 → 重查
+    // （修复审查回归⑦：导入成功后本屏立即刷新，不再显示旧空态）。
+    final profileRev = ref.watch(contentProfileProvider).id;
     return Scaffold(
       body: FutureBuilder<List<_KbRow>>(
+        key: ValueKey('kb-$profileRev'),
         future: _load(db),
         builder: (context, snap) {
           final rows = snap.data ?? const <_KbRow>[];

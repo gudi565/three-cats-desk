@@ -58,8 +58,20 @@ class ContentProfile {
     required this.basePath,
   });
 
-  /// 是否启用某只猫（模块开关，task #8 用）。
-  bool hasModule(String module) => modules.contains(module);
+  /// 全部五猫的合法 key（单一事实源，侧栏/打包器/校验共享）。
+  static const allModuleKeys = [
+    'niannian', 'nuannuan', 'wenwen', 'zhizhi', 'yuanyuan',
+  ];
+
+  /// 过滤后的有效模块清单：未知 key（拼写错误）丢弃 + 空清单回落全开。
+  /// 容错铁律：绝不因坏 profile 隐藏付费内容。
+  List<String> get effectiveModules {
+    final valid = modules.where(allModuleKeys.contains).toList();
+    return valid.isEmpty ? allModuleKeys : valid;
+  }
+
+  /// 是否启用某只猫（模块开关，task #8 用）。基于 effectiveModules（容错）。
+  bool hasModule(String module) => effectiveModules.contains(module);
 
   /// 标准通用版（无定制内容，公共课词书+示例题库，全部猫启用）。
   /// 这是 profile 缺失/未选时的兜底——保证 App 永远可用。

@@ -16,6 +16,7 @@ class YuanyuanHomeScreen extends ConsumerWidget {
     final cat = ref.watch(catProvider);
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('渊渊 · 文献'),
         actions: [
           IconButton(
