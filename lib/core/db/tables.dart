@@ -149,3 +149,18 @@ class ActivityLog extends Table {
   @override
   Set<Column> get primaryKey => {day};
 }
+
+/// 智能体对话记录（P2-1，2026-08-15）。local-first：一切在 drift，
+/// 进 BackupService——用户和智能体的聊天历史是他的资产，换机必须可迁移。
+/// role: user / assistant / tool（工具调用事件转存）；events 存该轮 AgentEvent JSON。
+class ChatMessages extends Table {
+  TextColumn get id => text()();                       // uuid
+  TextColumn get sessionId => text()();                // 会话 id（同会话按时间排序）
+  TextColumn get role => text()();                     // user / assistant / tool
+  TextColumn get content => text()();                  // 文本内容（user 问题/assistant 回答/工具结果）
+  TextColumn get eventsJson => text().withDefault(const Constant(''))(); // 该轮 typed 事件存档（调试/回放）
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}

@@ -12,15 +12,15 @@ part 'database.g.dart';
 /// Web 用 WasmDatabase（sqlite3 wasm）；安卓/iOS 用 NativeDatabase 落盘。
 /// 平台连接在 connection_*.dart（条件导入，避免 dart:ffi 在 Web 静态引入）。
 /// Phase0 只验证 Web + 安卓。
-@DriftDatabase(tables: [LocalDecks, LocalCards, FocusSessions, Questions, Attempts, Notes, Literature, ActivityLog])
+@DriftDatabase(tables: [LocalDecks, LocalCards, FocusSessions, Questions, Attempts, Notes, Literature, ActivityLog, ChatMessages])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(openConnection());
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 7;
 
-  /// 迁移：v1→v2 FocusSessions；v2→v3 Questions+Attempts；v3→v4 Notes；v4→v5 Literature；v5→v6 ActivityLog。
+  /// 迁移：v1→v2 FocusSessions；v2→v3 Questions+Attempts；v3→v4 Notes；v4→v5 Literature；v5→v6 ActivityLog；v6→v7 ChatMessages。
   @override
   MigrationStrategy get migration => MigrationStrategy(
         onUpgrade: (migrator, from, to) async {
@@ -39,6 +39,9 @@ class AppDatabase extends _$AppDatabase {
           }
           if (from < 6) {
             await migrator.createTable(activityLog);
+          }
+          if (from < 7) {
+            await migrator.createTable(chatMessages);
           }
         },
       );
@@ -307,4 +310,29 @@ class AppDatabase extends _$AppDatabase {
   /// 活跃天数（有打开记录的天数，留存计算用）。
   Future<int> countActiveDays() =>
       select(activityLog).get().then((l) => l.length);
+
+  // ---- 智能体对话记录（chat_messages，P2-1）----
+
+  /// 追加一条消息（id 生成在调用方——事件流边发边存）。
+  Future<void> insertChatMessage(ChatMessagesCompanion m) =>
+      into(chatMessages).insert(m);
+
+  /// 某会话全部消息（时间正序）。
+  Future<List<ChatMessage>> getChatMessages(String sessionId) =>
+      (select(chatMessages)
+            ..where((m) => m.sessionId.equals(sessionId))
+            ..orderBy([(m) => OrderingTerm.asc(m.createdAt)]))
+          .get();
+
+  /// 全部会话的消息（备份导出用）。
+  Future<List<ChatMessage>> getAllChatMessages() => select(chatMessages).get();
+
+  /// 最近一个会话 id（冷启动续聊；无历史返回 null）。
+  Future<String?> latestSessionId() async {
+    final all = await (select(chatMessages)
+          ..orderBy([(m) => OrderingTerm.desc(m.createdAt)])
+          ..limit(1))
+        .get();
+    return all.isEmpty ? null : all.first.sessionId;
+  }
 }

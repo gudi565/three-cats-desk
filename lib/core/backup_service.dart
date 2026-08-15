@@ -30,6 +30,7 @@ class BackupService {
     final notes = await db.select(db.notes).get();
     final literature = await db.select(db.literature).get();
     final activity = await db.select(db.activityLog).get();
+    final chats = await db.getAllChatMessages();
 
     return jsonEncode({
       'backupVersion': backupVersion,
@@ -78,6 +79,11 @@ class BackupService {
             'focusMinutes': a.focusMinutes, 'intimacy': a.intimacy,
             'firstOpenedAt': a.firstOpenedAt?.toIso8601String(),
             'lastOpenedAt': a.lastOpenedAt?.toIso8601String(),
+          }).toList(),
+      'chatMessages': chats.map((m) => {
+            'id': m.id, 'sessionId': m.sessionId, 'role': m.role,
+            'content': m.content, 'eventsJson': m.eventsJson,
+            'createdAt': m.createdAt.toIso8601String(),
           }).toList(),
     });
   }
@@ -203,6 +209,19 @@ class BackupService {
           ));
     }
     counts['activityLog'] = activity.length;
+
+    final chats = (data['chatMessages'] as List?) ?? [];
+    for (final m in chats) {
+      await db.into(db.chatMessages).insertOnConflictUpdate(ChatMessagesCompanion(
+        id: Value(m['id'] as String),
+        sessionId: Value(m['sessionId'] as String),
+        role: Value(m['role'] as String),
+        content: Value(m['content'] as String),
+        eventsJson: Value(m['eventsJson'] as String? ?? ''),
+        createdAt: Value(parse(m['createdAt'])),
+      ));
+    }
+    counts['chatMessages'] = chats.length;
 
     return counts;
   }
