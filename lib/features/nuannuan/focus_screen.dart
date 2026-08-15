@@ -21,8 +21,10 @@ class FocusScreen extends ConsumerWidget {
     final cat = ref.watch(catProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('暖暖 · 专注')),
+      appBar: AppBar(
+        title: const Text('暖暖 · 专注'),
         automaticallyImplyLeading: false,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: focus.done ? _SettledView(focus: focus, cat: cat, controller: controller)

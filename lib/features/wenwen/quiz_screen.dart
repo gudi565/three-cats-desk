@@ -17,8 +17,10 @@ class WenwenHomeScreen extends ConsumerWidget {
     final questions = ref.watch(questionListProvider);
     final wrongs = ref.watch(wrongAttemptsProvider);
     return Scaffold(
-      appBar: AppBar(title: const Text('稳稳 · 做题')),
+      appBar: AppBar(
+        title: const Text('稳稳 · 做题'),
         automaticallyImplyLeading: false,
+      ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
