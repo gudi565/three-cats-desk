@@ -9,7 +9,7 @@ import 'package:three_cats_desk/core/db/database.dart';
 import 'package:three_cats_desk/core/deck_importer.dart';
 import 'package:three_cats_desk/core/profile/pack_installer.dart';
 import 'package:three_cats_desk/core/profile/profile_notifier.dart';
-import 'package:three_cats_desk/features/wenwen/quiz_importer.dart';
+import 'package:three_cats_desk/core/importers/quiz_importer.dart';
 
 /// 生成器→安装器 全链路往返测试（客户交付模式质量门，2026-08-14）。
 ///

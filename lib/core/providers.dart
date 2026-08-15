@@ -7,7 +7,7 @@ import 'package:three_cats_desk/core/deck_importer.dart';
 import 'package:three_cats_desk/core/local_only_backend.dart';
 import 'package:three_cats_desk/core/supabase_client.dart';
 import 'package:three_cats_desk/core/sync_backend.dart';
-import 'package:three_cats_desk/features/wenwen/quiz_importer.dart';
+import 'package:three_cats_desk/core/importers/quiz_importer.dart';
 
 /// 全局单例 providers（core 层）。
 

@@ -7,7 +7,7 @@ import 'package:yaml/yaml.dart';
 
 import 'package:three_cats_desk/core/db/database.dart';
 import 'package:three_cats_desk/core/deck_importer.dart';
-import 'package:three_cats_desk/features/wenwen/quiz_importer.dart';
+import 'package:three_cats_desk/core/importers/quiz_importer.dart';
 
 /// 客户内容包 Profile（按人定制的引擎，2026-08-13）。
 ///

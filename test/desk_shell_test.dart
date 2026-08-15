@@ -10,7 +10,7 @@ import 'package:three_cats_desk/core/local_only_backend.dart';
 import 'package:three_cats_desk/core/profile/content_profile.dart';
 import 'package:three_cats_desk/core/profile/profile_notifier.dart';
 import 'package:three_cats_desk/core/providers.dart';
-import 'package:three_cats_desk/features/wenwen/quiz_importer.dart';
+import 'package:three_cats_desk/core/importers/quiz_importer.dart';
 import 'package:three_cats_desk/features/shell/desk_shell.dart';
 import 'package:three_cats_desk/features/shell/agent_screen.dart';
 import 'package:three_cats_desk/features/shell/knowledge_screen.dart';

@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:three_cats_desk/core/db/database.dart';
 import 'package:three_cats_desk/core/deck_importer.dart';
 import 'package:three_cats_desk/core/profile/content_profile.dart';
-import 'package:three_cats_desk/features/wenwen/quiz_importer.dart';
+import 'package:three_cats_desk/core/importers/quiz_importer.dart';
 
 /// Profile 内容包机制（按人定制的引擎）行为验证。
 ///

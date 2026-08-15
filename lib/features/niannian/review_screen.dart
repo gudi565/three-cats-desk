@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/fsrs.dart';
 import '../cat/cat_provider.dart';
 import '../cat/pixel_cat.dart';
-import 'deck_provider.dart';
+import 'package:three_cats_desk/core/deck_providers.dart';
 import 'login_screen.dart';
 import 'review_provider.dart';
 

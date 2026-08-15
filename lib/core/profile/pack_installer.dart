@@ -8,7 +8,7 @@ import 'package:yaml/yaml.dart';
 
 import 'package:three_cats_desk/core/db/database.dart';
 import 'package:three_cats_desk/core/deck_importer.dart';
-import 'package:three_cats_desk/features/wenwen/quiz_importer.dart';
+import 'package:three_cats_desk/core/importers/quiz_importer.dart';
 import 'content_profile.dart';
 
 /// .smpack 资源包运行时安装器（客户交付模式，2026-08-14）。

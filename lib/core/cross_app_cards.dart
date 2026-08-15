@@ -7,7 +7,7 @@ import 'package:three_cats_desk/core/fsrs.dart';
 import 'package:three_cats_desk/core/providers.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../features/niannian/deck_provider.dart';
+import 'deck_providers.dart';
 
 /// 跨猫卡箱：其它模块（稳稳错题 / 知知笔记 / 渊渊高亮）→ 念念复习池的统一入口。
 ///

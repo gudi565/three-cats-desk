@@ -8,7 +8,7 @@ import 'package:three_cats_desk/core/deck_importer.dart';
 import 'package:three_cats_desk/core/profile/content_profile.dart';
 import 'package:three_cats_desk/core/profile/pack_installer.dart';
 import 'package:three_cats_desk/core/providers.dart';
-import 'package:three_cats_desk/features/wenwen/quiz_importer.dart';
+import 'package:three_cats_desk/core/importers/quiz_importer.dart';
 
 /// 当前激活的内容包 profile（按人定制的运行态）。
 ///

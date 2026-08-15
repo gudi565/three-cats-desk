@@ -5,7 +5,7 @@ import 'package:three_cats_desk/core/db/database.dart';
 import 'package:three_cats_desk/core/providers.dart';
 import 'package:uuid/uuid.dart';
 
-import '../niannian/deck_provider.dart';
+import '../../core/deck_providers.dart';
 import 'literature_search.dart';
 
 /// 渊渊文献模块。

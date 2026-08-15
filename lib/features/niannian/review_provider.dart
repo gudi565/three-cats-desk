@@ -9,7 +9,7 @@ import 'package:three_cats_desk/core/providers.dart';
 import 'package:three_cats_desk/core/fsrs.dart';
 import 'package:three_cats_desk/core/sync_backend.dart';
 import '../cat/cat_provider.dart';
-import 'deck_provider.dart';
+import 'package:three_cats_desk/core/deck_providers.dart';
 
 /// 翻卡复习会话状态。
 class ReviewSession {

@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:three_cats_desk/core/db/database.dart';
-import 'package:three_cats_desk/features/wenwen/quiz_importer.dart';
+import 'package:three_cats_desk/core/importers/quiz_importer.dart';
 
 /// 稳稳做题模块逻辑测试（不触 UI/网络/猫）。导入→作答→判分→错题。
 void main() {
