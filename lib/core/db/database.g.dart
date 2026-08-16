@@ -4937,6 +4937,352 @@ class ChatMessagesCompanion extends UpdateCompanion<ChatMessage> {
   }
 }
 
+class $MemoryEntriesTable extends MemoryEntries
+    with TableInfo<$MemoryEntriesTable, MemoryEntry> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MemoryEntriesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _slotMeta = const VerificationMeta('slot');
+  @override
+  late final GeneratedColumn<String> slot = GeneratedColumn<String>(
+    'slot',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _bodyMeta = const VerificationMeta('body');
+  @override
+  late final GeneratedColumn<String> body = GeneratedColumn<String>(
+    'body',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _refsMeta = const VerificationMeta('refs');
+  @override
+  late final GeneratedColumn<String> refs = GeneratedColumn<String>(
+    'refs',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, slot, body, refs, createdAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'memory_entries';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<MemoryEntry> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('slot')) {
+      context.handle(
+        _slotMeta,
+        slot.isAcceptableOrUnknown(data['slot']!, _slotMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_slotMeta);
+    }
+    if (data.containsKey('body')) {
+      context.handle(
+        _bodyMeta,
+        body.isAcceptableOrUnknown(data['body']!, _bodyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_bodyMeta);
+    }
+    if (data.containsKey('refs')) {
+      context.handle(
+        _refsMeta,
+        refs.isAcceptableOrUnknown(data['refs']!, _refsMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  MemoryEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MemoryEntry(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      slot: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}slot'],
+      )!,
+      body: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}body'],
+      )!,
+      refs: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}refs'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $MemoryEntriesTable createAlias(String alias) {
+    return $MemoryEntriesTable(attachedDatabase, alias);
+  }
+}
+
+class MemoryEntry extends DataClass implements Insertable<MemoryEntry> {
+  final String id;
+  final String slot;
+  final String body;
+  final String refs;
+  final DateTime createdAt;
+  const MemoryEntry({
+    required this.id,
+    required this.slot,
+    required this.body,
+    required this.refs,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['slot'] = Variable<String>(slot);
+    map['body'] = Variable<String>(body);
+    map['refs'] = Variable<String>(refs);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  MemoryEntriesCompanion toCompanion(bool nullToAbsent) {
+    return MemoryEntriesCompanion(
+      id: Value(id),
+      slot: Value(slot),
+      body: Value(body),
+      refs: Value(refs),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory MemoryEntry.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MemoryEntry(
+      id: serializer.fromJson<String>(json['id']),
+      slot: serializer.fromJson<String>(json['slot']),
+      body: serializer.fromJson<String>(json['body']),
+      refs: serializer.fromJson<String>(json['refs']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'slot': serializer.toJson<String>(slot),
+      'body': serializer.toJson<String>(body),
+      'refs': serializer.toJson<String>(refs),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  MemoryEntry copyWith({
+    String? id,
+    String? slot,
+    String? body,
+    String? refs,
+    DateTime? createdAt,
+  }) => MemoryEntry(
+    id: id ?? this.id,
+    slot: slot ?? this.slot,
+    body: body ?? this.body,
+    refs: refs ?? this.refs,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  MemoryEntry copyWithCompanion(MemoryEntriesCompanion data) {
+    return MemoryEntry(
+      id: data.id.present ? data.id.value : this.id,
+      slot: data.slot.present ? data.slot.value : this.slot,
+      body: data.body.present ? data.body.value : this.body,
+      refs: data.refs.present ? data.refs.value : this.refs,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MemoryEntry(')
+          ..write('id: $id, ')
+          ..write('slot: $slot, ')
+          ..write('body: $body, ')
+          ..write('refs: $refs, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, slot, body, refs, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MemoryEntry &&
+          other.id == this.id &&
+          other.slot == this.slot &&
+          other.body == this.body &&
+          other.refs == this.refs &&
+          other.createdAt == this.createdAt);
+}
+
+class MemoryEntriesCompanion extends UpdateCompanion<MemoryEntry> {
+  final Value<String> id;
+  final Value<String> slot;
+  final Value<String> body;
+  final Value<String> refs;
+  final Value<DateTime> createdAt;
+  final Value<int> rowid;
+  const MemoryEntriesCompanion({
+    this.id = const Value.absent(),
+    this.slot = const Value.absent(),
+    this.body = const Value.absent(),
+    this.refs = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  MemoryEntriesCompanion.insert({
+    required String id,
+    required String slot,
+    required String body,
+    this.refs = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       slot = Value(slot),
+       body = Value(body);
+  static Insertable<MemoryEntry> custom({
+    Expression<String>? id,
+    Expression<String>? slot,
+    Expression<String>? body,
+    Expression<String>? refs,
+    Expression<DateTime>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (slot != null) 'slot': slot,
+      if (body != null) 'body': body,
+      if (refs != null) 'refs': refs,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  MemoryEntriesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? slot,
+    Value<String>? body,
+    Value<String>? refs,
+    Value<DateTime>? createdAt,
+    Value<int>? rowid,
+  }) {
+    return MemoryEntriesCompanion(
+      id: id ?? this.id,
+      slot: slot ?? this.slot,
+      body: body ?? this.body,
+      refs: refs ?? this.refs,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (slot.present) {
+      map['slot'] = Variable<String>(slot.value);
+    }
+    if (body.present) {
+      map['body'] = Variable<String>(body.value);
+    }
+    if (refs.present) {
+      map['refs'] = Variable<String>(refs.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MemoryEntriesCompanion(')
+          ..write('id: $id, ')
+          ..write('slot: $slot, ')
+          ..write('body: $body, ')
+          ..write('refs: $refs, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -4949,6 +5295,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $LiteratureTable literature = $LiteratureTable(this);
   late final $ActivityLogTable activityLog = $ActivityLogTable(this);
   late final $ChatMessagesTable chatMessages = $ChatMessagesTable(this);
+  late final $MemoryEntriesTable memoryEntries = $MemoryEntriesTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -4963,6 +5310,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     literature,
     activityLog,
     chatMessages,
+    memoryEntries,
   ];
 }
 
@@ -7434,6 +7782,206 @@ typedef $$ChatMessagesTableProcessedTableManager =
       ChatMessage,
       PrefetchHooks Function()
     >;
+typedef $$MemoryEntriesTableCreateCompanionBuilder =
+    MemoryEntriesCompanion Function({
+      required String id,
+      required String slot,
+      required String body,
+      Value<String> refs,
+      Value<DateTime> createdAt,
+      Value<int> rowid,
+    });
+typedef $$MemoryEntriesTableUpdateCompanionBuilder =
+    MemoryEntriesCompanion Function({
+      Value<String> id,
+      Value<String> slot,
+      Value<String> body,
+      Value<String> refs,
+      Value<DateTime> createdAt,
+      Value<int> rowid,
+    });
+
+class $$MemoryEntriesTableFilterComposer
+    extends Composer<_$AppDatabase, $MemoryEntriesTable> {
+  $$MemoryEntriesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get slot => $composableBuilder(
+    column: $table.slot,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get body => $composableBuilder(
+    column: $table.body,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get refs => $composableBuilder(
+    column: $table.refs,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$MemoryEntriesTableOrderingComposer
+    extends Composer<_$AppDatabase, $MemoryEntriesTable> {
+  $$MemoryEntriesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get slot => $composableBuilder(
+    column: $table.slot,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get body => $composableBuilder(
+    column: $table.body,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get refs => $composableBuilder(
+    column: $table.refs,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$MemoryEntriesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $MemoryEntriesTable> {
+  $$MemoryEntriesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get slot =>
+      $composableBuilder(column: $table.slot, builder: (column) => column);
+
+  GeneratedColumn<String> get body =>
+      $composableBuilder(column: $table.body, builder: (column) => column);
+
+  GeneratedColumn<String> get refs =>
+      $composableBuilder(column: $table.refs, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$MemoryEntriesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $MemoryEntriesTable,
+          MemoryEntry,
+          $$MemoryEntriesTableFilterComposer,
+          $$MemoryEntriesTableOrderingComposer,
+          $$MemoryEntriesTableAnnotationComposer,
+          $$MemoryEntriesTableCreateCompanionBuilder,
+          $$MemoryEntriesTableUpdateCompanionBuilder,
+          (
+            MemoryEntry,
+            BaseReferences<_$AppDatabase, $MemoryEntriesTable, MemoryEntry>,
+          ),
+          MemoryEntry,
+          PrefetchHooks Function()
+        > {
+  $$MemoryEntriesTableTableManager(_$AppDatabase db, $MemoryEntriesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$MemoryEntriesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$MemoryEntriesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$MemoryEntriesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> slot = const Value.absent(),
+                Value<String> body = const Value.absent(),
+                Value<String> refs = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => MemoryEntriesCompanion(
+                id: id,
+                slot: slot,
+                body: body,
+                refs: refs,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String slot,
+                required String body,
+                Value<String> refs = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => MemoryEntriesCompanion.insert(
+                id: id,
+                slot: slot,
+                body: body,
+                refs: refs,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$MemoryEntriesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $MemoryEntriesTable,
+      MemoryEntry,
+      $$MemoryEntriesTableFilterComposer,
+      $$MemoryEntriesTableOrderingComposer,
+      $$MemoryEntriesTableAnnotationComposer,
+      $$MemoryEntriesTableCreateCompanionBuilder,
+      $$MemoryEntriesTableUpdateCompanionBuilder,
+      (
+        MemoryEntry,
+        BaseReferences<_$AppDatabase, $MemoryEntriesTable, MemoryEntry>,
+      ),
+      MemoryEntry,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -7456,4 +8004,6 @@ class $AppDatabaseManager {
       $$ActivityLogTableTableManager(_db, _db.activityLog);
   $$ChatMessagesTableTableManager get chatMessages =>
       $$ChatMessagesTableTableManager(_db, _db.chatMessages);
+  $$MemoryEntriesTableTableManager get memoryEntries =>
+      $$MemoryEntriesTableTableManager(_db, _db.memoryEntries);
 }

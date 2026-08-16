@@ -164,3 +164,20 @@ class ChatMessages extends Table {
   @override
   Set<Column> get primaryKey => {id};
 }
+
+/// 学习者画像（M1，2026-08-16）。DeepTutor L3 四槽思想的本地版：
+///   recent      — 近期活动滚动时间线（策展器写）
+///   profile     — 身份/学习风格（策展器写，多源证据才收）
+///   scope       — 知识点掌握度三态（策展器写，**基于行为事件而非年级代理**——Bokosmaty 验证结论）
+///   preferences — 显式偏好（智能体 write_preference 写，用户原话优先）
+/// 条目规范：text ≤ 240、带对冲措辞（"在 N 次做题中…"）、refs 记数据来源。
+class MemoryEntries extends Table {
+  TextColumn get id => text()();                       // m_ + uuid
+  TextColumn get slot => text()();                     // recent/profile/scope/preferences
+  TextColumn get body => text()();                     // ≤240 字，对冲措辞（列名避开 drift 的 text builder）
+  TextColumn get refs => text().withDefault(const Constant(''))(); // 数据来源（如 wenwen:attempts）
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}

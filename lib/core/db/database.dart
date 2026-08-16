@@ -12,15 +12,15 @@ part 'database.g.dart';
 /// Web 用 WasmDatabase（sqlite3 wasm）；安卓/iOS 用 NativeDatabase 落盘。
 /// 平台连接在 connection_*.dart（条件导入，避免 dart:ffi 在 Web 静态引入）。
 /// Phase0 只验证 Web + 安卓。
-@DriftDatabase(tables: [LocalDecks, LocalCards, FocusSessions, Questions, Attempts, Notes, Literature, ActivityLog, ChatMessages])
+@DriftDatabase(tables: [LocalDecks, LocalCards, FocusSessions, Questions, Attempts, Notes, Literature, ActivityLog, ChatMessages, MemoryEntries])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(openConnection());
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 7;
+  int get schemaVersion => 8;
 
-  /// 迁移：v1→v2 FocusSessions；v2→v3 Questions+Attempts；v3→v4 Notes；v4→v5 Literature；v5→v6 ActivityLog；v6→v7 ChatMessages。
+  /// 迁移：…v6→v7 ChatMessages；v7→v8 MemoryEntries。
   @override
   MigrationStrategy get migration => MigrationStrategy(
         onUpgrade: (migrator, from, to) async {
@@ -42,6 +42,9 @@ class AppDatabase extends _$AppDatabase {
           }
           if (from < 7) {
             await migrator.createTable(chatMessages);
+          }
+          if (from < 8) {
+            await migrator.createTable(memoryEntries);
           }
         },
       );
@@ -335,4 +338,37 @@ class AppDatabase extends _$AppDatabase {
         .get();
     return all.isEmpty ? null : all.first.sessionId;
   }
+
+  // ---- 学习者画像（memory_entries，M1）----
+
+  /// 写一条画像（幂等去重由调用方（write_preference/策展器）保证）。
+  Future<void> insertMemory(MemoryEntriesCompanion m) =>
+      into(memoryEntries).insert(m);
+
+  /// 某槽全部条目（时间正序）。
+  Future<List<MemoryEntry>> getMemories(String slot) =>
+      (select(memoryEntries)
+            ..where((m) => m.slot.equals(slot))
+            ..orderBy([(m) => OrderingTerm.asc(m.createdAt)]))
+          .get();
+
+  /// 全部画像（备份导出/清槽用）。
+  Future<List<MemoryEntry>> getAllMemories() => select(memoryEntries).get();
+
+  /// 清某槽（策展器重建用）。
+  Future<void> clearSlot(String slot) =>
+      (delete(memoryEntries)..where((m) => m.slot.equals(slot))).go();
+
+  /// preferences 判重（空白归一 casefold——DeepTutor write_preference 幂等同款）。
+  Future<MemoryEntry?> findDuplicatePreference(String text) async {
+    final key = text.replaceAll(RegExp(r'\s+'), ' ').toLowerCase();
+    final prefs = await getMemories('preferences');
+    for (final p in prefs) {
+      if (p.body.replaceAll(RegExp(r'\s+'), ' ').toLowerCase() == key) {
+        return p;
+      }
+    }
+    return null;
+  }
 }
+// touch3

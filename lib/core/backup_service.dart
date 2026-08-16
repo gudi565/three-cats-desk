@@ -31,6 +31,7 @@ class BackupService {
     final literature = await db.select(db.literature).get();
     final activity = await db.select(db.activityLog).get();
     final chats = await db.getAllChatMessages();
+    final memories = await db.getAllMemories();
 
     return jsonEncode({
       'backupVersion': backupVersion,
@@ -84,6 +85,10 @@ class BackupService {
             'id': m.id, 'sessionId': m.sessionId, 'role': m.role,
             'content': m.content, 'eventsJson': m.eventsJson,
             'createdAt': m.createdAt.toIso8601String(),
+          }).toList(),
+      'memoryEntries': memories.map((m) => {
+            'id': m.id, 'slot': m.slot, 'text': m.body,
+            'refs': m.refs, 'createdAt': m.createdAt.toIso8601String(),
           }).toList(),
     });
   }
@@ -222,6 +227,18 @@ class BackupService {
       ));
     }
     counts['chatMessages'] = chats.length;
+
+    final mems = (data['memoryEntries'] as List?) ?? [];
+    for (final m in mems) {
+      await db.into(db.memoryEntries).insertOnConflictUpdate(MemoryEntriesCompanion(
+        id: Value(m['id'] as String),
+        slot: Value(m['slot'] as String),
+        body: Value(m['text'] as String),
+        refs: Value(m['refs'] as String? ?? ''),
+        createdAt: Value(parse(m['createdAt'])),
+      ));
+    }
+    counts['memoryEntries'] = mems.length;
 
     return counts;
   }
