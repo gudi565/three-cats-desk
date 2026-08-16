@@ -38,11 +38,15 @@ class _AgentScreenState extends ConsumerState<AgentScreen> {
     });
   }
 
+  static const _deepPrefix = '深度讲解：';
+
   Future<void> _send() async {
-    final text = _input.text.trim();
+    var text = _input.text.trim();
     if (text.isEmpty) return;
     _input.clear();
-    await ref.read(agentChatProvider.notifier).send(text);
+    final deep = text.startsWith(_deepPrefix);
+    if (deep) text = text.substring(_deepPrefix.length).trim();
+    await ref.read(agentChatProvider.notifier).send(text, deepExplain: deep);
     _scrollToBottom();
   }
 
@@ -96,8 +100,10 @@ class _AgentScreenState extends ConsumerState<AgentScreen> {
             child: chat.messages.isEmpty
                 ? _Empty(
                     catMood: cat.mood,
-                    onSample: (q) async {
-                      await ref.read(agentChatProvider.notifier).send(q);
+                    onSample: (deep, q) async {
+                      await ref
+                          .read(agentChatProvider.notifier)
+                          .send(q, deepExplain: deep);
                       _scrollToBottom();
                     },
                   )
@@ -221,13 +227,14 @@ class _SetupBanner extends StatelessWidget {
 /// 空状态：欢迎语 + 示例问题。
 class _Empty extends StatelessWidget {
   final CatMood catMood;
-  final void Function(String question) onSample;
+  final void Function(bool deepExplain, String question) onSample;
   const _Empty({required this.catMood, required this.onSample});
 
   static const samples = [
-    '我最近错了哪些题？',
-    '给我讲讲谢赫六法',
-    '我今天学得怎么样？',
+    (false, '我最近错了哪些题？'),
+    (true, '深度讲解：带我一步步弄懂最近错的题'),
+    (false, '给我讲讲谢赫六法'),
+    (false, '我今天学得怎么样？'),
   ];
 
   @override
@@ -237,31 +244,36 @@ class _Empty extends StatelessWidget {
         constraints: const BoxConstraints(maxWidth: 420),
         child: Padding(
           padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              PixelCat(mood: catMood, size: 64),
-              const SizedBox(height: 16),
-              const Text('我是你的考研搭子',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800)),
-              const SizedBox(height: 8),
-              const Text('我认识你的错题、进度和资料，\n问我任何考研相关的问题。',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 13, height: 1.6, color: Colors.grey)),
-              const SizedBox(height: 20),
-              for (final s in samples)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: ActionChip(
-                    label: Text(s, style: const TextStyle(fontSize: 13)),
-                    onPressed: () => onSample(s),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                PixelCat(mood: catMood, size: 64),
+                const SizedBox(height: 16),
+                const Text('我是你的考研搭子',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800)),
+                const SizedBox(height: 8),
+                const Text('我认识你的错题、进度和资料，\n问我任何考研相关的问题。',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 13, height: 1.6, color: Colors.grey)),
+                const SizedBox(height: 20),
+                for (final (deep, s) in samples)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: ActionChip(
+                      avatar: deep
+                          ? const Icon(Icons.psychology_alt_outlined,
+                              size: 16, color: Color(0xFFE0A458))
+                          : null,
+                      label: Text(s, style: const TextStyle(fontSize: 13)),
+                      onPressed: () => onSample(deep, s),
+                    ),
                   ),
-                ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
   }
-
 }

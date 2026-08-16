@@ -12,7 +12,10 @@ import 'package:three_cats_desk/core/settings/settings_service.dart';
 import 'package:three_cats_desk/features/agent/agent_events.dart';
 import 'package:three_cats_desk/features/agent/agent_loop.dart';
 import 'package:three_cats_desk/features/agent/llm_client.dart';
+import 'package:three_cats_desk/features/agent/prompts_zh.dart';
+import 'package:three_cats_desk/features/agent/tool_composition.dart';
 import 'package:three_cats_desk/features/agent/tools/cat_tools.dart';
+import 'package:three_cats_desk/features/agent/tools/solve_tools.dart';
 import 'package:three_cats_desk/features/cat/cat_provider.dart';
 
 import '../../core/providers.dart';
@@ -82,7 +85,10 @@ class AgentChatNotifier extends StateNotifier<AgentChatState> {
   }
 
   /// 发送一条消息：跑 agent 循环，事件流驱动 UI + 持久化。
-  Future<void> send(String text) async {
+  ///
+  /// [deepExplain] 深度讲解模式：注入 solve 三件套（计划-逐步-重规划脊柱）+
+  /// [PromptsZh.solveSystem] 系统提示——错题讲解走这条路（DeepTutor solve 同款）。
+  Future<void> send(String text, {bool deepExplain = false}) async {
     if (state.running || text.trim().isEmpty) return;
     final cfg = await ref.read(settingsServiceProvider).loadLlmConfig();
     if (!cfg.hasCredentials) {
@@ -96,7 +102,7 @@ class AgentChatNotifier extends StateNotifier<AgentChatState> {
     state = AgentChatState(
       messages: [
         ...state.messages,
-        ChatMessageUi(role: 'user', text: text.trim()),
+        ChatMessageUi(role: 'user', text: deepExplain ? '深度讲解：${text.trim()}' : text.trim()),
         const ChatMessageUi(role: 'assistant', text: ''), // 运行中气泡（占位，逐步更新）
       ],
       running: true,
@@ -108,24 +114,80 @@ class AgentChatNotifier extends StateNotifier<AgentChatState> {
         role: 'user',
         content: text.trim()));
 
-    // 系统提示词：猫人设 + 考研语境 + 他的档案（认识他）
+    // ── DT2/DT3/DT4：分块 system + 条件工具挂载 + KB 预检索种子（DeepTutor 同款架构）──
     final cat = ref.read(catProvider);
     final profile = ref.read(contentProfileProvider);
-    final systemPrompt = [
-      '你是「三猫书桌」的考研陪伴智能体，亲切、简洁、说人话，像一只懂考研的猫。',
-      '你认识这位用户，可以调用工具查看他的真实数据（错题、进度、知识库），回答要基于工具结果，不要编造。',
-      if (profile.suggestSchool.isNotEmpty)
-        '他的目标：${profile.suggestSchool} ${profile.suggestMajor}。',
-      '当前资料包：${profile.displayName}。',
-      '猫亲密度 ${cat.intimacy}（他复习/专注越多越高）。',
-      '回答用中文，先给结论再展开；讲错题时给出正确答案和解析；鼓励但不啰嗦。',
-    ].join('\n');
 
-    // 工具集：五猫数据 + BM25 知识库（先确保索引就绪）
+    // 工具条件挂载：空数据不挂（工具面小=本地弱模型选择准）
     final rag = ref.read(ragIndexProvider);
     if (!rag.isReady) await rag.rebuild();
-    final tools = buildCatTools(db,
-        intimacyOf: () => ref.read(catProvider).intimacy, rag: rag);
+    final flags = await ToolMountFlags.detect(db, ragReady: rag.isReady);
+    final composed = composeTools(
+      db,
+      flags: flags,
+      intimacyOf: () => ref.read(catProvider).intimacy,
+      rag: rag,
+      searchFn: (_) => true, // 仅判定可挂载；真检索在工具内部
+    );
+
+    // [资料清单] 权威块（元数据问题以此为准）
+    final kbManifest = flags.hasKb || true
+        ? await _buildKbManifest(db)
+        : '';
+
+    // 深度讲解模式：追加 solve 三件套（引擎状态机保证"先计划、不跳步、有界重规划"）
+    final tools = {...composed.tools};
+    if (deepExplain) {
+      final solveSession = SolveSession('solve-${_uuid.v4()}');
+      tools.addAll(buildSolveTools(solveSession));
+    }
+
+    // 分块 system（DeepTutor 块序：身份/运行规则/档案/循环/资料清单/工具/语言）。
+    // 深度讲解模式：循环块换成 [深度讲解模式] 全文 + solve 工具行。
+    final systemPrompt = deepExplain
+        ? PromptsZh.buildSystem(
+            extraBlocks: [
+              (
+                name: '用户档案',
+                content: [
+                  if (profile.suggestSchool.isNotEmpty)
+                    '他的目标：${profile.suggestSchool} ${profile.suggestMajor}。',
+                  '当前资料包：${profile.displayName}。',
+                ].join('\n'),
+              ),
+            ],
+            toolsBlock: '${composed.toolsBlock}\n'
+                '- `solve_plan` / `solve_finish_step` / `solve_replan` — 讲解脊柱三件套（按系统提示的深度讲解模式流程使用）。',
+            kbManifest: kbManifest,
+            loopOverride: PromptsZh.solveSystem,
+          )
+        : PromptsZh.buildSystem(
+            extraBlocks: [
+              (
+                name: '用户档案',
+                content: [
+                  if (profile.suggestSchool.isNotEmpty)
+                    '他的目标：${profile.suggestSchool} ${profile.suggestMajor}。',
+                  '当前资料包：${profile.displayName}。',
+                  '猫亲密度 ${cat.intimacy}（他复习/专注越多越高）。',
+                  '回答先给结论再展开；讲错题时给出正确答案和解析；鼓励但不啰嗦。',
+                ].join('\n'),
+              ),
+            ],
+            toolsBlock: composed.toolsBlock,
+            kbManifest: kbManifest,
+          );
+
+    // KB 预检索种子：拼 user 消息尾（不进 system——保 system 全轮字节稳定）
+    var finalUserMessage = text.trim();
+    if (rag.isReady) {
+      final hits = rag.search(text.trim(), topK: 3);
+      if (hits.isNotEmpty) {
+        final seed = hits.map((h) => '- ${h.$1}').join('\n');
+        finalUserMessage =
+            '$finalUserMessage\n\n${PromptsZh.kbSeedHeader}\n$seed';
+      }
+    }
 
     // 历史（最近 12 条，控上下文）
     final history = [
@@ -142,7 +204,7 @@ class AgentChatNotifier extends StateNotifier<AgentChatState> {
       model: cfg.model,
       apiKey: cfg.apiKey,
       systemPrompt: systemPrompt,
-      userMessage: text.trim(),
+      userMessage: finalUserMessage,
       tools: tools,
       history: history,
     )) {
@@ -206,6 +268,26 @@ class AgentChatNotifier extends StateNotifier<AgentChatState> {
   void clearError() {
     state = AgentChatState(
         messages: state.messages, running: state.running, llmReady: state.llmReady);
+  }
+
+  /// [资料清单] 权威块：截断的清单（限 20 条）+ 权威规则（DeepTutor manifest 同款）。
+  Future<String> _buildKbManifest(AppDatabase db) async {
+    final tool = ListKbDocsTool(db);
+    final raw = await tool.execute(const {'limit': 20});
+    final data = jsonDecode(raw) as Map<String, dynamic>;
+    final docs = (data['docs'] as List).cast<Map<String, dynamic>>();
+    final lines = [
+      for (final d in docs)
+        '- ${d['source']}：${d['name']}${d['count'] != null ? '（${d['count']}）' : ''}',
+    ].join('\n');
+    final omitted = (data['omitted'] as num?)?.toInt() ?? 0;
+    return [
+      PromptsZh.kbManifestHeader,
+      '共 ${data['total']} 个条目：',
+      lines,
+      if (omitted > 0) '另有 $omitted 个未列出，可用 list_kb_docs 查看完整清单',
+      PromptsZh.kbManifestAuthority,
+    ].join('\n');
   }
 }
 
