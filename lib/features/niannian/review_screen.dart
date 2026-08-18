@@ -287,15 +287,20 @@ class _CardView extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    // cloze 卡：正面挖空显示，背面完整原文+被挖词加粗
                     Text(
-                      card.front,
+                      card.type == 'cloze'
+                          ? Cloze.renderFront(card.front)
+                          : card.front,
                       style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,
                     ),
                     if (session.showBack) ...[
                       const Divider(height: 32),
                       Text(
-                        card.back ?? '',
+                        card.type == 'cloze'
+                            ? Cloze.renderBack(card.front)
+                            : (card.back ?? ''),
                         style: const TextStyle(fontSize: 17, height: 1.5),
                         textAlign: TextAlign.center,
                       ),

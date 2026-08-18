@@ -531,6 +531,15 @@ class $LocalCardsTable extends LocalCards
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _noteIdMeta = const VerificationMeta('noteId');
+  @override
+  late final GeneratedColumn<String> noteId = GeneratedColumn<String>(
+    'note_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _typeMeta = const VerificationMeta('type');
   @override
   late final GeneratedColumn<String> type = GeneratedColumn<String>(
@@ -631,6 +640,7 @@ class $LocalCardsTable extends LocalCards
   List<GeneratedColumn> get $columns => [
     id,
     deckId,
+    noteId,
     type,
     front,
     back,
@@ -662,6 +672,12 @@ class $LocalCardsTable extends LocalCards
       context.handle(
         _deckIdMeta,
         deckId.isAcceptableOrUnknown(data['deck_id']!, _deckIdMeta),
+      );
+    }
+    if (data.containsKey('note_id')) {
+      context.handle(
+        _noteIdMeta,
+        noteId.isAcceptableOrUnknown(data['note_id']!, _noteIdMeta),
       );
     }
     if (data.containsKey('type')) {
@@ -739,6 +755,10 @@ class $LocalCardsTable extends LocalCards
         DriftSqlType.string,
         data['${effectivePrefix}deck_id'],
       ),
+      noteId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}note_id'],
+      ),
       type: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}type'],
@@ -787,6 +807,7 @@ class $LocalCardsTable extends LocalCards
 class LocalCard extends DataClass implements Insertable<LocalCard> {
   final String id;
   final String? deckId;
+  final String? noteId;
   final String type;
   final String front;
   final String? back;
@@ -799,6 +820,7 @@ class LocalCard extends DataClass implements Insertable<LocalCard> {
   const LocalCard({
     required this.id,
     this.deckId,
+    this.noteId,
     required this.type,
     required this.front,
     this.back,
@@ -815,6 +837,9 @@ class LocalCard extends DataClass implements Insertable<LocalCard> {
     map['id'] = Variable<String>(id);
     if (!nullToAbsent || deckId != null) {
       map['deck_id'] = Variable<String>(deckId);
+    }
+    if (!nullToAbsent || noteId != null) {
+      map['note_id'] = Variable<String>(noteId);
     }
     map['type'] = Variable<String>(type);
     map['front'] = Variable<String>(front);
@@ -836,6 +861,9 @@ class LocalCard extends DataClass implements Insertable<LocalCard> {
       deckId: deckId == null && nullToAbsent
           ? const Value.absent()
           : Value(deckId),
+      noteId: noteId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(noteId),
       type: Value(type),
       front: Value(front),
       back: back == null && nullToAbsent ? const Value.absent() : Value(back),
@@ -856,6 +884,7 @@ class LocalCard extends DataClass implements Insertable<LocalCard> {
     return LocalCard(
       id: serializer.fromJson<String>(json['id']),
       deckId: serializer.fromJson<String?>(json['deckId']),
+      noteId: serializer.fromJson<String?>(json['noteId']),
       type: serializer.fromJson<String>(json['type']),
       front: serializer.fromJson<String>(json['front']),
       back: serializer.fromJson<String?>(json['back']),
@@ -873,6 +902,7 @@ class LocalCard extends DataClass implements Insertable<LocalCard> {
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
       'deckId': serializer.toJson<String?>(deckId),
+      'noteId': serializer.toJson<String?>(noteId),
       'type': serializer.toJson<String>(type),
       'front': serializer.toJson<String>(front),
       'back': serializer.toJson<String?>(back),
@@ -888,6 +918,7 @@ class LocalCard extends DataClass implements Insertable<LocalCard> {
   LocalCard copyWith({
     String? id,
     Value<String?> deckId = const Value.absent(),
+    Value<String?> noteId = const Value.absent(),
     String? type,
     String? front,
     Value<String?> back = const Value.absent(),
@@ -900,6 +931,7 @@ class LocalCard extends DataClass implements Insertable<LocalCard> {
   }) => LocalCard(
     id: id ?? this.id,
     deckId: deckId.present ? deckId.value : this.deckId,
+    noteId: noteId.present ? noteId.value : this.noteId,
     type: type ?? this.type,
     front: front ?? this.front,
     back: back.present ? back.value : this.back,
@@ -914,6 +946,7 @@ class LocalCard extends DataClass implements Insertable<LocalCard> {
     return LocalCard(
       id: data.id.present ? data.id.value : this.id,
       deckId: data.deckId.present ? data.deckId.value : this.deckId,
+      noteId: data.noteId.present ? data.noteId.value : this.noteId,
       type: data.type.present ? data.type.value : this.type,
       front: data.front.present ? data.front.value : this.front,
       back: data.back.present ? data.back.value : this.back,
@@ -931,6 +964,7 @@ class LocalCard extends DataClass implements Insertable<LocalCard> {
     return (StringBuffer('LocalCard(')
           ..write('id: $id, ')
           ..write('deckId: $deckId, ')
+          ..write('noteId: $noteId, ')
           ..write('type: $type, ')
           ..write('front: $front, ')
           ..write('back: $back, ')
@@ -948,6 +982,7 @@ class LocalCard extends DataClass implements Insertable<LocalCard> {
   int get hashCode => Object.hash(
     id,
     deckId,
+    noteId,
     type,
     front,
     back,
@@ -964,6 +999,7 @@ class LocalCard extends DataClass implements Insertable<LocalCard> {
       (other is LocalCard &&
           other.id == this.id &&
           other.deckId == this.deckId &&
+          other.noteId == this.noteId &&
           other.type == this.type &&
           other.front == this.front &&
           other.back == this.back &&
@@ -978,6 +1014,7 @@ class LocalCard extends DataClass implements Insertable<LocalCard> {
 class LocalCardsCompanion extends UpdateCompanion<LocalCard> {
   final Value<String> id;
   final Value<String?> deckId;
+  final Value<String?> noteId;
   final Value<String> type;
   final Value<String> front;
   final Value<String?> back;
@@ -991,6 +1028,7 @@ class LocalCardsCompanion extends UpdateCompanion<LocalCard> {
   const LocalCardsCompanion({
     this.id = const Value.absent(),
     this.deckId = const Value.absent(),
+    this.noteId = const Value.absent(),
     this.type = const Value.absent(),
     this.front = const Value.absent(),
     this.back = const Value.absent(),
@@ -1005,6 +1043,7 @@ class LocalCardsCompanion extends UpdateCompanion<LocalCard> {
   LocalCardsCompanion.insert({
     required String id,
     this.deckId = const Value.absent(),
+    this.noteId = const Value.absent(),
     this.type = const Value.absent(),
     required String front,
     this.back = const Value.absent(),
@@ -1021,6 +1060,7 @@ class LocalCardsCompanion extends UpdateCompanion<LocalCard> {
   static Insertable<LocalCard> custom({
     Expression<String>? id,
     Expression<String>? deckId,
+    Expression<String>? noteId,
     Expression<String>? type,
     Expression<String>? front,
     Expression<String>? back,
@@ -1035,6 +1075,7 @@ class LocalCardsCompanion extends UpdateCompanion<LocalCard> {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (deckId != null) 'deck_id': deckId,
+      if (noteId != null) 'note_id': noteId,
       if (type != null) 'type': type,
       if (front != null) 'front': front,
       if (back != null) 'back': back,
@@ -1051,6 +1092,7 @@ class LocalCardsCompanion extends UpdateCompanion<LocalCard> {
   LocalCardsCompanion copyWith({
     Value<String>? id,
     Value<String?>? deckId,
+    Value<String?>? noteId,
     Value<String>? type,
     Value<String>? front,
     Value<String?>? back,
@@ -1065,6 +1107,7 @@ class LocalCardsCompanion extends UpdateCompanion<LocalCard> {
     return LocalCardsCompanion(
       id: id ?? this.id,
       deckId: deckId ?? this.deckId,
+      noteId: noteId ?? this.noteId,
       type: type ?? this.type,
       front: front ?? this.front,
       back: back ?? this.back,
@@ -1086,6 +1129,9 @@ class LocalCardsCompanion extends UpdateCompanion<LocalCard> {
     }
     if (deckId.present) {
       map['deck_id'] = Variable<String>(deckId.value);
+    }
+    if (noteId.present) {
+      map['note_id'] = Variable<String>(noteId.value);
     }
     if (type.present) {
       map['type'] = Variable<String>(type.value);
@@ -1125,6 +1171,7 @@ class LocalCardsCompanion extends UpdateCompanion<LocalCard> {
     return (StringBuffer('LocalCardsCompanion(')
           ..write('id: $id, ')
           ..write('deckId: $deckId, ')
+          ..write('noteId: $noteId, ')
           ..write('type: $type, ')
           ..write('front: $front, ')
           ..write('back: $back, ')
@@ -6086,6 +6133,7 @@ typedef $$LocalCardsTableCreateCompanionBuilder =
     LocalCardsCompanion Function({
       required String id,
       Value<String?> deckId,
+      Value<String?> noteId,
       Value<String> type,
       required String front,
       Value<String?> back,
@@ -6101,6 +6149,7 @@ typedef $$LocalCardsTableUpdateCompanionBuilder =
     LocalCardsCompanion Function({
       Value<String> id,
       Value<String?> deckId,
+      Value<String?> noteId,
       Value<String> type,
       Value<String> front,
       Value<String?> back,
@@ -6129,6 +6178,11 @@ class $$LocalCardsTableFilterComposer
 
   ColumnFilters<String> get deckId => $composableBuilder(
     column: $table.deckId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get noteId => $composableBuilder(
+    column: $table.noteId,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -6197,6 +6251,11 @@ class $$LocalCardsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get noteId => $composableBuilder(
+    column: $table.noteId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get type => $composableBuilder(
     column: $table.type,
     builder: (column) => ColumnOrderings(column),
@@ -6257,6 +6316,9 @@ class $$LocalCardsTableAnnotationComposer
 
   GeneratedColumn<String> get deckId =>
       $composableBuilder(column: $table.deckId, builder: (column) => column);
+
+  GeneratedColumn<String> get noteId =>
+      $composableBuilder(column: $table.noteId, builder: (column) => column);
 
   GeneratedColumn<String> get type =>
       $composableBuilder(column: $table.type, builder: (column) => column);
@@ -6319,6 +6381,7 @@ class $$LocalCardsTableTableManager
               ({
                 Value<String> id = const Value.absent(),
                 Value<String?> deckId = const Value.absent(),
+                Value<String?> noteId = const Value.absent(),
                 Value<String> type = const Value.absent(),
                 Value<String> front = const Value.absent(),
                 Value<String?> back = const Value.absent(),
@@ -6332,6 +6395,7 @@ class $$LocalCardsTableTableManager
               }) => LocalCardsCompanion(
                 id: id,
                 deckId: deckId,
+                noteId: noteId,
                 type: type,
                 front: front,
                 back: back,
@@ -6347,6 +6411,7 @@ class $$LocalCardsTableTableManager
               ({
                 required String id,
                 Value<String?> deckId = const Value.absent(),
+                Value<String?> noteId = const Value.absent(),
                 Value<String> type = const Value.absent(),
                 required String front,
                 Value<String?> back = const Value.absent(),
@@ -6360,6 +6425,7 @@ class $$LocalCardsTableTableManager
               }) => LocalCardsCompanion.insert(
                 id: id,
                 deckId: deckId,
+                noteId: noteId,
                 type: type,
                 front: front,
                 back: back,

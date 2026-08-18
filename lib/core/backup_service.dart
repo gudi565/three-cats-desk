@@ -43,7 +43,7 @@ class BackupService {
             'createdAt': d.createdAt.toIso8601String(),
           }).toList(),
       'cards': cards.map((c) => {
-            'id': c.id, 'deckId': c.deckId, 'type': c.type, 'front': c.front, 'back': c.back,
+            'id': c.id, 'deckId': c.deckId, 'noteId': c.noteId, 'type': c.type, 'front': c.front, 'back': c.back,
             'sourceApp': c.sourceApp, 'fsrsState': c.fsrsState,
             'due': c.due.toIso8601String(), 'state': c.state, 'synced': c.synced,
             'updatedAt': c.updatedAt.toIso8601String(),
@@ -120,6 +120,7 @@ class BackupService {
     for (final c in cards) {
       await db.into(db.localCards).insertOnConflictUpdate(LocalCardsCompanion(
             id: Value(c['id'] as String), deckId: Value(c['deckId'] as String?),
+            noteId: Value(c['noteId'] as String?),
             type: Value(c['type'] as String? ?? 'qa'), front: Value(c['front'] as String? ?? ''),
             back: Value(c['back'] as String?), sourceApp: Value(c['sourceApp'] as String? ?? 'niannian'),
             fsrsState: Value(c['fsrsState'] as String? ?? '{}'),

@@ -26,6 +26,7 @@ class LocalDecks extends Table {
 class LocalCards extends Table {
   TextColumn get id => text()();                    // uuid
   TextColumn get deckId => text().nullable()();     // 所属词书（软引用 LocalDecks.id）
+  TextColumn get noteId => text().nullable()();     // 同源组（Anki siblings：同 Note 生成的多张卡，如同段文字的多个挖空）
   TextColumn get type => text().withDefault(const Constant('qa'))(); // qa|cloze|error|highlight|note
   TextColumn get front => text()();
   TextColumn get back => text().nullable()();

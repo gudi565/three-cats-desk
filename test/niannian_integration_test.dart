@@ -10,6 +10,7 @@ import 'package:three_cats_desk/core/fsrs.dart';
 // 念念最小闭环集成测试：导入词书 → drift 有卡 → 取今日到期 → FSRS 评分 → 卡状态更新。
 // 不依赖云（local-first），验证 Phase0 验收的本地部分。
 void main() {
+  c2SiblingTests();
   TestWidgetsFlutterBinding.ensureInitialized();
 
   late AppDatabase db;
@@ -111,3 +112,37 @@ LocalCardsCompanion _card(String id, String deckId, DateTime due) =>
 
 Map<String, dynamic> _decode(String s) => jsonDecode(s) as Map<String, dynamic>;
 String _encode(FsrsCard c) => jsonEncode(c.toJson());
+
+// ── C2 sibling 埋卡 ──
+void c2SiblingTests() {
+  group('C2 sibling 埋卡（Anki 同源卡 session 内不重复出现）', () {
+    test('答过 noteId=A 的卡后，getDueCards 排除同 noteId 卡', () async {
+      final db = AppDatabase.forTesting(NativeDatabase.memory());
+      addTearDown(() async => db.close());
+      final fsrs = FsrsCard(id: 'x');
+      await db.upsertDeck(LocalDecksCompanion.insert(
+          id: 'd1', name: '测试', contentHash: const Value('h1')));
+      await db.insertCards([
+        LocalCardsCompanion.insert(
+            id: 'c1', deckId: const Value('d1'), noteId: const Value('noteA'),
+            front: '挖空1', fsrsState: '{"id":"c1"}',
+            due: Value(fsrs.due), state: const Value(0)),
+        LocalCardsCompanion.insert(
+            id: 'c2', deckId: const Value('d1'), noteId: const Value('noteA'),
+            front: '挖空2（同源）', fsrsState: '{"id":"c2"}',
+            due: Value(fsrs.due), state: const Value(0)),
+        LocalCardsCompanion.insert(
+            id: 'c3', deckId: const Value('d1'), noteId: const Value('noteB'),
+            front: '无关卡', fsrsState: '{"id":"c3"}',
+            due: Value(fsrs.due), state: const Value(0)),
+      ]);
+      // 不排除：3 张全在
+      expect((await db.getDueCards('d1')).length, 3);
+      // 排除 noteA：只剩 c3
+      final filtered = await db.getDueCards('d1', excludeNoteIds: {'noteA'});
+      expect(filtered.map((c) => c.id).toList(), ['c3']);
+      // 空排除集 = 不排除
+      expect((await db.getDueCards('d1', excludeNoteIds: {})).length, 3);
+    });
+  });
+}

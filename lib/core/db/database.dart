@@ -18,9 +18,9 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 9;
+  int get schemaVersion => 10;
 
-  /// 迁移：…v7→v8 MemoryEntries；v8→v9 LiteratureChunks。
+  /// 迁移：…v8→v9 LiteratureChunks；v9→v10 LocalCards.noteId。
   @override
   MigrationStrategy get migration => MigrationStrategy(
         onUpgrade: (migrator, from, to) async {
@@ -48,6 +48,9 @@ class AppDatabase extends _$AppDatabase {
           }
           if (from < 9) {
             await migrator.createTable(literatureChunks);
+          }
+          if (from < 10) {
+            await migrator.addColumn(localCards, localCards.noteId);
           }
         },
       );
@@ -81,11 +84,18 @@ class AppDatabase extends _$AppDatabase {
   /// due 明天同一时刻」的卡，在明天同一时刻之前打开时整天不出现——次日打开队列空。
   /// 对齐 FsrsCard.isDue（fsrs.dart）：把 `now` 收敛到「今天的最后一刻」23:59:59.999，
   /// 凡是 due 在今天（含）以前的卡都到期；明天及以后的不算。
-  Future<List<LocalCard>> getDueCards(String deckId, {DateTime? now}) {
+  Future<List<LocalCard>> getDueCards(String deckId,
+      {DateTime? now, Set<String>? excludeNoteIds}) {
     final n = now ?? DateTime.now();
     final end = DateTime(n.year, n.month, n.day, 23, 59, 59, 999);
     return (select(localCards)
-          ..where((c) => c.deckId.equals(deckId) & c.due.isSmallerOrEqualValue(end))
+          ..where((c) =>
+              c.deckId.equals(deckId) &
+              c.due.isSmallerOrEqualValue(end) &
+              // sibling 埋卡：同源组已答过的卡今日不再出现（防互相提示）
+              (excludeNoteIds == null || excludeNoteIds.isEmpty
+                  ? const Constant(true)
+                  : c.noteId.isNull() | c.noteId.isNotIn(excludeNoteIds.toList())))
           ..orderBy([(c) => OrderingTerm.asc(c.due)]))
         .get();
   }

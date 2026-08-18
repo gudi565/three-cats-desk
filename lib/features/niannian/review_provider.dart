@@ -56,8 +56,10 @@ class ReviewController extends StateNotifier<ReviewSession> {
     _load();
   }
 
+  final Set<String> _answeredNoteIds = {}; // sibling 埋卡：已答卡的 noteId 集
+
   Future<void> _load() async {
-    final due = await db.getDueCards(deckId);
+    final due = await db.getDueCards(deckId, excludeNoteIds: _answeredNoteIds);
     state = ReviewSession(queue: due);
   }
 
@@ -93,7 +95,10 @@ class ReviewController extends StateNotifier<ReviewSession> {
       // 3) 异步上云（不阻塞翻下一张；未登录/失败静默）
       unawaited(sync.pushCard(newCard, updated));
 
-      // 4) 翻下一张
+      // 4) 翻下一张（sibling 埋卡：记下 noteId，下次 _load 排除同源卡）
+      if (card.noteId != null && card.noteId!.isNotEmpty) {
+        _answeredNoteIds.add(card.noteId!);
+      }
       state = state.copyWith(
         index: state.index + 1,
         showBack: false,
