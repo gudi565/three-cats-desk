@@ -50,6 +50,9 @@ class Questions extends Table {
   IntColumn get answerIndex => integer()();            // 正确选项下标 0-3
   TextColumn get explanation => text().nullable()();   // 解析
   TextColumn get subject => text().withDefault(const Constant('政治'))(); // 科目
+  IntColumn get year => integer().nullable()();        // 真题年份（如 2024；null=模拟/无年份）
+  TextColumn get questionType => text().withDefault(const Constant('单选'))(); // 单选|多选|辨析|论述|简答|填空
+  TextColumn get knowledgeTags => text().withDefault(const Constant('[]'))(); // 知识点标签 json 数组 ["马原-矛盾观"]
   TextColumn get source => text().withDefault(const Constant(''))();      // 来源标签
   TextColumn get sourceApp => text().withDefault(const Constant('wenwen'))();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();

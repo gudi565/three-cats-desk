@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:drift/drift.dart';
 
 import 'connection_stub.dart'
@@ -18,9 +20,9 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 10;
+  int get schemaVersion => 11;
 
-  /// 迁移：…v8→v9 LiteratureChunks；v9→v10 LocalCards.noteId。
+  /// 迁移：…v9→v10 LocalCards.noteId；v10→v11 Questions 真题维度。
   @override
   MigrationStrategy get migration => MigrationStrategy(
         onUpgrade: (migrator, from, to) async {
@@ -51,6 +53,11 @@ class AppDatabase extends _$AppDatabase {
           }
           if (from < 10) {
             await migrator.addColumn(localCards, localCards.noteId);
+          }
+          if (from < 11) {
+            await migrator.addColumn(questions, questions.year);
+            await migrator.addColumn(questions, questions.questionType);
+            await migrator.addColumn(questions, questions.knowledgeTags);
           }
         },
       );
@@ -181,6 +188,33 @@ class AppDatabase extends _$AppDatabase {
   Future<void> markAttemptSynced(String id) =>
       (update(attempts)..where((a) => a.id.equals(id)))
           .write(const AttemptsCompanion(synced: Value(true)));
+
+  /// 按知识点标签聚合的错题统计（薄弱点视图——喂画像策展器→讲解门控）。
+  /// 返回 {tag: 错题数}，按错题数降序。
+  Future<Map<String, int>> getWrongByKnowledgeTag() async {
+    final wrongs = await getWrongAttempts();
+    final questions = await getAllQuestions();
+    final qById = {for (final q in questions) q.id: q};
+    final byTag = <String, int>{};
+    for (final a in wrongs) {
+      final q = qById[a.questionId];
+      if (q == null) continue;
+      final tags = (jsonDecode(q.knowledgeTags) as List?)
+              ?.map((t) => t.toString())
+              .where((t) => t.isNotEmpty) ??
+          const <String>[];
+      if (tags.isEmpty) {
+        byTag['未标记'] = (byTag['未标记'] ?? 0) + 1;
+      } else {
+        for (final t in tags) {
+          byTag[t] = (byTag[t] ?? 0) + 1;
+        }
+      }
+    }
+    final sorted = Map.fromEntries(
+        byTag.entries.toList()..sort((a, b) => b.value.compareTo(a.value)));
+    return sorted;
+  }
 
   /// 错题（isCorrect=false 的作答，错题本用）。
   Future<List<Attempt>> getWrongAttempts() =>

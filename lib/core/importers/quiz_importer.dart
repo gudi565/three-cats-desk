@@ -32,6 +32,9 @@ class QuizImporter {
       final options = (m['options'] as List?)?.map((o) => o.toString()).toList() ?? [];
       final answerIndex = (m['answerIndex'] as num?)?.toInt() ?? -1;
       if (id.isEmpty || stem.isEmpty || options.length < 2 || answerIndex < 0) continue;
+      final tags = (m['knowledgeTags'] as List?)
+              ?.map((t) => t.toString()).toList() ??
+          const <String>[];
       companions.add(QuestionsCompanion(
         id: Value(id),
         stem: Value(stem),
@@ -39,6 +42,9 @@ class QuizImporter {
         answerIndex: Value(answerIndex),
         explanation: Value((m['explanation'] ?? '').toString()),
         subject: Value((m['subject'] ?? '政治').toString()),
+        year: Value((m['year'] as num?)?.toInt()),
+        questionType: Value((m['questionType'] ?? '单选').toString()),
+        knowledgeTags: Value(jsonEncode(tags)),
         source: Value((m['source'] ?? '').toString()),
       ));
       n++;

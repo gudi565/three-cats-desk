@@ -1772,6 +1772,39 @@ class $QuestionsTable extends Questions
     requiredDuringInsert: false,
     defaultValue: const Constant('政治'),
   );
+  static const VerificationMeta _yearMeta = const VerificationMeta('year');
+  @override
+  late final GeneratedColumn<int> year = GeneratedColumn<int>(
+    'year',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _questionTypeMeta = const VerificationMeta(
+    'questionType',
+  );
+  @override
+  late final GeneratedColumn<String> questionType = GeneratedColumn<String>(
+    'question_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('单选'),
+  );
+  static const VerificationMeta _knowledgeTagsMeta = const VerificationMeta(
+    'knowledgeTags',
+  );
+  @override
+  late final GeneratedColumn<String> knowledgeTags = GeneratedColumn<String>(
+    'knowledge_tags',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('[]'),
+  );
   static const VerificationMeta _sourceMeta = const VerificationMeta('source');
   @override
   late final GeneratedColumn<String> source = GeneratedColumn<String>(
@@ -1814,6 +1847,9 @@ class $QuestionsTable extends Questions
     answerIndex,
     explanation,
     subject,
+    year,
+    questionType,
+    knowledgeTags,
     source,
     sourceApp,
     createdAt,
@@ -1880,6 +1916,30 @@ class $QuestionsTable extends Questions
         subject.isAcceptableOrUnknown(data['subject']!, _subjectMeta),
       );
     }
+    if (data.containsKey('year')) {
+      context.handle(
+        _yearMeta,
+        year.isAcceptableOrUnknown(data['year']!, _yearMeta),
+      );
+    }
+    if (data.containsKey('question_type')) {
+      context.handle(
+        _questionTypeMeta,
+        questionType.isAcceptableOrUnknown(
+          data['question_type']!,
+          _questionTypeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('knowledge_tags')) {
+      context.handle(
+        _knowledgeTagsMeta,
+        knowledgeTags.isAcceptableOrUnknown(
+          data['knowledge_tags']!,
+          _knowledgeTagsMeta,
+        ),
+      );
+    }
     if (data.containsKey('source')) {
       context.handle(
         _sourceMeta,
@@ -1931,6 +1991,18 @@ class $QuestionsTable extends Questions
         DriftSqlType.string,
         data['${effectivePrefix}subject'],
       )!,
+      year: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}year'],
+      ),
+      questionType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}question_type'],
+      )!,
+      knowledgeTags: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}knowledge_tags'],
+      )!,
       source: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}source'],
@@ -1959,6 +2031,9 @@ class Question extends DataClass implements Insertable<Question> {
   final int answerIndex;
   final String? explanation;
   final String subject;
+  final int? year;
+  final String questionType;
+  final String knowledgeTags;
   final String source;
   final String sourceApp;
   final DateTime createdAt;
@@ -1969,6 +2044,9 @@ class Question extends DataClass implements Insertable<Question> {
     required this.answerIndex,
     this.explanation,
     required this.subject,
+    this.year,
+    required this.questionType,
+    required this.knowledgeTags,
     required this.source,
     required this.sourceApp,
     required this.createdAt,
@@ -1984,6 +2062,11 @@ class Question extends DataClass implements Insertable<Question> {
       map['explanation'] = Variable<String>(explanation);
     }
     map['subject'] = Variable<String>(subject);
+    if (!nullToAbsent || year != null) {
+      map['year'] = Variable<int>(year);
+    }
+    map['question_type'] = Variable<String>(questionType);
+    map['knowledge_tags'] = Variable<String>(knowledgeTags);
     map['source'] = Variable<String>(source);
     map['source_app'] = Variable<String>(sourceApp);
     map['created_at'] = Variable<DateTime>(createdAt);
@@ -2000,6 +2083,9 @@ class Question extends DataClass implements Insertable<Question> {
           ? const Value.absent()
           : Value(explanation),
       subject: Value(subject),
+      year: year == null && nullToAbsent ? const Value.absent() : Value(year),
+      questionType: Value(questionType),
+      knowledgeTags: Value(knowledgeTags),
       source: Value(source),
       sourceApp: Value(sourceApp),
       createdAt: Value(createdAt),
@@ -2018,6 +2104,9 @@ class Question extends DataClass implements Insertable<Question> {
       answerIndex: serializer.fromJson<int>(json['answerIndex']),
       explanation: serializer.fromJson<String?>(json['explanation']),
       subject: serializer.fromJson<String>(json['subject']),
+      year: serializer.fromJson<int?>(json['year']),
+      questionType: serializer.fromJson<String>(json['questionType']),
+      knowledgeTags: serializer.fromJson<String>(json['knowledgeTags']),
       source: serializer.fromJson<String>(json['source']),
       sourceApp: serializer.fromJson<String>(json['sourceApp']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
@@ -2033,6 +2122,9 @@ class Question extends DataClass implements Insertable<Question> {
       'answerIndex': serializer.toJson<int>(answerIndex),
       'explanation': serializer.toJson<String?>(explanation),
       'subject': serializer.toJson<String>(subject),
+      'year': serializer.toJson<int?>(year),
+      'questionType': serializer.toJson<String>(questionType),
+      'knowledgeTags': serializer.toJson<String>(knowledgeTags),
       'source': serializer.toJson<String>(source),
       'sourceApp': serializer.toJson<String>(sourceApp),
       'createdAt': serializer.toJson<DateTime>(createdAt),
@@ -2046,6 +2138,9 @@ class Question extends DataClass implements Insertable<Question> {
     int? answerIndex,
     Value<String?> explanation = const Value.absent(),
     String? subject,
+    Value<int?> year = const Value.absent(),
+    String? questionType,
+    String? knowledgeTags,
     String? source,
     String? sourceApp,
     DateTime? createdAt,
@@ -2056,6 +2151,9 @@ class Question extends DataClass implements Insertable<Question> {
     answerIndex: answerIndex ?? this.answerIndex,
     explanation: explanation.present ? explanation.value : this.explanation,
     subject: subject ?? this.subject,
+    year: year.present ? year.value : this.year,
+    questionType: questionType ?? this.questionType,
+    knowledgeTags: knowledgeTags ?? this.knowledgeTags,
     source: source ?? this.source,
     sourceApp: sourceApp ?? this.sourceApp,
     createdAt: createdAt ?? this.createdAt,
@@ -2074,6 +2172,13 @@ class Question extends DataClass implements Insertable<Question> {
           ? data.explanation.value
           : this.explanation,
       subject: data.subject.present ? data.subject.value : this.subject,
+      year: data.year.present ? data.year.value : this.year,
+      questionType: data.questionType.present
+          ? data.questionType.value
+          : this.questionType,
+      knowledgeTags: data.knowledgeTags.present
+          ? data.knowledgeTags.value
+          : this.knowledgeTags,
       source: data.source.present ? data.source.value : this.source,
       sourceApp: data.sourceApp.present ? data.sourceApp.value : this.sourceApp,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
@@ -2089,6 +2194,9 @@ class Question extends DataClass implements Insertable<Question> {
           ..write('answerIndex: $answerIndex, ')
           ..write('explanation: $explanation, ')
           ..write('subject: $subject, ')
+          ..write('year: $year, ')
+          ..write('questionType: $questionType, ')
+          ..write('knowledgeTags: $knowledgeTags, ')
           ..write('source: $source, ')
           ..write('sourceApp: $sourceApp, ')
           ..write('createdAt: $createdAt')
@@ -2104,6 +2212,9 @@ class Question extends DataClass implements Insertable<Question> {
     answerIndex,
     explanation,
     subject,
+    year,
+    questionType,
+    knowledgeTags,
     source,
     sourceApp,
     createdAt,
@@ -2118,6 +2229,9 @@ class Question extends DataClass implements Insertable<Question> {
           other.answerIndex == this.answerIndex &&
           other.explanation == this.explanation &&
           other.subject == this.subject &&
+          other.year == this.year &&
+          other.questionType == this.questionType &&
+          other.knowledgeTags == this.knowledgeTags &&
           other.source == this.source &&
           other.sourceApp == this.sourceApp &&
           other.createdAt == this.createdAt);
@@ -2130,6 +2244,9 @@ class QuestionsCompanion extends UpdateCompanion<Question> {
   final Value<int> answerIndex;
   final Value<String?> explanation;
   final Value<String> subject;
+  final Value<int?> year;
+  final Value<String> questionType;
+  final Value<String> knowledgeTags;
   final Value<String> source;
   final Value<String> sourceApp;
   final Value<DateTime> createdAt;
@@ -2141,6 +2258,9 @@ class QuestionsCompanion extends UpdateCompanion<Question> {
     this.answerIndex = const Value.absent(),
     this.explanation = const Value.absent(),
     this.subject = const Value.absent(),
+    this.year = const Value.absent(),
+    this.questionType = const Value.absent(),
+    this.knowledgeTags = const Value.absent(),
     this.source = const Value.absent(),
     this.sourceApp = const Value.absent(),
     this.createdAt = const Value.absent(),
@@ -2153,6 +2273,9 @@ class QuestionsCompanion extends UpdateCompanion<Question> {
     required int answerIndex,
     this.explanation = const Value.absent(),
     this.subject = const Value.absent(),
+    this.year = const Value.absent(),
+    this.questionType = const Value.absent(),
+    this.knowledgeTags = const Value.absent(),
     this.source = const Value.absent(),
     this.sourceApp = const Value.absent(),
     this.createdAt = const Value.absent(),
@@ -2168,6 +2291,9 @@ class QuestionsCompanion extends UpdateCompanion<Question> {
     Expression<int>? answerIndex,
     Expression<String>? explanation,
     Expression<String>? subject,
+    Expression<int>? year,
+    Expression<String>? questionType,
+    Expression<String>? knowledgeTags,
     Expression<String>? source,
     Expression<String>? sourceApp,
     Expression<DateTime>? createdAt,
@@ -2180,6 +2306,9 @@ class QuestionsCompanion extends UpdateCompanion<Question> {
       if (answerIndex != null) 'answer_index': answerIndex,
       if (explanation != null) 'explanation': explanation,
       if (subject != null) 'subject': subject,
+      if (year != null) 'year': year,
+      if (questionType != null) 'question_type': questionType,
+      if (knowledgeTags != null) 'knowledge_tags': knowledgeTags,
       if (source != null) 'source': source,
       if (sourceApp != null) 'source_app': sourceApp,
       if (createdAt != null) 'created_at': createdAt,
@@ -2194,6 +2323,9 @@ class QuestionsCompanion extends UpdateCompanion<Question> {
     Value<int>? answerIndex,
     Value<String?>? explanation,
     Value<String>? subject,
+    Value<int?>? year,
+    Value<String>? questionType,
+    Value<String>? knowledgeTags,
     Value<String>? source,
     Value<String>? sourceApp,
     Value<DateTime>? createdAt,
@@ -2206,6 +2338,9 @@ class QuestionsCompanion extends UpdateCompanion<Question> {
       answerIndex: answerIndex ?? this.answerIndex,
       explanation: explanation ?? this.explanation,
       subject: subject ?? this.subject,
+      year: year ?? this.year,
+      questionType: questionType ?? this.questionType,
+      knowledgeTags: knowledgeTags ?? this.knowledgeTags,
       source: source ?? this.source,
       sourceApp: sourceApp ?? this.sourceApp,
       createdAt: createdAt ?? this.createdAt,
@@ -2234,6 +2369,15 @@ class QuestionsCompanion extends UpdateCompanion<Question> {
     if (subject.present) {
       map['subject'] = Variable<String>(subject.value);
     }
+    if (year.present) {
+      map['year'] = Variable<int>(year.value);
+    }
+    if (questionType.present) {
+      map['question_type'] = Variable<String>(questionType.value);
+    }
+    if (knowledgeTags.present) {
+      map['knowledge_tags'] = Variable<String>(knowledgeTags.value);
+    }
     if (source.present) {
       map['source'] = Variable<String>(source.value);
     }
@@ -2258,6 +2402,9 @@ class QuestionsCompanion extends UpdateCompanion<Question> {
           ..write('answerIndex: $answerIndex, ')
           ..write('explanation: $explanation, ')
           ..write('subject: $subject, ')
+          ..write('year: $year, ')
+          ..write('questionType: $questionType, ')
+          ..write('knowledgeTags: $knowledgeTags, ')
           ..write('source: $source, ')
           ..write('sourceApp: $sourceApp, ')
           ..write('createdAt: $createdAt, ')
@@ -6728,6 +6875,9 @@ typedef $$QuestionsTableCreateCompanionBuilder =
       required int answerIndex,
       Value<String?> explanation,
       Value<String> subject,
+      Value<int?> year,
+      Value<String> questionType,
+      Value<String> knowledgeTags,
       Value<String> source,
       Value<String> sourceApp,
       Value<DateTime> createdAt,
@@ -6741,6 +6891,9 @@ typedef $$QuestionsTableUpdateCompanionBuilder =
       Value<int> answerIndex,
       Value<String?> explanation,
       Value<String> subject,
+      Value<int?> year,
+      Value<String> questionType,
+      Value<String> knowledgeTags,
       Value<String> source,
       Value<String> sourceApp,
       Value<DateTime> createdAt,
@@ -6783,6 +6936,21 @@ class $$QuestionsTableFilterComposer
 
   ColumnFilters<String> get subject => $composableBuilder(
     column: $table.subject,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get year => $composableBuilder(
+    column: $table.year,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get questionType => $composableBuilder(
+    column: $table.questionType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get knowledgeTags => $composableBuilder(
+    column: $table.knowledgeTags,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -6841,6 +7009,21 @@ class $$QuestionsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get year => $composableBuilder(
+    column: $table.year,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get questionType => $composableBuilder(
+    column: $table.questionType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get knowledgeTags => $composableBuilder(
+    column: $table.knowledgeTags,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get source => $composableBuilder(
     column: $table.source,
     builder: (column) => ColumnOrderings(column),
@@ -6890,6 +7073,19 @@ class $$QuestionsTableAnnotationComposer
   GeneratedColumn<String> get subject =>
       $composableBuilder(column: $table.subject, builder: (column) => column);
 
+  GeneratedColumn<int> get year =>
+      $composableBuilder(column: $table.year, builder: (column) => column);
+
+  GeneratedColumn<String> get questionType => $composableBuilder(
+    column: $table.questionType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get knowledgeTags => $composableBuilder(
+    column: $table.knowledgeTags,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<String> get source =>
       $composableBuilder(column: $table.source, builder: (column) => column);
 
@@ -6934,6 +7130,9 @@ class $$QuestionsTableTableManager
                 Value<int> answerIndex = const Value.absent(),
                 Value<String?> explanation = const Value.absent(),
                 Value<String> subject = const Value.absent(),
+                Value<int?> year = const Value.absent(),
+                Value<String> questionType = const Value.absent(),
+                Value<String> knowledgeTags = const Value.absent(),
                 Value<String> source = const Value.absent(),
                 Value<String> sourceApp = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
@@ -6945,6 +7144,9 @@ class $$QuestionsTableTableManager
                 answerIndex: answerIndex,
                 explanation: explanation,
                 subject: subject,
+                year: year,
+                questionType: questionType,
+                knowledgeTags: knowledgeTags,
                 source: source,
                 sourceApp: sourceApp,
                 createdAt: createdAt,
@@ -6958,6 +7160,9 @@ class $$QuestionsTableTableManager
                 required int answerIndex,
                 Value<String?> explanation = const Value.absent(),
                 Value<String> subject = const Value.absent(),
+                Value<int?> year = const Value.absent(),
+                Value<String> questionType = const Value.absent(),
+                Value<String> knowledgeTags = const Value.absent(),
                 Value<String> source = const Value.absent(),
                 Value<String> sourceApp = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
@@ -6969,6 +7174,9 @@ class $$QuestionsTableTableManager
                 answerIndex: answerIndex,
                 explanation: explanation,
                 subject: subject,
+                year: year,
+                questionType: questionType,
+                knowledgeTags: knowledgeTags,
                 source: source,
                 sourceApp: sourceApp,
                 createdAt: createdAt,

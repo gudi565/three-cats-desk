@@ -57,6 +57,7 @@ class BackupService {
       'questions': questions.map((q) => {
             'id': q.id, 'stem': q.stem, 'optionsJson': q.optionsJson,
             'answerIndex': q.answerIndex, 'explanation': q.explanation, 'subject': q.subject,
+            'year': q.year, 'questionType': q.questionType, 'knowledgeTags': q.knowledgeTags,
             'source': q.source, 'sourceApp': q.sourceApp,
             'createdAt': q.createdAt.toIso8601String(),
           }).toList(),
@@ -151,6 +152,9 @@ class BackupService {
             answerIndex: Value((q['answerIndex'] as num?)?.toInt() ?? 0),
             explanation: Value(q['explanation'] as String?),
             subject: Value(q['subject'] as String? ?? '政治'),
+            year: Value((q['year'] as num?)?.toInt()),
+            questionType: Value(q['questionType'] as String? ?? '单选'),
+            knowledgeTags: Value(q['knowledgeTags'] as String? ?? '[]'),
             source: Value(q['source'] as String? ?? ''),
             sourceApp: Value(q['sourceApp'] as String? ?? 'wenwen'),
             createdAt: Value(parse(q['createdAt'])),
