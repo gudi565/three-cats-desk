@@ -106,6 +106,8 @@ void main() {
               optionsJson: '["A","B"]',
               answerIndex: 0,
               subject: '政治',
+              questionType: '单选',
+              knowledgeTags: '[]',
               source: '',
               sourceApp: 'wenwen',
               createdAt: now),
