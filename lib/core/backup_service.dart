@@ -32,6 +32,7 @@ class BackupService {
     final activity = await db.select(db.activityLog).get();
     final chats = await db.getAllChatMessages();
     final memories = await db.getAllMemories();
+    final litChunks = await db.getAllChunks();
 
     return jsonEncode({
       'backupVersion': backupVersion,
@@ -239,6 +240,20 @@ class BackupService {
       ));
     }
     counts['memoryEntries'] = mems.length;
+
+    final lcs = (data['literatureChunks'] as List?) ?? [];
+    for (final c in lcs) {
+      await db.into(db.literatureChunks).insertOnConflictUpdate(LiteratureChunksCompanion(
+        id: Value(c['id'] as String),
+        literatureId: Value(c['literatureId'] as String),
+        pageNo: Value((c['pageNo'] as num?)?.toInt() ?? 0),
+        paraIndex: Value((c['paraIndex'] as num?)?.toInt() ?? 0),
+        offsetStart: Value((c['offsetStart'] as num?)?.toInt() ?? -1),
+        offsetEnd: Value((c['offsetEnd'] as num?)?.toInt() ?? -1),
+        body: Value(c['body'] as String),
+      ));
+    }
+    counts['literatureChunks'] = lcs.length;
 
     return counts;
   }

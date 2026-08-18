@@ -12,15 +12,15 @@ part 'database.g.dart';
 /// Web 用 WasmDatabase（sqlite3 wasm）；安卓/iOS 用 NativeDatabase 落盘。
 /// 平台连接在 connection_*.dart（条件导入，避免 dart:ffi 在 Web 静态引入）。
 /// Phase0 只验证 Web + 安卓。
-@DriftDatabase(tables: [LocalDecks, LocalCards, FocusSessions, Questions, Attempts, Notes, Literature, ActivityLog, ChatMessages, MemoryEntries])
+@DriftDatabase(tables: [LocalDecks, LocalCards, FocusSessions, Questions, Attempts, Notes, Literature, ActivityLog, ChatMessages, MemoryEntries, LiteratureChunks])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(openConnection());
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 9;
 
-  /// 迁移：…v6→v7 ChatMessages；v7→v8 MemoryEntries。
+  /// 迁移：…v7→v8 MemoryEntries；v8→v9 LiteratureChunks。
   @override
   MigrationStrategy get migration => MigrationStrategy(
         onUpgrade: (migrator, from, to) async {
@@ -45,6 +45,9 @@ class AppDatabase extends _$AppDatabase {
           }
           if (from < 8) {
             await migrator.createTable(memoryEntries);
+          }
+          if (from < 9) {
+            await migrator.createTable(literatureChunks);
           }
         },
       );
@@ -358,6 +361,31 @@ class AppDatabase extends _$AppDatabase {
   /// 清某槽（策展器重建用）。
   Future<void> clearSlot(String slot) =>
       (delete(memoryEntries)..where((m) => m.slot.equals(slot))).go();
+
+  // ---- 文献 chunk（C1 逐句溯源）----
+
+  /// 幂等插入 chunks（按 literatureId 先清后写——重建索引用）。
+  Future<void> replaceLiteratureChunks(String literatureId, List<LiteratureChunksCompanion> chunks) async {
+    await (delete(literatureChunks)..where((c) => c.literatureId.equals(literatureId))).go();
+    await batch((b) => b.insertAll(literatureChunks, chunks));
+  }
+
+  /// 某文献全部 chunks（页序+段序）。
+  Future<List<LiteratureChunk>> getChunks(String literatureId) =>
+      (select(literatureChunks)
+            ..where((c) => c.literatureId.equals(literatureId))
+            ..orderBy([
+              (c) => OrderingTerm.asc(c.pageNo),
+              (c) => OrderingTerm.asc(c.paraIndex),
+            ]))
+          .get();
+
+  /// 全部 chunks（索引重建用）。
+  Future<List<LiteratureChunk>> getAllChunks() => select(literatureChunks).get();
+
+  /// 按 id 取 chunk（引用校验/跳转用）。
+  Future<LiteratureChunk?> getChunkById(String id) =>
+      (select(literatureChunks)..where((c) => c.id.equals(id))).getSingleOrNull();
 
   /// preferences 判重（空白归一 casefold——DeepTutor write_preference 幂等同款）。
   Future<MemoryEntry?> findDuplicatePreference(String text) async {

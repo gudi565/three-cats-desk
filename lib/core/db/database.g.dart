@@ -5283,6 +5283,514 @@ class MemoryEntriesCompanion extends UpdateCompanion<MemoryEntry> {
   }
 }
 
+class $LiteratureChunksTable extends LiteratureChunks
+    with TableInfo<$LiteratureChunksTable, LiteratureChunk> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $LiteratureChunksTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _literatureIdMeta = const VerificationMeta(
+    'literatureId',
+  );
+  @override
+  late final GeneratedColumn<String> literatureId = GeneratedColumn<String>(
+    'literature_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _pageNoMeta = const VerificationMeta('pageNo');
+  @override
+  late final GeneratedColumn<int> pageNo = GeneratedColumn<int>(
+    'page_no',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _paraIndexMeta = const VerificationMeta(
+    'paraIndex',
+  );
+  @override
+  late final GeneratedColumn<int> paraIndex = GeneratedColumn<int>(
+    'para_index',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _offsetStartMeta = const VerificationMeta(
+    'offsetStart',
+  );
+  @override
+  late final GeneratedColumn<int> offsetStart = GeneratedColumn<int>(
+    'offset_start',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(-1),
+  );
+  static const VerificationMeta _offsetEndMeta = const VerificationMeta(
+    'offsetEnd',
+  );
+  @override
+  late final GeneratedColumn<int> offsetEnd = GeneratedColumn<int>(
+    'offset_end',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(-1),
+  );
+  static const VerificationMeta _bodyMeta = const VerificationMeta('body');
+  @override
+  late final GeneratedColumn<String> body = GeneratedColumn<String>(
+    'body',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    literatureId,
+    pageNo,
+    paraIndex,
+    offsetStart,
+    offsetEnd,
+    body,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'literature_chunks';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<LiteratureChunk> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('literature_id')) {
+      context.handle(
+        _literatureIdMeta,
+        literatureId.isAcceptableOrUnknown(
+          data['literature_id']!,
+          _literatureIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_literatureIdMeta);
+    }
+    if (data.containsKey('page_no')) {
+      context.handle(
+        _pageNoMeta,
+        pageNo.isAcceptableOrUnknown(data['page_no']!, _pageNoMeta),
+      );
+    }
+    if (data.containsKey('para_index')) {
+      context.handle(
+        _paraIndexMeta,
+        paraIndex.isAcceptableOrUnknown(data['para_index']!, _paraIndexMeta),
+      );
+    }
+    if (data.containsKey('offset_start')) {
+      context.handle(
+        _offsetStartMeta,
+        offsetStart.isAcceptableOrUnknown(
+          data['offset_start']!,
+          _offsetStartMeta,
+        ),
+      );
+    }
+    if (data.containsKey('offset_end')) {
+      context.handle(
+        _offsetEndMeta,
+        offsetEnd.isAcceptableOrUnknown(data['offset_end']!, _offsetEndMeta),
+      );
+    }
+    if (data.containsKey('body')) {
+      context.handle(
+        _bodyMeta,
+        body.isAcceptableOrUnknown(data['body']!, _bodyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_bodyMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  LiteratureChunk map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return LiteratureChunk(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      literatureId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}literature_id'],
+      )!,
+      pageNo: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}page_no'],
+      )!,
+      paraIndex: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}para_index'],
+      )!,
+      offsetStart: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}offset_start'],
+      )!,
+      offsetEnd: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}offset_end'],
+      )!,
+      body: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}body'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $LiteratureChunksTable createAlias(String alias) {
+    return $LiteratureChunksTable(attachedDatabase, alias);
+  }
+}
+
+class LiteratureChunk extends DataClass implements Insertable<LiteratureChunk> {
+  final String id;
+  final String literatureId;
+  final int pageNo;
+  final int paraIndex;
+  final int offsetStart;
+  final int offsetEnd;
+  final String body;
+  final DateTime createdAt;
+  const LiteratureChunk({
+    required this.id,
+    required this.literatureId,
+    required this.pageNo,
+    required this.paraIndex,
+    required this.offsetStart,
+    required this.offsetEnd,
+    required this.body,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['literature_id'] = Variable<String>(literatureId);
+    map['page_no'] = Variable<int>(pageNo);
+    map['para_index'] = Variable<int>(paraIndex);
+    map['offset_start'] = Variable<int>(offsetStart);
+    map['offset_end'] = Variable<int>(offsetEnd);
+    map['body'] = Variable<String>(body);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  LiteratureChunksCompanion toCompanion(bool nullToAbsent) {
+    return LiteratureChunksCompanion(
+      id: Value(id),
+      literatureId: Value(literatureId),
+      pageNo: Value(pageNo),
+      paraIndex: Value(paraIndex),
+      offsetStart: Value(offsetStart),
+      offsetEnd: Value(offsetEnd),
+      body: Value(body),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory LiteratureChunk.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return LiteratureChunk(
+      id: serializer.fromJson<String>(json['id']),
+      literatureId: serializer.fromJson<String>(json['literatureId']),
+      pageNo: serializer.fromJson<int>(json['pageNo']),
+      paraIndex: serializer.fromJson<int>(json['paraIndex']),
+      offsetStart: serializer.fromJson<int>(json['offsetStart']),
+      offsetEnd: serializer.fromJson<int>(json['offsetEnd']),
+      body: serializer.fromJson<String>(json['body']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'literatureId': serializer.toJson<String>(literatureId),
+      'pageNo': serializer.toJson<int>(pageNo),
+      'paraIndex': serializer.toJson<int>(paraIndex),
+      'offsetStart': serializer.toJson<int>(offsetStart),
+      'offsetEnd': serializer.toJson<int>(offsetEnd),
+      'body': serializer.toJson<String>(body),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  LiteratureChunk copyWith({
+    String? id,
+    String? literatureId,
+    int? pageNo,
+    int? paraIndex,
+    int? offsetStart,
+    int? offsetEnd,
+    String? body,
+    DateTime? createdAt,
+  }) => LiteratureChunk(
+    id: id ?? this.id,
+    literatureId: literatureId ?? this.literatureId,
+    pageNo: pageNo ?? this.pageNo,
+    paraIndex: paraIndex ?? this.paraIndex,
+    offsetStart: offsetStart ?? this.offsetStart,
+    offsetEnd: offsetEnd ?? this.offsetEnd,
+    body: body ?? this.body,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  LiteratureChunk copyWithCompanion(LiteratureChunksCompanion data) {
+    return LiteratureChunk(
+      id: data.id.present ? data.id.value : this.id,
+      literatureId: data.literatureId.present
+          ? data.literatureId.value
+          : this.literatureId,
+      pageNo: data.pageNo.present ? data.pageNo.value : this.pageNo,
+      paraIndex: data.paraIndex.present ? data.paraIndex.value : this.paraIndex,
+      offsetStart: data.offsetStart.present
+          ? data.offsetStart.value
+          : this.offsetStart,
+      offsetEnd: data.offsetEnd.present ? data.offsetEnd.value : this.offsetEnd,
+      body: data.body.present ? data.body.value : this.body,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LiteratureChunk(')
+          ..write('id: $id, ')
+          ..write('literatureId: $literatureId, ')
+          ..write('pageNo: $pageNo, ')
+          ..write('paraIndex: $paraIndex, ')
+          ..write('offsetStart: $offsetStart, ')
+          ..write('offsetEnd: $offsetEnd, ')
+          ..write('body: $body, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    literatureId,
+    pageNo,
+    paraIndex,
+    offsetStart,
+    offsetEnd,
+    body,
+    createdAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is LiteratureChunk &&
+          other.id == this.id &&
+          other.literatureId == this.literatureId &&
+          other.pageNo == this.pageNo &&
+          other.paraIndex == this.paraIndex &&
+          other.offsetStart == this.offsetStart &&
+          other.offsetEnd == this.offsetEnd &&
+          other.body == this.body &&
+          other.createdAt == this.createdAt);
+}
+
+class LiteratureChunksCompanion extends UpdateCompanion<LiteratureChunk> {
+  final Value<String> id;
+  final Value<String> literatureId;
+  final Value<int> pageNo;
+  final Value<int> paraIndex;
+  final Value<int> offsetStart;
+  final Value<int> offsetEnd;
+  final Value<String> body;
+  final Value<DateTime> createdAt;
+  final Value<int> rowid;
+  const LiteratureChunksCompanion({
+    this.id = const Value.absent(),
+    this.literatureId = const Value.absent(),
+    this.pageNo = const Value.absent(),
+    this.paraIndex = const Value.absent(),
+    this.offsetStart = const Value.absent(),
+    this.offsetEnd = const Value.absent(),
+    this.body = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  LiteratureChunksCompanion.insert({
+    required String id,
+    required String literatureId,
+    this.pageNo = const Value.absent(),
+    this.paraIndex = const Value.absent(),
+    this.offsetStart = const Value.absent(),
+    this.offsetEnd = const Value.absent(),
+    required String body,
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       literatureId = Value(literatureId),
+       body = Value(body);
+  static Insertable<LiteratureChunk> custom({
+    Expression<String>? id,
+    Expression<String>? literatureId,
+    Expression<int>? pageNo,
+    Expression<int>? paraIndex,
+    Expression<int>? offsetStart,
+    Expression<int>? offsetEnd,
+    Expression<String>? body,
+    Expression<DateTime>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (literatureId != null) 'literature_id': literatureId,
+      if (pageNo != null) 'page_no': pageNo,
+      if (paraIndex != null) 'para_index': paraIndex,
+      if (offsetStart != null) 'offset_start': offsetStart,
+      if (offsetEnd != null) 'offset_end': offsetEnd,
+      if (body != null) 'body': body,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  LiteratureChunksCompanion copyWith({
+    Value<String>? id,
+    Value<String>? literatureId,
+    Value<int>? pageNo,
+    Value<int>? paraIndex,
+    Value<int>? offsetStart,
+    Value<int>? offsetEnd,
+    Value<String>? body,
+    Value<DateTime>? createdAt,
+    Value<int>? rowid,
+  }) {
+    return LiteratureChunksCompanion(
+      id: id ?? this.id,
+      literatureId: literatureId ?? this.literatureId,
+      pageNo: pageNo ?? this.pageNo,
+      paraIndex: paraIndex ?? this.paraIndex,
+      offsetStart: offsetStart ?? this.offsetStart,
+      offsetEnd: offsetEnd ?? this.offsetEnd,
+      body: body ?? this.body,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (literatureId.present) {
+      map['literature_id'] = Variable<String>(literatureId.value);
+    }
+    if (pageNo.present) {
+      map['page_no'] = Variable<int>(pageNo.value);
+    }
+    if (paraIndex.present) {
+      map['para_index'] = Variable<int>(paraIndex.value);
+    }
+    if (offsetStart.present) {
+      map['offset_start'] = Variable<int>(offsetStart.value);
+    }
+    if (offsetEnd.present) {
+      map['offset_end'] = Variable<int>(offsetEnd.value);
+    }
+    if (body.present) {
+      map['body'] = Variable<String>(body.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LiteratureChunksCompanion(')
+          ..write('id: $id, ')
+          ..write('literatureId: $literatureId, ')
+          ..write('pageNo: $pageNo, ')
+          ..write('paraIndex: $paraIndex, ')
+          ..write('offsetStart: $offsetStart, ')
+          ..write('offsetEnd: $offsetEnd, ')
+          ..write('body: $body, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -5296,6 +5804,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $ActivityLogTable activityLog = $ActivityLogTable(this);
   late final $ChatMessagesTable chatMessages = $ChatMessagesTable(this);
   late final $MemoryEntriesTable memoryEntries = $MemoryEntriesTable(this);
+  late final $LiteratureChunksTable literatureChunks = $LiteratureChunksTable(
+    this,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -5311,6 +5822,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     activityLog,
     chatMessages,
     memoryEntries,
+    literatureChunks,
   ];
 }
 
@@ -7982,6 +8494,273 @@ typedef $$MemoryEntriesTableProcessedTableManager =
       MemoryEntry,
       PrefetchHooks Function()
     >;
+typedef $$LiteratureChunksTableCreateCompanionBuilder =
+    LiteratureChunksCompanion Function({
+      required String id,
+      required String literatureId,
+      Value<int> pageNo,
+      Value<int> paraIndex,
+      Value<int> offsetStart,
+      Value<int> offsetEnd,
+      required String body,
+      Value<DateTime> createdAt,
+      Value<int> rowid,
+    });
+typedef $$LiteratureChunksTableUpdateCompanionBuilder =
+    LiteratureChunksCompanion Function({
+      Value<String> id,
+      Value<String> literatureId,
+      Value<int> pageNo,
+      Value<int> paraIndex,
+      Value<int> offsetStart,
+      Value<int> offsetEnd,
+      Value<String> body,
+      Value<DateTime> createdAt,
+      Value<int> rowid,
+    });
+
+class $$LiteratureChunksTableFilterComposer
+    extends Composer<_$AppDatabase, $LiteratureChunksTable> {
+  $$LiteratureChunksTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get literatureId => $composableBuilder(
+    column: $table.literatureId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get pageNo => $composableBuilder(
+    column: $table.pageNo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get paraIndex => $composableBuilder(
+    column: $table.paraIndex,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get offsetStart => $composableBuilder(
+    column: $table.offsetStart,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get offsetEnd => $composableBuilder(
+    column: $table.offsetEnd,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get body => $composableBuilder(
+    column: $table.body,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$LiteratureChunksTableOrderingComposer
+    extends Composer<_$AppDatabase, $LiteratureChunksTable> {
+  $$LiteratureChunksTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get literatureId => $composableBuilder(
+    column: $table.literatureId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get pageNo => $composableBuilder(
+    column: $table.pageNo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get paraIndex => $composableBuilder(
+    column: $table.paraIndex,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get offsetStart => $composableBuilder(
+    column: $table.offsetStart,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get offsetEnd => $composableBuilder(
+    column: $table.offsetEnd,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get body => $composableBuilder(
+    column: $table.body,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$LiteratureChunksTableAnnotationComposer
+    extends Composer<_$AppDatabase, $LiteratureChunksTable> {
+  $$LiteratureChunksTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get literatureId => $composableBuilder(
+    column: $table.literatureId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get pageNo =>
+      $composableBuilder(column: $table.pageNo, builder: (column) => column);
+
+  GeneratedColumn<int> get paraIndex =>
+      $composableBuilder(column: $table.paraIndex, builder: (column) => column);
+
+  GeneratedColumn<int> get offsetStart => $composableBuilder(
+    column: $table.offsetStart,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get offsetEnd =>
+      $composableBuilder(column: $table.offsetEnd, builder: (column) => column);
+
+  GeneratedColumn<String> get body =>
+      $composableBuilder(column: $table.body, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$LiteratureChunksTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $LiteratureChunksTable,
+          LiteratureChunk,
+          $$LiteratureChunksTableFilterComposer,
+          $$LiteratureChunksTableOrderingComposer,
+          $$LiteratureChunksTableAnnotationComposer,
+          $$LiteratureChunksTableCreateCompanionBuilder,
+          $$LiteratureChunksTableUpdateCompanionBuilder,
+          (
+            LiteratureChunk,
+            BaseReferences<
+              _$AppDatabase,
+              $LiteratureChunksTable,
+              LiteratureChunk
+            >,
+          ),
+          LiteratureChunk,
+          PrefetchHooks Function()
+        > {
+  $$LiteratureChunksTableTableManager(
+    _$AppDatabase db,
+    $LiteratureChunksTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$LiteratureChunksTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$LiteratureChunksTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$LiteratureChunksTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> literatureId = const Value.absent(),
+                Value<int> pageNo = const Value.absent(),
+                Value<int> paraIndex = const Value.absent(),
+                Value<int> offsetStart = const Value.absent(),
+                Value<int> offsetEnd = const Value.absent(),
+                Value<String> body = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => LiteratureChunksCompanion(
+                id: id,
+                literatureId: literatureId,
+                pageNo: pageNo,
+                paraIndex: paraIndex,
+                offsetStart: offsetStart,
+                offsetEnd: offsetEnd,
+                body: body,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String literatureId,
+                Value<int> pageNo = const Value.absent(),
+                Value<int> paraIndex = const Value.absent(),
+                Value<int> offsetStart = const Value.absent(),
+                Value<int> offsetEnd = const Value.absent(),
+                required String body,
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => LiteratureChunksCompanion.insert(
+                id: id,
+                literatureId: literatureId,
+                pageNo: pageNo,
+                paraIndex: paraIndex,
+                offsetStart: offsetStart,
+                offsetEnd: offsetEnd,
+                body: body,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$LiteratureChunksTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $LiteratureChunksTable,
+      LiteratureChunk,
+      $$LiteratureChunksTableFilterComposer,
+      $$LiteratureChunksTableOrderingComposer,
+      $$LiteratureChunksTableAnnotationComposer,
+      $$LiteratureChunksTableCreateCompanionBuilder,
+      $$LiteratureChunksTableUpdateCompanionBuilder,
+      (
+        LiteratureChunk,
+        BaseReferences<_$AppDatabase, $LiteratureChunksTable, LiteratureChunk>,
+      ),
+      LiteratureChunk,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -8006,4 +8785,6 @@ class $AppDatabaseManager {
       $$ChatMessagesTableTableManager(_db, _db.chatMessages);
   $$MemoryEntriesTableTableManager get memoryEntries =>
       $$MemoryEntriesTableTableManager(_db, _db.memoryEntries);
+  $$LiteratureChunksTableTableManager get literatureChunks =>
+      $$LiteratureChunksTableTableManager(_db, _db.literatureChunks);
 }

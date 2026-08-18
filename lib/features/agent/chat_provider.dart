@@ -142,6 +142,24 @@ class AgentChatNotifier extends StateNotifier<AgentChatState> {
       tools.addAll(buildSolveTools(solveSession));
     }
 
+    // 画像注入：读 scope+preferences 槽拼进用户档案块（智能体认识他）
+    final memScope = await db.getMemories('scope');
+    final memPrefs = await db.getMemories('preferences');
+    final memBlock = [
+      if (memScope.isNotEmpty)
+        '掌握度（基于他的做题行为）：\n${memScope.map((m) => '- ${m.body}').join('\n')}',
+      if (memPrefs.isNotEmpty)
+        '他的偏好：\n${memPrefs.map((m) => '- ${m.body}').join('\n')}',
+    ].join('\n');
+
+    // 深度讲解门控（Bokosmaty 门控规则落地）：已掌握知识点只讲差异步骤，
+    // 未掌握的定理+步骤全讲（专长逆转：冗余讲解对熟手有害 ηp²=0.34）。
+    final gatingBlock = memScope.isEmpty
+        ? ''
+        : '讲解详略门控（按掌握度）：\n$memBlock\n'
+            '已掌握的知识点：省略定理解释，只讲本题关键步骤；'
+            '练习中/未掌握的：定理+步骤完整讲。';
+
     // 分块 system（DeepTutor 块序：身份/运行规则/档案/循环/资料清单/工具/语言）。
     // 深度讲解模式：循环块换成 [深度讲解模式] 全文 + solve 工具行。
     final systemPrompt = deepExplain
@@ -153,8 +171,11 @@ class AgentChatNotifier extends StateNotifier<AgentChatState> {
                   if (profile.suggestSchool.isNotEmpty)
                     '他的目标：${profile.suggestSchool} ${profile.suggestMajor}。',
                   '当前资料包：${profile.displayName}。',
+                  if (memBlock.isNotEmpty) memBlock,
                 ].join('\n'),
               ),
+              if (gatingBlock.isNotEmpty)
+                (name: '讲解详略门控', content: gatingBlock),
             ],
             toolsBlock: '${composed.toolsBlock}\n'
                 '- `solve_plan` / `solve_finish_step` / `solve_replan` — 讲解脊柱三件套（按系统提示的深度讲解模式流程使用）。',
@@ -170,6 +191,7 @@ class AgentChatNotifier extends StateNotifier<AgentChatState> {
                     '他的目标：${profile.suggestSchool} ${profile.suggestMajor}。',
                   '当前资料包：${profile.displayName}。',
                   '猫亲密度 ${cat.intimacy}（他复习/专注越多越高）。',
+                  if (memBlock.isNotEmpty) memBlock,
                   '回答先给结论再展开；讲错题时给出正确答案和解析；鼓励但不啰嗦。',
                 ].join('\n'),
               ),

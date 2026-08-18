@@ -36,14 +36,17 @@ void main() {
     expect(all.tools.keys, containsAll([
       'query_wrong_questions', 'query_today_progress',
       'query_syllabus_notes', 'list_kb_docs',
+      'read_memory', 'write_preference', // M2 恒挂
     ]));
 
     final none = composeTools(db,
         flags: const ToolMountFlags(
             hasWrongQuestions: false, hasKb: false, hasNotes: false),
         intimacyOf: () => 1);
-    // 空数据：错题/笔记/检索都不挂，只剩恒挂的进度+清单
-    expect(none.tools.keys, everyElement(isIn(['query_today_progress', 'list_kb_docs'])));
+    // 空数据：错题/笔记/检索不挂，恒挂=进度+清单+read/write_memory
+    expect(none.tools.keys, everyElement(isIn([
+      'query_today_progress', 'list_kb_docs', 'read_memory', 'write_preference',
+    ])));
     expect(none.tools.containsKey('query_wrong_questions'), isFalse);
     // 工具清单块同步收敛（空数据时模型看不到无意义工具）
     expect(none.toolsBlock, isNot(contains('query_wrong_questions')));

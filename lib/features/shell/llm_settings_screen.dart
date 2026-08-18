@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/providers.dart';
 import '../../core/settings/settings_service.dart';
+import '../../core/settings/settings_service.dart' as cfg;
+import '../agent/llm_client.dart';
+import '../agent/memory_curator.dart';
 
 /// LLM 模型设置屏（P2-3）。
 ///
@@ -46,6 +50,25 @@ class _LlmSettingsScreenState extends ConsumerState<LlmSettingsScreen> {
     _model.dispose();
     _apiKey.dispose();
     super.dispose();
+  }
+
+  bool _curating = false;
+
+  Future<void> _curateMemory() async {
+    if (_curating) return;
+    setState(() => _curating = true);
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      final cfg2 = await ref.read(cfg.settingsServiceProvider).loadLlmConfig();
+      final db = ref.read(appDatabaseProvider);
+      final r = await MemoryCurator(db, LlmClient())
+          .curate(baseUrl: cfg2.baseUrl, model: cfg2.model, apiKey: cfg2.apiKey);
+      messenger.showSnackBar(SnackBar(content: Text(r.summary)));
+    } catch (e) {
+      messenger.showSnackBar(SnackBar(content: Text('整理失败：$e')));
+    } finally {
+      if (mounted) setState(() => _curating = false);
+    }
   }
 
   Future<void> _save() async {
@@ -117,6 +140,16 @@ class _LlmSettingsScreenState extends ConsumerState<LlmSettingsScreen> {
                 onPressed: () => setState(() => _obscureKey = !_obscureKey),
               ),
             ),
+          ),
+          const SizedBox(height: 12),
+          // 画像策展：从做题行为抽取掌握度（设置页手动触发——本地无 cron）
+          OutlinedButton.icon(
+            onPressed: _curating ? null : _curateMemory,
+            icon: _curating
+                ? const SizedBox(width: 16, height: 16,
+                    child: CircularProgressIndicator(strokeWidth: 2))
+                : const Icon(Icons.psychology_outlined),
+            label: Text(_curating ? '整理中…' : '整理记忆（从做题行为更新掌握度画像）'),
           ),
           const SizedBox(height: 20),
           FilledButton(

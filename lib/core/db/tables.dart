@@ -165,6 +165,23 @@ class ChatMessages extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+/// 文献 chunk（C1，2026-08-17）——逐句溯源的锚点层。
+/// 切段时就带坐标（页/段/字符偏移），检索命中后可精确定位回原文——
+/// "防 AI 瞎编"的业界标准做法：锚点入库，而非事后找。
+class LiteratureChunks extends Table {
+  TextColumn get id => text()();                       // uuid
+  TextColumn get literatureId => text()();             // 所属文献
+  IntColumn get pageNo => integer().withDefault(const Constant(0))();    // 页码（1 起，0=未知）
+  IntColumn get paraIndex => integer().withDefault(const Constant(0))(); // 段落序（0 起）
+  IntColumn get offsetStart => integer().withDefault(const Constant(-1))(); // 字符偏移（-1=未记）
+  IntColumn get offsetEnd => integer().withDefault(const Constant(-1))();
+  TextColumn get body => text()();                     // chunk 文本
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 /// 学习者画像（M1，2026-08-16）。DeepTutor L3 四槽思想的本地版：
 ///   recent      — 近期活动滚动时间线（策展器写）
 ///   profile     — 身份/学习风格（策展器写，多源证据才收）

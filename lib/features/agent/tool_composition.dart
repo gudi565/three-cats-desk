@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:three_cats_desk/core/db/database.dart';
 import 'package:three_cats_desk/features/agent/agent_loop.dart';
 import 'package:three_cats_desk/features/agent/tools/cat_tools.dart';
+import 'package:three_cats_desk/features/agent/tools/memory_tools.dart';
 
 /// 工具条件挂载 + 中文 hints（DT3/DT4，DeepTutor tool_composition 同款思想）。
 ///
@@ -127,7 +128,21 @@ class ListKbDocsTool extends AgentTool {
   final notes = QuerySyllabusNotesTool(db);
   final listKb = ListKbDocsTool(db);
 
+  final readMem = ReadMemoryTool(db);
+  final writePref = WritePreferenceTool(db);
+
   final mounted = <_MountedTool>[
+    _MountedTool(
+      readMem,
+      (_) => true, // 恒挂：画像影响怎么讲（语气/深度/举例），每 turn 最多调一次
+      '回答的语气、深度、举例、讲解详略可以针对该用户调整时调用（画像：掌握度/风格/偏好）。'
+          '纯事实类问题不调。每 turn 最多一次。',
+    ),
+    _MountedTool(
+      writePref,
+      (_) => true, // 恒挂：用户显式说偏好时立即记
+      '用户显式表达偏好（"我喜欢简短讲解"）时调用记录。只记明确说出的，不推断。',
+    ),
     _MountedTool(
       wrong,
       (f) => f.hasWrongQuestions,
